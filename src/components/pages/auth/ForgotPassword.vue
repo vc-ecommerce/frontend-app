@@ -57,7 +57,7 @@ import { JQueryPageCenter } from "@/commons/jquery-page-center";
 
 export default {
   name: "ForgotPassword",
-  props: ["token"],
+  props: [],
   data() {
     return {
       password: "",
@@ -66,6 +66,7 @@ export default {
       passwordInvalid: false,
       status: false,
       userId: "",
+      token: this.$route.params.token,
       tokenOk: false,
       updateOk: false,
       btnDisabled: false
@@ -75,7 +76,7 @@ export default {
     document.addEventListener("DOMContentLoaded", function() {
       document.title = "Redefinir Senha";
     });
-    this.$eventHub.$emit("eventAuth", true);
+    this.$eventHub.$emit("eventPublic", true);
   },
   mounted() {
     this.checkToken();

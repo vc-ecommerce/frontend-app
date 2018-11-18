@@ -1,6 +1,7 @@
 <template>
   <span id="app">
-    <div v-if="!isAuth">
+
+    <div v-if="!isPublic">
       <SiteHeader />
       <SidebarMenuLeft />
       <div class="page-content">
@@ -11,7 +12,7 @@
       <SidebarMenuRight />
     </div>
 
-    <div v-if="isAuth">
+    <div v-if="isPublic">
       <div class="page-center">
         <div class="page-center-in">
             <div class="container-fluid">
@@ -20,9 +21,9 @@
         </div>
       </div>
     </div>
-    <!-- <div id="loader">
-      <loader />
-    </div> -->
+
+    <AxiosLoader />
+
   </span>
 </template>
 
@@ -30,33 +31,37 @@
 import SiteHeader from "@/components/layouts/header/SiteHeader";
 import SidebarMenuLeft from "@/components/layouts/sidebar/SidebarMenuLeft";
 import SidebarMenuRight from "@/components/layouts/sidebar/SidebarMenuRight";
+import AxiosLoader from "@/commons/AxiosLoader";
 
 export default {
   name: "App",
   components: {
     SiteHeader,
     SidebarMenuLeft,
-    SidebarMenuRight
+    SidebarMenuRight,
+    AxiosLoader
   },
   data() {
     return {
-      isAuth: false
+      isPublic: false
     }
   },
   beforeCreate() {
     let vm = this;
-    this.$eventHub.$on("eventAuth", function(data) {
+    this.$eventHub.$on("eventPublic", function(data) {
       document.addEventListener("DOMContentLoaded", function() {
         document.body.classList.remove("with-side-menu");
         document.body.classList.remove("control-panel");
         document.body.classList.remove("control-panel-compact");
         document.body.classList.add("auth");
       });
-      vm.isAuth = data;
+      if(data) {
+         vm.isPublic = true;
+      }
     });
   },
   mounted() {
-    if (!this.isAuth) {
+    if (!this.isPublic) {
       document.title="Painel de Controle"
     }
   }

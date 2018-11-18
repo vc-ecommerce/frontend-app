@@ -61,7 +61,7 @@ export default {
     document.addEventListener("DOMContentLoaded", function() {
       document.title = "Redefinição de Senha";
     });
-    this.$eventHub.$emit("eventAuth", true);
+    this.$eventHub.$emit("eventPublic", true);
   },
   mounted() {
     JQueryPageCenter();
@@ -70,7 +70,6 @@ export default {
     cleanData(data) {
       return cleanDataApi(data);
     },
-
     submitForm() {
       this.btnDisabled = true;
       this.loading = true;

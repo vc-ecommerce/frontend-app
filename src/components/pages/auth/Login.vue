@@ -56,7 +56,7 @@ export default {
     document.addEventListener("DOMContentLoaded", function() {
       document.title = "Login";
     });
-    this.$eventHub.$emit("eventAuth", true);
+    this.$eventHub.$emit("eventPublic", true);
   },
   methods: {
     showError(code) {
@@ -66,9 +66,6 @@ export default {
           this.status = false;
         }, 5000);
       }
-    },
-    redirectUser() {
-      window.location = "/";
     },
     submitForm() {
       this.btnDisabled = true;
@@ -92,6 +89,9 @@ export default {
 
           this.$store.commit("setUser", response.data);
           this.$store.commit("setToken", response.data.HTTP_Authorization);
+
+          window.location = "/";
+
         })
         .catch(error => {
           this.btnDisabled = false;
@@ -100,12 +100,10 @@ export default {
     }
   },
   mounted() {
-    // Remove saved data from sessionStorage
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
     // Remove all saved data from sessionStorage
     sessionStorage.clear();
-
+    this.email = "";
+    this.password = "";
     JQueryPageCenter();
   }
 };

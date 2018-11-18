@@ -6,7 +6,11 @@ import App from '@/App'
 import router from '@/router'
 import store from '@/stores';
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
+
+import { userIsAuthorized } from "@/helpers/validates";
+import { swalErrorUnauthorized } from "@/helpers/tools";
+
 
 /* eslint-disable no-new */
 new Vue({
@@ -14,12 +18,49 @@ new Vue({
   router,
   store,
   components: { App },
-  template: '<App/>'
-});
+  template: '<App/>',
+  data() {
+    return {
+      isPublic: false
+    }
+  },
+  created() {
+    const vm = this;
+    this.$eventHub.$on("eventPublic", function (data) {
+      vm.isPublic = data;
+    });
 
-// Vue.component('loader', require('@/commons/AxiosLoader.vue'));
-// new Vue({
-//   el: '#loader',
-//   components: { App },
-//   template: '<App/>',
-// });
+    this.$eventHub.$on('eventError', function (obj) {
+      vm.showError(obj)
+    });
+  },
+  methods: {
+    showError(obj) {
+      swalErrorUnauthorized(obj);
+    }
+  },
+  mounted() {
+
+    if (this.isPublic === false) {
+
+      let user = this.$store.getters.getUser;
+
+      if (!user) {
+        sessionStorage.clear();
+        this.$router.push({ name: "auth.login" });
+      }
+
+      userIsAuthorized(this.$store.getters.getUserRoles, [
+        "ADMIN",
+        "STAFF_AUDITOR",
+        "STAFF_FINANCE",
+        "STAFF_COMMERCIAL",
+        "STAFF_SUPPORT",
+        "STAFF_SALE",
+        "STAFF_EDITOR",
+        "STAFF_EXPEDITION",
+      ]);
+
+    }
+  },
+});
