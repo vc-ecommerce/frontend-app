@@ -4,10 +4,12 @@
       <img src="@/assets/img/avatar-2-64.png" alt="">
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dd-user-menu">
-      <a v-if="user" class="dropdown-item" :href="urlAccounts">
+
+      <router-link v-if="user" :to="{ name: 'user.account'}" class="dropdown-item">
         <span class="font-icon glyphicon glyphicon-user"></span>
         {{ user.name || ''}}
-      </a>
+      </router-link>
+
       <!--
       <a class="dropdown-item" href="#">
         <span class="font-icon glyphicon glyphicon-cog"></span>
@@ -19,17 +21,18 @@
       </a>
       -->
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" :href="urlLogout">
+
+      <router-link :to="{ name: 'logout'}" class="dropdown-item">
         <span class="font-icon glyphicon glyphicon-log-out"></span>
         Sair
-      </a>
+      </router-link>
+
     </div>
   </div>
 </template>
 <script>
 export default {
   name: "MenuTopUser",
-  props: ['urlLogout', 'urlAccounts'],
   data() {
     return {
       user: this.$store.getters.getUser

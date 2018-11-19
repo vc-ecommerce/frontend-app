@@ -68,7 +68,7 @@ import {
 } from "@/helpers/tools";
 
 export default {
-  name: "AccountIndex",
+  name: "Account",
   components: {
     Alert
   },

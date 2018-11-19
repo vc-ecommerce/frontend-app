@@ -53,7 +53,7 @@ export default {
     };
   },
   beforeCreate() {
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", () => {
       document.title = "Login";
     });
     this.$eventHub.$emit("eventPublic", true);

@@ -44,25 +44,25 @@ export default {
   data() {
     return {
       isPublic: false
-    }
+    };
   },
   beforeCreate() {
     let vm = this;
-    this.$eventHub.$on("eventPublic", function(data) {
-      document.addEventListener("DOMContentLoaded", function() {
+    this.$eventHub.$on("eventPublic", data => {
+      document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.remove("with-side-menu");
         document.body.classList.remove("control-panel");
         document.body.classList.remove("control-panel-compact");
         document.body.classList.add("auth");
       });
-      if(data) {
-         vm.isPublic = true;
+      if (data) {
+        vm.isPublic = true;
       }
     });
   },
   mounted() {
     if (!this.isPublic) {
-      document.title="Painel de Controle"
+      document.title = "Painel de Controle";
     }
   }
 };

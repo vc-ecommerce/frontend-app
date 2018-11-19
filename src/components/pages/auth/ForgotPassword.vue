@@ -72,8 +72,8 @@ export default {
       btnDisabled: false
     };
   },
-  beforeCreate() {
-    document.addEventListener("DOMContentLoaded", function() {
+  beforeCreate() {z
+    document.addEventListener("DOMContentLoaded", () => {
       document.title = "Redefinir Senha";
     });
     this.$eventHub.$emit("eventPublic", true);

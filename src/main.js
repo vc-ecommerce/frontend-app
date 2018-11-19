@@ -11,7 +11,6 @@ Vue.config.productionTip = false;
 import { userIsAuthorized } from "@/helpers/validates";
 import { swalErrorUnauthorized } from "@/helpers/tools";
 
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -25,14 +24,8 @@ new Vue({
     }
   },
   created() {
-    const vm = this;
-    this.$eventHub.$on("eventPublic", function (data) {
-      vm.isPublic = data;
-    });
-
-    this.$eventHub.$on('eventError', function (obj) {
-      vm.showError(obj)
-    });
+    this.$eventHub.$on("eventPublic", data => this.isPublic = data);
+    this.$eventHub.$on('eventError', obj => this.showError(obj));
   },
   methods: {
     showError(obj) {
@@ -41,13 +34,13 @@ new Vue({
   },
   mounted() {
 
-    if (this.isPublic === false) {
+    if (this.isPublic !== true) {
 
-      let user = this.$store.getters.getUser;
+      let user = this.$store.getters.getUser ? this.$store.getters.getUser : false;
 
       if (!user) {
         sessionStorage.clear();
-        this.$router.push({ name: "auth.login" });
+        return this.$router.push({ name: "auth.login" });
       }
 
       userIsAuthorized(this.$store.getters.getUserRoles, [

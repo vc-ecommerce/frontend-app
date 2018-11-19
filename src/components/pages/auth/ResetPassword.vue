@@ -58,7 +58,7 @@ export default {
     };
   },
   beforeCreate() {
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", () => {
       document.title = "Redefinição de Senha";
     });
     this.$eventHub.$emit("eventPublic", true);
