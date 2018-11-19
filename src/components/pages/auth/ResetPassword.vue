@@ -61,7 +61,7 @@ export default {
       const api = `${this.$urlApi}/auth/reset`;
       Vue.axios
         .post(api, {
-          //email: this.email
+          email: this.email
         })
         .then(response => {
           swal({
