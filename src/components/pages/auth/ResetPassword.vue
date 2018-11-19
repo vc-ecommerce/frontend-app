@@ -99,39 +99,4 @@ export default {
 .sign-title {
   font-weight: bold;
 }
-
-.showError {
-  animation: treme 0.1s;
-  animation-iteration-count: 3;
-}
-
-@keyframes treme {
-  0% {
-    margin-left: 0;
-  }
-  25% {
-    margin-left: 5px;
-  }
-  50% {
-    margin-left: 0;
-  }
-  75% {
-    margin-left: -5px;
-  }
-  100% {
-    margin-left: 0;
-  }
-}
-
-.red {
-  color: #fa424a;
-}
-
-.green {
-  color: #46c35f;
-}
-
-.gray {
-  color: #808080;
-}
 </style>
