@@ -44,30 +44,22 @@ export function forcePassword(password) {
 
 }
 
-export function swalErrorUnauthorized(obj) {
+export function swalErrorUnauthorized() {
 
-  if (!obj) return '';
-
-  if (obj.data.status === 401
-    && obj.data.statusText === "Unauthorized") {
-
-    swal({
-      title: "Atenção!!!",
-      text: "Acesso não autorizado ou negado pelo servidor.",
-      type: "error",
-      showCancelButton: false,
-      cancelButtonClass: "btn-default",
-      confirmButtonClass: "btn-danger",
-      confirmButtonText: "Fazer login",
-      closeOnConfirm: false
-    },
-      function () {
-        sessionStorage.clear();
-        window.location.replace("/login");
-      });
-
-  }
-
+  swal({
+    title: "Atenção!!!",
+    text: "Acesso não autorizado ou negado pelo servidor.",
+    type: "error",
+    showCancelButton: false,
+    cancelButtonClass: "btn-default",
+    confirmButtonClass: "btn-danger",
+    confirmButtonText: "Fazer login",
+    closeOnConfirm: false
+  },
+    function () {
+      sessionStorage.clear();
+      window.location.replace("/login");
+    });
 }
 
 export function cleanDataApi(data) {
@@ -78,7 +70,12 @@ export function cleanDataApi(data) {
 
 }
 
-export function strSlug(str, separator='-') {
+export function strSlug(str, separator = '-') {
+
+  if (!str) {
+    throw new Error('Informe a String')
+  }
+
   str = String(str);
   str = str.trim();
   str = str.toLowerCase();
@@ -104,6 +101,36 @@ export function strRandon() {
   return Math.floor(Math.random() * 1000000 + 1);
 }
 
+
+export function swalErrorApi(error) {
+
+  if (error.response.status == 401) {
+
+    return swal({
+      title: "Autenticação!",
+      text: "Para acessar este recurso você precisa estar autenticado! Você será redirecionado!",
+      type: "warning",
+      showCancelButton: false,
+      confirmButtonClass: "btn-error",
+      confirmButtonText: "OK!",
+      closeOnConfirm: false
+    },
+      function () {
+        sessionStorage.clear();
+        window.location.replace("/login");
+      });
+
+  }
+
+  // return swal({
+  //   title: 'Erro',
+  //   text: 'Algo deu errado, tente novamente!',
+  //   type: 'error',
+  //   showCancelButton: false,
+  //   confirmButtonText: 'Ok!'
+  // });
+
+}
 
 // export function dataParaTexto(data) {
 //     return `${data.getDate()}/${data.getMonth()+1}/${data.getFullYear()}`;

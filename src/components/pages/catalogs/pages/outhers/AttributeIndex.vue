@@ -111,7 +111,6 @@ export default {
           this.roles = cleanRole(response.data.data);
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           this.error = JSON.parse(error.response.data.error);
         });
     },
@@ -130,7 +129,6 @@ export default {
           this.total = response.data.total;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
         });
     }
   }

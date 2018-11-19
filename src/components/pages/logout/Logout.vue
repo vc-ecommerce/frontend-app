@@ -6,6 +6,8 @@ export default {
   name: "Logout",
   mounted() {
     sessionStorage.clear();
+    localStorage.clear();
+    sessionStorage.setItem("desconected", true);
     return this.$router.push({ name: "auth.login" });
   }
 };

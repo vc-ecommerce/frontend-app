@@ -109,7 +109,6 @@ export default {
           this.$emit("reload");
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
 
           if ((error.response.data = "attribute_variation_is_exists")) {
             this.error = `Variação ${data.name} já existe.`;

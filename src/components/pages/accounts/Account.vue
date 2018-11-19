@@ -26,7 +26,7 @@
           </div>
         </div>
         <h5 class="with-border m-t-lg">Detalhes Pessoais</h5>
-        <div class="row">
+        <div v-if="user" class="row">
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label" for="exampleInput">Nome</label>
@@ -35,7 +35,7 @@
           </div>
         </div>
         <h5 class="with-border m-t-lg">E-mail e Senha</h5>
-        <div class="row">
+        <div v-if="user" class="row">
           <div class="col-md-6 col-sm-6">
             <fieldset class="form-group">
               <label class="form-label" for="exampleInputEmail1">E-mail</label>
@@ -121,7 +121,7 @@ export default {
           },
           {
             headers: {
-              Authorization: "Bearer " + this.$store.getters.getToken,
+              Authorization: "Bearer "+ this.$store.getters.getToken,
               "User-ID": this.$store.getters.getUserId
             }
           }
@@ -150,7 +150,6 @@ export default {
           this.bntDisabled = false;
           this.passwordInvalid = false;
 
-          this.$eventHub.$emit("eventError", { data: error.response });
           this.status = false;
           this.error = JSON.parse(error.response.data.error);
         });

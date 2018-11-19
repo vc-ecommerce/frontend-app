@@ -105,7 +105,6 @@ export default {
           this.btnDisabled = false;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           this.status = false;
           this.error = JSON.parse(error.response.data.error);
            this.btnDisabled = false;

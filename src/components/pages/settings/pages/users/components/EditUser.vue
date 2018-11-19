@@ -213,7 +213,6 @@ export default {
           this.status = "Usuário alterado com sucesso!";
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           this.status = false;
           this.error = JSON.parse(error.response.data.error);
 

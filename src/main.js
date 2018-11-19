@@ -9,7 +9,6 @@ import store from '@/stores';
 Vue.config.productionTip = false;
 
 import { userIsAuthorized } from "@/helpers/validates";
-import { swalErrorUnauthorized } from "@/helpers/tools";
 
 /* eslint-disable no-new */
 new Vue({
@@ -25,12 +24,6 @@ new Vue({
   },
   created() {
     this.$eventHub.$on("eventPublic", data => this.isPublic = data);
-    this.$eventHub.$on('eventError', obj => this.showError(obj));
-  },
-  methods: {
-    showError(obj) {
-      swalErrorUnauthorized(obj);
-    }
   },
   mounted() {
 
@@ -40,6 +33,8 @@ new Vue({
 
       if (!user) {
         sessionStorage.clear();
+        localStorage.clear();
+        localStorage.setItem('httpReferer', document.URL);
         return this.$router.push({ name: "auth.login" });
       }
 

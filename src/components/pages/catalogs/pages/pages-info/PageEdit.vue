@@ -167,7 +167,6 @@ export default {
           this.data = response.data;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           this.error = JSON.parse(error.response.data.error);
         });
     },
@@ -217,7 +216,6 @@ export default {
           this.btnDisabled = false;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           this.status = false;
           this.error = JSON.parse(error.response.data.error);
 

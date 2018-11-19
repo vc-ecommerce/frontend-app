@@ -177,7 +177,6 @@ export default {
           this.$emit("reload");
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           this.status = false;
           this.error = JSON.parse(error.response.data.error);
 

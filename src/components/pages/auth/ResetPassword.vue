@@ -1,29 +1,8 @@
 <template>
   <form class="sign-box" @submit.prevent="submitForm">
-
     <header class="sign-title">Redefinição de senha</header>
 
-    <header v-if="error">
-      <div class="alert alert-danger alert-fill alert-close alert-dismissible fade show" role="alert">
-
-        <span v-if="error === 404">
-          Email não encontrado!
-        </span>
-
-        <span v-else v-for="err in error" :key="err._id">
-          {{ cleanData( err ) }}
-        </span>
-
-      </div>
-    </header>
-
-    <header v-else-if="success">
-      <div class="alert alert-success alert-fill alert-close alert-dismissible fade show" role="alert">
-        O link para redefinição de senha foi enviado para o seu e-mail!
-      </div>
-    </header>
-
-    <div v-else class="form-group">
+    <div class="form-group">
       Digite seu e-mail de cadastro abaixo e clique em enviar. <br />
       Nós lhe enviaremos um e-mail com link para recadastrar sua senha.
     </div>
@@ -41,7 +20,14 @@
 </template>
 <script>
 import { cleanDataApi } from "@/helpers/tools";
+import { validateEmail } from "@/helpers/validates";
 import { JQueryPageCenter } from "@/commons/jquery-page-center";
+import {
+  notifySuccess,
+  notifyWarning,
+  notifyInfo,
+  notifyDanger
+} from "@/helpers/notifications";
 
 export default {
   name: "ResetPassword",
@@ -49,12 +35,7 @@ export default {
   data() {
     return {
       email: "",
-      data: "",
-      token: "",
-      loading: false,
-      success: false,
-      btnDisabled: false,
-      error: false
+      btnDisabled: false
     };
   },
   beforeCreate() {
@@ -71,31 +52,43 @@ export default {
       return cleanDataApi(data);
     },
     submitForm() {
+      if (!validateEmail(this.email)) {
+        notifyInfo("Atenção!", "Informe um email válido.");
+        return;
+      }
+
       this.btnDisabled = true;
-      this.loading = true;
       const api = `${this.$urlApi}/auth/reset`;
       Vue.axios
         .post(api, {
-          email: this.email
+          //email: this.email
         })
         .then(response => {
-          this.success = true;
-          this.loading = false;
+          swal({
+            title: "Sucesso!",
+            text:
+              "O link para redefinição de senha foi enviado para o seu e-mail!",
+            type: "success",
+            showCancelButton: false,
+            confirmButtonText: "Ok!"
+          });
+          this.email = "";
           this.btnDisabled = false;
         })
         .catch(error => {
-          this.loading = false;
           this.btnDisabled = false;
 
           if (error.response.status === 404) {
-            this.error = error.response.status;
+            return notifyDanger("Atenção!", "Email não encontrado.");
           } else {
-            this.error = JSON.parse(error.response.data.error);
+            let errors = Array(JSON.parse(error.response.data.error));
+            errors.forEach(value => {
+              let values = Object.values(value);
+              values.forEach(value => {
+                notifyDanger("Atenção!", value);
+              });
+            })
           }
-
-          setTimeout(() => {
-            this.error = false;
-          }, 5000);
         });
     }
   }

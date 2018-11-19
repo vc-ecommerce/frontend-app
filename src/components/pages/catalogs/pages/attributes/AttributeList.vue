@@ -121,7 +121,7 @@ export default {
           this.total = response.data.total;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
+          //
         });
     }
   }

@@ -211,7 +211,6 @@ export default {
           this.status = "Dados do usuário alterados com sucesso.";
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           this.status = false;
           this.error = JSON.parse(error.response.data.error);
 

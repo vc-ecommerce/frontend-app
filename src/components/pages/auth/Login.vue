@@ -5,10 +5,7 @@
       <img src="@/assets/img/avatar-sign.png" alt="">
     </div>
 
-    <header v-if="status && status == 'account_inactive'" class="sign-title red showError">Você ainda não confirmou seu email.</header>
-    <header v-else-if="status && status == 'invalid_credentials'" class="sign-title red showError">Email e ou senha inválidos</header>
-    <header v-else-if="ok" class="sign-title green">Redirecionando...</header>
-    <header v-else class="sign-title">Login</header>
+    <header class="sign-title">Login</header>
 
     <div class="form-group">
       <input type="email" required class="form-control" v-model="email" placeholder="Entre com seu email"/>
@@ -37,6 +34,13 @@
 </template>
 <script>
 import { JQueryPageCenter } from "@/commons/jquery-page-center";
+import {
+  notifySuccess,
+  notifyWarning,
+  notifyInfo,
+  notifyDanger
+} from "@/helpers/notifications";
+import { validateEmail } from "@/helpers/validates";
 
 export default {
   name: "Login",
@@ -45,10 +49,6 @@ export default {
     return {
       email: "",
       password: "",
-      data: "",
-      token: "",
-      status: false,
-      ok: false,
       btnDisabled: false
     };
   },
@@ -59,15 +59,12 @@ export default {
     this.$eventHub.$emit("eventPublic", true);
   },
   methods: {
-    showError(code) {
-      if (code === 401) {
-        this.status = true;
-        setTimeout(() => {
-          this.status = false;
-        }, 5000);
-      }
-    },
     submitForm() {
+      if (!validateEmail(this.email)) {
+        notifyInfo("Atenção!", "Informe um email válido.");
+        return;
+      }
+
       this.btnDisabled = true;
       const api = `${this.$urlApi}/auth/login`;
       Vue.axios
@@ -76,8 +73,8 @@ export default {
           password: this.password
         })
         .then(response => {
-          this.ok = true;
-          this.status = false;
+          notifySuccess("Redirecionando!", "Aguarde carregando dados.");
+
           sessionStorage.setItem(
             "token",
             JSON.stringify(response.data.HTTP_Authorization)
@@ -90,16 +87,39 @@ export default {
           this.$store.commit("setUser", response.data);
           this.$store.commit("setToken", response.data.HTTP_Authorization);
 
-          window.location = "/";
+          let redirect = localStorage.getItem("httpReferer")
+            ? localStorage.getItem("httpReferer")
+            : "/";
 
+          setTimeout(() => {
+            window.location = redirect;
+          }, 2000);
         })
         .catch(error => {
           this.btnDisabled = false;
-          this.status = error.response.data.error;
+          this.password = "";
+          let errors = error.response.data.error;
+
+          if (errors == "account_inactive") {
+            notifyWarning("Erro!", "Você ainda não confirmou seu email.");
+          } else if (errors == "invalid_credentials") {
+            notifyWarning("Erro!", "Email e ou senha inválidos.");
+          } else {
+            errors = Array(JSON.parse(errors));
+            errors.forEach(value => {
+              let values = Object.values(value);
+              values.forEach(value => {
+                notifyDanger("Atenção!", value);
+              });
+            });
+          }
         });
     }
   },
   mounted() {
+    if (sessionStorage.getItem("desconected")) {
+      notifySuccess("Sucesso!", "Você foi desconectado com segurança.");
+    }
     // Remove all saved data from sessionStorage
     sessionStorage.clear();
     this.email = "";
@@ -110,11 +130,6 @@ export default {
 </script>
 
 <style scoped>
-.showError {
-  animation: treme 0.1s;
-  animation-iteration-count: 3;
-}
-
 .sign-title {
   font-weight: bold;
 }
