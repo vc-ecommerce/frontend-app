@@ -1,19 +1,9 @@
 <template>
-  <form class="sign-box" id="sign-box" style="display: none" @submit.prevent="submitForm">
+  <form class="sign-box" @submit.prevent="submitForm">
 
     <header class="sign-title">Redefinir Senha</header>
 
-    <header v-if="!tokenOk">
-      <div class="alert alert-warning alert-icon alert-close alert-dismissible fade show" role="alert">
-        <i class="font-icon font-icon-warning"></i>
-        Token inválido ou expirado!!! <br />
-        <router-link :to="{ name: 'auth.reset' }" style="color:blue">
-          Clique aqui
-        </router-link> para gerar um novo Token.
-      </div>
-    </header>
-
-    <header v-if="passwordNotEquals" class="sign-title red showError">
+    <header v-if="passwordNotEquals" class="sign-title red">
       <div class="alert alert-warning alert-icon alert-close alert-dismissible fade show" role="alert">
         <i class="font-icon font-icon-warning"></i>
         Senhas não são iguais !
@@ -26,13 +16,6 @@
           <span aria-hidden="true">×</span>
         </button>
         <strong>Atenção:</strong> Senha administrativa fraca, tente outra mais forte.
-      </div>
-    </header>
-
-    <header v-else-if="updateOk">
-      <div class="alert alert-success alert-fill alert-close alert-dismissible fade show" role="alert">
-        Senha alterada com sucesso! <br/>
-        <router-link :to="{ name: 'auth.login' }">Clique aqui para fazer login</router-link>
       </div>
     </header>
 
@@ -54,6 +37,12 @@
 <script>
 import { forcePassword } from "@/helpers/tools";
 import { JQueryPageCenter } from "@/commons/jquery-page-center";
+import {
+  notifySuccess,
+  notifyWarning,
+  notifyInfo,
+  notifyDanger
+} from "@/helpers/notifications";
 
 export default {
   name: "ForgotPassword",
@@ -64,23 +53,21 @@ export default {
       confirme: "",
       passwordNotEquals: false,
       passwordInvalid: false,
-      status: false,
       userId: "",
       token: this.$route.params.token,
-      tokenOk: false,
-      updateOk: false,
       btnDisabled: false
     };
   },
-  beforeCreate() {z
+  beforeCreate() {
     document.addEventListener("DOMContentLoaded", () => {
       document.title = "Redefinir Senha";
     });
     this.$eventHub.$emit("eventPublic", true);
   },
-  mounted() {
+  created() {
     this.checkToken();
-    document.getElementById("sign-box").style.display = "block";
+  },
+  mounted() {
     JQueryPageCenter();
   },
   methods: {
@@ -88,14 +75,6 @@ export default {
       if (this.passwordInvalid === true) {
         this.passwordInvalid = false;
         this.btnDisabled = false;
-      }
-    },
-    showError(code) {
-      if (code === 401) {
-        this.status = true;
-        setTimeout(() => {
-          this.status = false;
-        }, 5000);
       }
     },
     isPasswordValid() {
@@ -108,7 +87,9 @@ export default {
       }
       return true;
     },
-    checkToken() {
+    checkToken(disabledNotify) {
+      const vm = this;
+
       const api = `${this.$urlApi}/auth/forgot/check/token`;
       Vue.axios
         .post(api, {
@@ -116,19 +97,37 @@ export default {
         })
         .then(response => {
           if (response.data) {
-            this.tokenOk = true;
+            if (disabledNotify !== false) {
+              notifySuccess("Verificação!", "Aceito, token válido.");
+            }
             this.userId = response.data;
           }
         })
         .catch(error => {
-          this.tokenOk = false;
-          this.showError(error.response.status);
+          swal(
+            {
+              title: "Token inválido ou expirado!!!",
+              text: "Deseja gerar um novo token?",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonClass: "btn-danger",
+              confirmButtonText: "Sim",
+              cancelButtonText: "Não",
+              closeOnConfirm: false,
+              closeOnCancel: false
+            },
+            function(isConfirm) {
+              if (isConfirm) {
+                return (window.location.href = "/password/reset");
+              } else {
+                return false;
+              }
+            }
+          );
         });
     },
     sendData() {
-      if (this.updateOk) {
-        this.checkToken();
-      }
+      this.checkToken(false);
       this.btnDisabled = true;
       const api = `${this.$urlApi}/auth/forgot`;
       Vue.axios
@@ -140,14 +139,32 @@ export default {
         .then(response => {
           this.btnDisabled = false;
           if (response.data === "update_password") {
-            this.updateOk = true;
             this.password = "";
             this.confirme = "";
+            swal(
+              {
+                title: "Senha alterada com sucesso!",
+                text: "Deseja efetuar login?",
+                type: "success",
+                showCancelButton: true,
+                confirmButtonClass: "btn-success",
+                confirmButtonText: "Sim",
+                cancelButtonText: "Não",
+                closeOnConfirm: false,
+                closeOnCancel: false
+              },
+              function(isConfirm) {
+                if (isConfirm) {
+                  return (window.location.href = "/login");
+                } else {
+                  return false;
+                }
+              }
+            );
           }
         })
         .catch(error => {
           this.btnDisabled = false;
-          this.showError(error.response.status);
         });
     },
     submitForm() {
@@ -157,10 +174,6 @@ export default {
 
       if (forcePassword(this.password) < 50) {
         this.passwordInvalid = true;
-        return;
-      }
-
-      if (this.tokenOk === false) {
         return;
       }
 
@@ -175,11 +188,6 @@ export default {
 <style scoped>
 .sign-title {
   font-weight: bold;
-}
-
-.showError {
-  animation: treme 0.1s;
-  animation-iteration-count: 3;
 }
 
 @keyframes treme {

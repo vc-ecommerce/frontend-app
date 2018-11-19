@@ -45,7 +45,7 @@ export function notifyWarning(title, message) {
     title: `<strong>${title}</strong>`,
     message
   }, {
-      type: 'purple'
+      type: 'warning'
     });
 
 }
