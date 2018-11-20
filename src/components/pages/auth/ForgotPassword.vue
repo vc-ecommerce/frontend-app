@@ -26,11 +26,11 @@
     <div class="form-group">
       <input type="password" @click="checkAlert" required minlength="6" class="form-control" v-model="confirme"  placeholder="Confirme a senha"/>
     </div>
-
-    <button type="submit" class="btn btn-rounded" :disabled="btnDisabled">
-      <span v-if="btnDisabled">Enviando...</span>
-      <span v-else>Redefinir senha agora</span>
-    </button>
+    <ButtonSubmit
+      bntTitle="Redefinir senha agora"
+      :ok="ok"
+      :btnDisabled="btnDisabled"
+      bntClass="btn btn-rounded" />
 
   </form>
 </template>
@@ -44,11 +44,17 @@ import {
   notifyDanger
 } from "@/helpers/notifications";
 
+import ButtonSubmit from "@/components/layouts/ButtonSubmit";
+
 export default {
   name: "ForgotPassword",
   props: [],
+  components:{
+    ButtonSubmit
+  },
   data() {
     return {
+      ok: false,
       password: "",
       confirme: "",
       passwordNotEquals: false,
@@ -114,14 +120,9 @@ export default {
               confirmButtonText: "Sim",
               cancelButtonText: "Não",
               closeOnConfirm: false,
-              closeOnCancel: false
             },
-            function(isConfirm) {
-              if (isConfirm) {
-                return (window.location.href = "/password/reset");
-              } else {
-                return false;
-              }
+            function() {
+              return (window.location.href = "/password/reset");
             }
           );
         });
@@ -129,6 +130,7 @@ export default {
     sendData() {
       this.checkToken(false);
       this.btnDisabled = true;
+
       const api = `${this.$urlApi}/auth/forgot`;
       Vue.axios
         .post(api, {
@@ -138,6 +140,7 @@ export default {
         })
         .then(response => {
           this.btnDisabled = false;
+          this.ok = true;
           if (response.data === "update_password") {
             this.password = "";
             this.confirme = "";
@@ -151,14 +154,9 @@ export default {
                 confirmButtonText: "Sim",
                 cancelButtonText: "Não",
                 closeOnConfirm: false,
-                closeOnCancel: false
               },
-              function(isConfirm) {
-                if (isConfirm) {
-                  return (window.location.href = "/login");
-                } else {
-                  return false;
-                }
+              function() {
+                return (window.location.href = "/login");
               }
             );
           }

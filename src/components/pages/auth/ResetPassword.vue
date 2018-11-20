@@ -11,10 +11,17 @@
       <input type="email" required class="form-control" v-model="email" placeholder="Endereço de email"/>
     </div>
 
-    <button type="submit" class="btn btn-rounded" :disabled="btnDisabled">
-      <span v-if="btnDisabled">Enviando...</span>
-      <span v-else>Enviar</span>
-    </button>
+    <ButtonSubmit
+      bntTitle="Enviar"
+      :ok="ok"
+      :btnDisabled="btnDisabled"
+      bntClass="btn btn-rounded" />
+
+    <div class="form-group">
+      <div class="float-right">
+        <router-link :to="{ name: 'auth.login' }" class="push-right">Cancelar</router-link>
+      </div>
+    </div>
 
   </form>
 </template>
@@ -29,11 +36,17 @@ import {
   notifyDanger
 } from "@/helpers/notifications";
 
+import ButtonSubmit from "@/components/layouts/ButtonSubmit";
+
 export default {
   name: "ResetPassword",
   props: [],
+  components: {
+    ButtonSubmit
+  },
   data() {
     return {
+      ok: false,
       email: "",
       btnDisabled: false
     };
@@ -74,6 +87,7 @@ export default {
           });
           this.email = "";
           this.btnDisabled = false;
+          this.ok = true;
         })
         .catch(error => {
           this.btnDisabled = false;
@@ -87,7 +101,7 @@ export default {
               values.forEach(value => {
                 notifyDanger("Atenção!", value);
               });
-            })
+            });
           }
         });
     }

@@ -25,10 +25,11 @@
       </div>
     </div>
 
-    <button type="submit" class="btn btn-rounded" :disabled="btnDisabled">
-      <span v-if="btnDisabled">Enviando...</span>
-      <span v-else>Efetuar Login</span>
-    </button>
+    <ButtonSubmit
+        bntTitle="Efetuar Login"
+        :ok="ok"
+        :btnDisabled="btnDisabled"
+        bntClass="btn btn-rounded"  />
 
   </form>
 </template>
@@ -42,11 +43,17 @@ import {
 } from "@/helpers/notifications";
 import { validateEmail } from "@/helpers/validates";
 
+import ButtonSubmit from "@/components/layouts/ButtonSubmit";
+
 export default {
   name: "Login",
   props: [],
+  components: {
+    ButtonSubmit
+  },
   data() {
     return {
+      ok: false,
       email: "",
       password: "",
       btnDisabled: false
@@ -93,7 +100,7 @@ export default {
 
           setTimeout(() => {
             window.location = redirect;
-          }, 2000);
+          }, 1000);
         })
         .catch(error => {
           this.btnDisabled = false;

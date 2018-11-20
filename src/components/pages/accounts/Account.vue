@@ -4,23 +4,9 @@
       <div class="card-block">
         <div class="row">
           <div class="col-lg-12">
-            <div v-if="status && error === false" class="row">
-              <Alert className="alert alert-success alert-fill alert-close alert-dismissible fade show">
-                {{ status }}
-              </Alert>
-            </div>
             <div v-if="passwordInvalid" class="row">
               <Alert className="alert alert-danger alert-fill alert-close alert-dismissible fade show">
                 <strong>Atenção:</strong> Senha administrativa fraca, tente outra mais forte.
-              </Alert>
-            </div>
-            <div v-if="error && status === false" class="row">
-              <Alert className="alert alert-danger alert-fill alert-close alert-dismissible fade show">
-                <dl>
-                  <dt v-for="err in error" :key="err.id">
-                    {{ cleanData( err ) }}
-                  </dt>
-                </dl>
               </Alert>
             </div>
           </div>
@@ -52,7 +38,12 @@
 
         <div class="row">
           <div class="col-md-4 col-sm-6">
-            <button type="submit" :disabled="bntDisabled" class="btn btn-inline">Salvar Alterações</button>
+
+            <ButtonSubmit
+              bntTitle="Salvar Alterações"
+              :ok="ok"
+              :btnDisabled="btnDisabled" />
+
           </div>
         </div>
       </div>
@@ -61,40 +52,42 @@
 </template>
 <script>
 import Alert from "@/components/layouts/Alert";
+import ButtonSubmit from "@/components/layouts/ButtonSubmit";
+
 import {
-  cleanRole,
-  forcePassword,
-  cleanDataApi
-} from "@/helpers/tools";
+  notifySuccess,
+  notifyWarning,
+  notifyInfo,
+  notifyDanger
+} from "@/helpers/notifications";
+
+import { cleanRole, forcePassword, cleanDataApi } from "@/helpers/tools";
 
 export default {
   name: "Account",
   components: {
-    Alert
+    Alert,
+    ButtonSubmit
   },
-
   props: [],
   data() {
     return {
+      ok: false,
       user: this.$store.getters.getUser,
-      status: false,
-      error: false,
       password: "",
       options: [
         { text: "Ativo", value: true },
         { text: "Desativado", value: false }
       ],
       passwordInvalid: false,
-      bntDisabled: false
+      btnDisabled: false
     };
   },
   methods: {
-
     cleanData(data) {
       return cleanDataApi(data);
     },
     submitForm() {
-
       if (this.password !== "") {
         if (forcePassword(this.password) < 50) {
           this.passwordInvalid = true;
@@ -107,57 +100,54 @@ export default {
         }
       }
 
-      this.status = "Enviando...";
-      this.bntDisabled = true;
+      this.btnDisabled = true;
 
-      const api = `${this.$urlApi}/admin/users/${this.$store.getters.getUserId}`;
+      const api = `${this.$urlApi}/admin/users/${
+        this.$store.getters.getUserId
+      }`;
       Vue.axios
         .put(
           api,
           {
             name: this.user.name,
             password: this.password,
-            password_confirmation: this.password,
+            password_confirmation: this.password
           },
           {
             headers: {
-              Authorization: "Bearer "+ this.$store.getters.getToken,
+              Authorization: "Bearer " + this.$store.getters.getToken,
               "User-ID": this.$store.getters.getUserId
             }
           }
         )
         .then(response => {
-
           let stateUser = this.$store.getters.getUser;
           stateUser.name = this.user.name;
 
-          sessionStorage.setItem(
-            "user",
-            JSON.stringify(stateUser)
-          );
+          sessionStorage.setItem("user", JSON.stringify(stateUser));
 
-          this.bntDisabled = false;
+          this.btnDisabled = false;
           this.passwordInvalid = false;
-
           this.password = "";
-          this.error = false;
+          this.ok = true;
+
           this.users = response.data;
           this.total = response.data.total;
-          this.status = "Dados do usuário alterados com sucesso.";
+          notifySuccess("Sucesso!", "Dados do usuário alterados com sucesso.");
         })
         .catch(error => {
-
-          this.bntDisabled = false;
+          this.btnDisabled = false;
           this.passwordInvalid = false;
-
-          this.status = false;
-          this.error = JSON.parse(error.response.data.error);
+          this.password = "";
+          let errors = error.response.data.error;
+          errors = Array(JSON.parse(errors));
+          errors.forEach(value => {
+            let values = Object.values(value);
+            values.forEach(value => {
+              notifyDanger("Atenção!", value);
+            });
+          });
         });
-
-      setTimeout(() => {
-        this.status = false;
-        this.error = false;
-      }, 5000);
     }
   }
 };
