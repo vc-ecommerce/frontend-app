@@ -1,5 +1,5 @@
 <template>
-  <div>Desconectando...</div>
+  <h2>Desconectando...</h2>
 </template>
 <script>
 export default {
@@ -8,7 +8,7 @@ export default {
     sessionStorage.clear();
     localStorage.clear();
     sessionStorage.setItem("desconected", true);
-    return this.$router.push({ name: "auth.login" });
+    return window.location.replace("/login");
   }
 };
 </script>

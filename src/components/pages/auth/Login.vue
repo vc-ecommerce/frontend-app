@@ -79,11 +79,8 @@ export default {
               JSON.stringify(response.data.HTTP_Data)
             );
 
-            this.$store.commit("setUser", response.data);
-            this.$store.commit("setToken", response.data.HTTP_Authorization);
-
-            let redirect = localStorage.getItem("httpReferer")
-              ? localStorage.getItem("httpReferer")
+            let pathnameReferer = localStorage.getItem("pathnameReferer")
+              ? localStorage.getItem("pathnameReferer")
               : "/";
 
             resolve(
@@ -94,7 +91,11 @@ export default {
             );
 
             setTimeout(() => {
-              window.location = redirect;
+              if (pathnameReferer.indexOf("login")) {
+                window.location.replace("/");
+              }
+
+              window.location.replace(pathnameReferer ? pathnameReferer : "/");
             }, 1000);
           })
           .catch(error => {

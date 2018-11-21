@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import Grid from "./../../../components/layouts/Grid";
-import Article from "./../../../components/layouts/Article";
+import Grid from "@/components/layouts/Grid";
+import Article from "@/components/layouts/Article";
 
 export default {
   name: 'OrderPending',

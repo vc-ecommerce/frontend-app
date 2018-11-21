@@ -66,9 +66,9 @@
 </template>
 <script>
 import RemoveAttribute from "./components/RemoveAttribute";
-import Table from "./../../../../components/layouts/Table";
-import Pagination from "./../../../../components/paginations/Pagination";
-import { ToolsHelper.cleanRole } from "./../../../../helpers/tools";
+import Table from "@/components/layouts/Table";
+import Pagination from "@/components/paginations/Pagination";
+import ToolsHelper from "@/helpers/ToolsHelper";
 
 export default {
   name: "AttributeList",

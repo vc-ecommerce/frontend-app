@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import Table from "./../../../../../components/layouts/Table";
+import Table from "@/components/layouts/Table";
 import RemoveVariation from "./RemoveVariation";
 import EditVariation from "./EditVariation";
 

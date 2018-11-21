@@ -60,9 +60,9 @@ import CreateUser from "./components/CreateUser";
 import EditUser from "./components/EditUser";
 import ChangeStatusUser from "./components/ChangeStatusUser";
 import RemoveUser from "./components/RemoveUser";
-import Table from "./../../../../components/layouts/Table";
-import Pagination from "./../../../../components/paginations/Pagination";
-import { ToolsHelper.cleanRole } from "./../../../../helpers/tools";
+import Table from "@/components/layouts/Table";
+import Pagination from "@/components/paginations/Pagination";
+import ToolsHelper from "@/helpers/ToolsHelper";
 
 export default {
   name: "UserIndex",

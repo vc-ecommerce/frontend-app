@@ -163,9 +163,9 @@
 </template>
 
 <script>
-import Panel from "./../../../components/layouts/Panel";
-import Article from "./../../../components/layouts/Article";
-import Grid from "./../../../components/layouts/Grid";
+import Panel from "@/components/layouts/Panel";
+import Article from "@/components/layouts/Article";
+import Grid from "@/components/layouts/Grid";
 
 export default {
   name: 'RecentContacts',
