@@ -116,7 +116,7 @@ import Panel from "./../../../../components/layouts/Panel";
 import Alert from "./../../../../components/layouts/Alert";
 import WidgetAccordion from "./../../../../components/widgets/WidgetAccordion";
 import WidgetAccordionContent from "./../../../../components/widgets/WidgetAccordionContent";
-import { cleanDataApi, strSlug } from "./../../../../helpers/tools";
+import { ToolsHelper.cleanDataApi, strSlug } from "./../../../../helpers/tools";
 import HtmlEditor from "./../../../../components/summernote/HtmlEditor";
 
 export default {
@@ -152,7 +152,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return cleanDataApi(data);
+      return ToolsHelper.cleanDataApi(data);
     },
     getPage() {
       const api = `${this.$urlApi}/admin/pages/${this.$route.params.id}`;

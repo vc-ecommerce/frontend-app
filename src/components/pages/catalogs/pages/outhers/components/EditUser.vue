@@ -100,9 +100,9 @@ import ModalLink from "./../../../../../components/modals/ModalLink";
 import Modal from "./../../../../../components/modals/Modal";
 import Alert from "./../../../../../components/layouts/Alert";
 import {
-  cleanRole,
-  forcePassword,
-  cleanDataApi
+  ToolsHelper.cleanRole,
+  ToolsHelper.forcePassword,
+  ToolsHelper.cleanDataApi
 } from "./../../../../../helpers/tools";
 
 export default {
@@ -133,7 +133,7 @@ export default {
     },
     roleUser: {
       get() {
-        return cleanRole(
+        return ToolsHelper.cleanRole(
           this.$store.getters.getItem ? this.$store.getters.getItem.roles : []
         );
       },
@@ -160,7 +160,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return cleanDataApi(data);
+      return ToolsHelper.cleanDataApi(data);
     },
     submitForm() {
       if (!this.$store.getters.getItem) {
@@ -170,7 +170,7 @@ export default {
       let data = this.$store.getters.getItem;
 
       if (this.password !== "") {
-        if (forcePassword(this.password) < 50) {
+        if (ToolsHelper.forcePassword(this.password) < 50) {
           this.passwordInvalid = true;
 
           setTimeout(() => {

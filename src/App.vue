@@ -33,6 +33,7 @@ import SidebarMenuLeft from "@/components/layouts/sidebar/SidebarMenuLeft";
 import SidebarMenuRight from "@/components/layouts/sidebar/SidebarMenuRight";
 import AxiosLoader from "@/commons/AxiosLoader";
 import ValidatesHelper from "@/helpers/ValidatesHelper";
+import DocumentFactory from "@/factory/DocumentFactory";
 
 export default {
   name: "App",
@@ -48,11 +49,20 @@ export default {
     };
   },
   created() {
+    const vm = this;
     if (ValidatesHelper.isPagesPublic()) {
-      this.isPublic = true;
+      vm.isPublic = true;
     }
+
+  },
+  mounted() {
+
+    this.$eventHub.$on('eventDocumentTitle', function (obj) {
+      document.title= obj.data
+    });
+
     if (!this.isPublic) {
-      document.title = "Painel de Controle";
+      DocumentFactory.createTitle("Painel de Controle");
     }
   }
 };

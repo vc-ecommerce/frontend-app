@@ -53,15 +53,8 @@
 <script>
 import Alert from "@/components/layouts/Alert";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
-
-import {
-  notifySuccess,
-  notifyWarning,
-  notifyInfo,
-  notifyDanger
-} from "@/helpers/notifications";
-
-import { cleanRole, forcePassword, cleanDataApi } from "@/helpers/tools";
+import NotifyHelper from "@/helpers/NotifyHelper";
+import ToolsHelper from "@/helpers/ToolsHelper";
 
 export default {
   name: "Account",
@@ -85,11 +78,11 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return cleanDataApi(data);
+      return ToolsHelper.cleanDataApi(data);
     },
     submitForm() {
       if (this.password !== "") {
-        if (forcePassword(this.password) < 50) {
+        if (ToolsHelper.forcePassword(this.password) < 50) {
           this.passwordInvalid = true;
 
           setTimeout(() => {
@@ -133,7 +126,7 @@ export default {
 
           this.users = response.data;
           this.total = response.data.total;
-          notifySuccess("Sucesso!", "Dados do usuário alterados com sucesso.");
+          NotifyHelper.success("Sucesso!", "Dados do usuário alterados com sucesso.");
         })
         .catch(error => {
           this.btnDisabled = false;
@@ -144,7 +137,7 @@ export default {
           errors.forEach(value => {
             let values = Object.values(value);
             values.forEach(value => {
-              notifyDanger("Atenção!", value);
+              NotifyHelper.danger("Atenção!", value);
             });
           });
         });

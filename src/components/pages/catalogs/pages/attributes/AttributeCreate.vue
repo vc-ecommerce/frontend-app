@@ -46,7 +46,7 @@
 <script>
 import Panel from "./../../../../components/layouts/Panel";
 import Alert from "./../../../../components/layouts/Alert";
-import { cleanDataApi } from "./../../../../helpers/tools";
+import { ToolsHelper.cleanDataApi } from "./../../../../helpers/tools";
 
 export default {
   name: "AttributeCreate",
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return cleanDataApi(data);
+      return ToolsHelper.cleanDataApi(data);
     },
     submitForm() {
       this.status = "Enviando...";

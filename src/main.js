@@ -6,7 +6,6 @@ import store from '@/stores';
 
 Vue.config.productionTip = false;
 
-import { userIsAuthorized } from "@/helpers/validates";
 import ValidatesHelper from "@/helpers/ValidatesHelper";
 
 /* eslint-disable no-new */
@@ -22,6 +21,7 @@ new Vue({
     }
   },
   created() {
+    const vm = this;
     if (ValidatesHelper.isPagesPublic()) {
       document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.remove("with-side-menu");
@@ -29,7 +29,7 @@ new Vue({
         document.body.classList.remove("control-panel-compact");
         document.body.classList.add("auth");
       });
-      this.isPublic = true;
+      vm.isPublic = true;
     }
   },
   mounted() {
@@ -45,7 +45,7 @@ new Vue({
         return this.$router.push({ name: "auth.login" });
       }
 
-      userIsAuthorized(this.$store.getters.getUserRoles, [
+      ValidatesHelper.userIsAuthorized(this.$store.getters.getUserRoles, [
         "ADMIN",
         "STAFF_AUDITOR",
         "STAFF_FINANCE",

@@ -62,7 +62,7 @@ import ChangeStatusUser from "./components/ChangeStatusUser";
 import RemoveUser from "./components/RemoveUser";
 import Table from "./../../../../components/layouts/Table";
 import Pagination from "./../../../../components/paginations/Pagination";
-import { cleanRole } from "./../../../../helpers/tools";
+import { ToolsHelper.cleanRole } from "./../../../../helpers/tools";
 
 export default {
   name: "UserIndex",
@@ -108,7 +108,7 @@ export default {
           }
         })
         .then(response => {
-          this.roles = cleanRole(response.data.data);
+          this.roles = ToolsHelper.cleanRole(response.data.data);
         })
         .catch(error => {
           this.error = JSON.parse(error.response.data.error);

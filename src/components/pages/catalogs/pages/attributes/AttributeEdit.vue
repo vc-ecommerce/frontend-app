@@ -50,7 +50,7 @@
 <script>
 import Panel from "./../../../../components/layouts/Panel";
 import Alert from "./../../../../components/layouts/Alert";
-import { cleanDataApi } from "./../../../../helpers/tools";
+import { ToolsHelper.cleanDataApi } from "./../../../../helpers/tools";
 
 import AttributeVariation from "./components/AttributeVariation";
 
@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return cleanDataApi(data);
+      return ToolsHelper.cleanDataApi(data);
     },
 
     getAttribute() {

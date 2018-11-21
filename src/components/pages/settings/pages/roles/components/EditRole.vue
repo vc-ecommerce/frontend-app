@@ -71,7 +71,7 @@ import Table from "./../../../../../components/layouts/Table";
 import Modal from "./../../../../../components/modals/Modal";
 import ModalLink from "./../../../../../components/modals/ModalLink";
 import Alert from "./../../../../../components/layouts/Alert";
-import { cleanDataApi } from "./../../../../../helpers/tools";
+import { ToolsHelper.cleanDataApi } from "./../../../../../helpers/tools";
 
 export default {
   name: "EditRole",
@@ -117,7 +117,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return cleanDataApi(data);
+      return ToolsHelper.cleanDataApi(data);
     },
     submitForm() {
       if (!this.$store.getters.getItem) {

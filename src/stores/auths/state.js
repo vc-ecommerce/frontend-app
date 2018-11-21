@@ -11,10 +11,10 @@ const getters = {
     return state.user;
   },
   getUserId: state => {
-    return state.user._id;
+    return state.user ? state.user._id : null;
   },
   getUserRoles: state => {
-    return state.user.roles;
+    return state.user ? state.user.roles : [];
   }
 }
 

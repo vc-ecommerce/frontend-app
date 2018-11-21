@@ -35,15 +35,8 @@
   </form>
 </template>
 <script>
-import { forcePassword } from "@/helpers/tools";
-import { JQueryPageCenter } from "@/commons/jquery-page-center";
-import {
-  notifySuccess,
-  notifyWarning,
-  notifyInfo,
-  notifyDanger
-} from "@/helpers/notifications";
-
+import ToolsHelper from "@/helpers/ToolsHelper";
+import JQueryHelper from "@/helpers/JQueryHelper";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import DocumentFactory from "@/factory/DocumentFactory";
 import NotifyHelper from "@/helpers/NotifyHelper";
@@ -97,7 +90,7 @@ export default {
         .then(response => {
           if (response.data) {
             if (disabledNotify !== false) {
-              notifySuccess("Verificação!", "Aceito, token válido.");
+              NotifyHelper.success("Verificação!", "Aceito, token válido.");
             }
             this.userId = response.data;
           }
@@ -163,7 +156,7 @@ export default {
         return;
       }
 
-      if (forcePassword(this.password) < 50) {
+      if (ToolsHelper.forcePassword(this.password) < 50) {
         this.passwordInvalid = true;
         return;
       }
@@ -175,7 +168,7 @@ export default {
   },
   mounted() {
     DocumentFactory.createTitle("Redefinir Senha");
-    JQueryPageCenter();
+    JQueryHelper.pageCenter();
   }
 };
 </script>

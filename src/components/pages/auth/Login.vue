@@ -21,7 +21,7 @@
           <label for="signed-in">Mantenha-me conectado</label>
       </div> -->
       <div class="float-right reset">
-        <router-link :to="{ name: 'auth.reset' }">Recuperar Senha</router-link>
+        <router-link :to="{ name: 'auth.reset' }" @click.native="$eventHub.$emit('eventDocumentTitle', {data: 'Redefinição de senha'})">Recuperar Senha</router-link>
       </div>
     </div>
 
@@ -34,15 +34,8 @@
   </form>
 </template>
 <script>
-import { JQueryPageCenter } from "@/commons/jquery-page-center";
-import {
-  notifySuccess,
-  notifyWarning,
-  notifyInfo,
-  notifyDanger
-} from "@/helpers/notifications";
-import { validateEmail } from "@/helpers/validates";
-
+import JQueryHelper from "@/helpers/JQueryHelper";
+import ValidatesHelper from "@/helpers/ValidatesHelper";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import DocumentFactory from "@/factory/DocumentFactory";
 import NotifyHelper from "@/helpers/NotifyHelper";
@@ -63,8 +56,8 @@ export default {
   },
   methods: {
     submitForm() {
-      if (!validateEmail(this.email)) {
-        notifyInfo("Atenção!", "Informe um email válido.");
+      if (!ValidatesHelper.validateEmail(this.email)) {
+        NotifyHelper.info("Atenção!", "Informe um email válido.");
         return;
       }
 
@@ -76,7 +69,7 @@ export default {
           password: this.password
         })
         .then(response => {
-          notifySuccess("Redirecionando!", "Aguarde carregando dados.");
+          NotifyHelper.success("Redirecionando!", "Aguarde carregando dados.");
 
           sessionStorage.setItem(
             "token",
@@ -104,15 +97,15 @@ export default {
           let errors = error.response.data.error;
 
           if (errors == "account_inactive") {
-            notifyWarning("Erro!", "Você ainda não confirmou seu email.");
+            NotifyHelper.warning("Erro!", "Você ainda não confirmou seu email.");
           } else if (errors == "invalid_credentials") {
-            notifyWarning("Erro!", "Email e ou senha inválidos.");
+            NotifyHelper.warning("Erro!", "Email e ou senha inválidos.");
           } else {
             errors = Array(JSON.parse(errors));
             errors.forEach(value => {
               let values = Object.values(value);
               values.forEach(value => {
-                notifyDanger("Atenção!", value);
+                NotifyHelper.danger("Atenção!", value);
               });
             });
           }
@@ -120,15 +113,17 @@ export default {
     }
   },
   mounted() {
+
     DocumentFactory.createTitle("Fazer Login");
+
     if (sessionStorage.getItem("desconected")) {
-      notifySuccess("Sucesso!", "Você foi desconectado com segurança.");
+      NotifyHelper.success("Sucesso!", "Você foi desconectado com segurança.");
     }
     // Remove all saved data from sessionStorage
     sessionStorage.clear();
     this.email = "";
     this.password = "";
-    JQueryPageCenter();
+    JQueryHelper.pageCenter();
   }
 };
 </script>

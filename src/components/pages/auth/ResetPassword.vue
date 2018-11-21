@@ -19,23 +19,16 @@
 
     <div class="form-group">
       <div class="float-right">
-        <router-link :to="{ name: 'auth.login' }" class="push-right">Cancelar</router-link>
+        <router-link :to="{ name: 'auth.login' }" @click.native="$eventHub.$emit('eventDocumentTitle', {data: 'Fazer Login'})" class="push-right">Cancelar</router-link>
       </div>
     </div>
 
   </form>
 </template>
 <script>
-import { cleanDataApi } from "@/helpers/tools";
-import { validateEmail } from "@/helpers/validates";
-import { JQueryPageCenter } from "@/commons/jquery-page-center";
-import {
-  notifySuccess,
-  notifyWarning,
-  notifyInfo,
-  notifyDanger
-} from "@/helpers/notifications";
-
+import ToolsHelper from "@/helpers/ToolsHelper";
+import ValidatesHelper from "@/helpers/ValidatesHelper";
+import JQueryHelper from "@/helpers/JQueryHelper";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import DocumentFactory from "@/factory/DocumentFactory";
 import NotifyHelper from "@/helpers/NotifyHelper";
@@ -55,11 +48,11 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return cleanDataApi(data);
+      return ToolsHelper.cleanDataApi(data);
     },
     submitForm() {
-      if (!validateEmail(this.email)) {
-        notifyInfo("Atenção!", "Informe um email válido.");
+      if (!ValidatesHelper.validateEmail(this.email)) {
+        NotifyHelper.info("Atenção!", "Informe um email válido.");
         return;
       }
 
@@ -86,13 +79,13 @@ export default {
           this.btnDisabled = false;
 
           if (error.response.status === 404) {
-            return notifyDanger("Atenção!", "Email não encontrado.");
+            return NotifyHelper.danger("Atenção!", "Email não encontrado.");
           } else {
             let errors = Array(JSON.parse(error.response.data.error));
             errors.forEach(value => {
               let values = Object.values(value);
               values.forEach(value => {
-                notifyDanger("Atenção!", value);
+                NotifyHelper.danger("Atenção!", value);
               });
             });
           }
@@ -101,7 +94,7 @@ export default {
   },
   mounted() {
     DocumentFactory.createTitle("Redefinição de Senha");
-    JQueryPageCenter();
+    JQueryHelper.pageCenter();
   }
 };
 </script>
