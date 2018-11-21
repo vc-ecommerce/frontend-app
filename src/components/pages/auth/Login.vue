@@ -79,9 +79,6 @@ export default {
               JSON.stringify(response.data.HTTP_Data)
             );
 
-            this.$store.commit("setUser", response.data);
-            this.$store.commit("setToken", response.data.HTTP_Authorization);
-
             let redirect = localStorage.getItem("httpReferer")
               ? localStorage.getItem("httpReferer")
               : "/";

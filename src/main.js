@@ -7,6 +7,7 @@ import store from '@/stores';
 Vue.config.productionTip = false;
 
 import ValidatesHelper from "@/helpers/ValidatesHelper";
+import DocumentFactory from '@/factory/DocumentFactory'
 
 /* eslint-disable no-new */
 new Vue({
@@ -23,12 +24,7 @@ new Vue({
   created() {
     const vm = this;
     if (ValidatesHelper.isPagesPublic()) {
-      document.addEventListener("DOMContentLoaded", () => {
-        document.body.classList.remove("with-side-menu");
-        document.body.classList.remove("control-panel");
-        document.body.classList.remove("control-panel-compact");
-        document.body.classList.add("auth");
-      });
+      DocumentFactory.removeClassBody();
       vm.isPublic = true;
     }
   },
@@ -42,20 +38,23 @@ new Vue({
         sessionStorage.clear();
         localStorage.clear();
         localStorage.setItem('httpReferer', document.URL);
-        return this.$router.push({ name: "auth.login" });
+        return window.location.replace("/login");
       }
 
-      // ValidatesHelper.userIsAuthorized(this.$store.getters.getUserRoles, [
-      //   "ADMIN",
-      //   "STAFF_AUDITOR",
-      //   "STAFF_FINANCE",
-      //   "STAFF_COMMERCIAL",
-      //   "STAFF_SUPPORT",
-      //   "STAFF_SALE",
-      //   "STAFF_EDITOR",
-      //   "STAFF_EXPEDITION",
-      // ]);
+      ValidatesHelper.rolesUserAuthorizedPainelAdmin(
+        this.$store.getters.getUserRoles,
+        "ADMIN",
+        "STAFF_AUDITOR",
+        "STAFF_FINANCE",
+        "STAFF_COMMERCIAL",
+        "STAFF_SUPPORT",
+        "STAFF_SALE",
+        "STAFF_EDITOR",
+        "STAFF_EXPEDITION",
+      );
 
     }
-  },
+
+  }
+
 });

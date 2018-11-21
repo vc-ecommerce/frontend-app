@@ -13,23 +13,7 @@ class ValidatesHelper {
 
   }
 
-  static userIsAuthorizedPage(roles, keys) {
-
-    let count = 0;
-    if (roles) {
-      roles.forEach(function (role) {
-        if (keys.indexOf(role.name) > -1) {
-          count++;
-        }
-      });
-    }
-
-    if (count === 0) {
-      return window.location.replace("/");
-    }
-  }
-
-  static userIsAuthorized(roles, keys) {
+  static rolesUserAuthorizedPainelAdmin(roles, ...keys) {
 
     let count = 0;
     if (roles) {
@@ -45,6 +29,22 @@ class ValidatesHelper {
       return window.location.replace("/login");
     }
 
+  }
+
+  static userIsAuthorizedPage(roles, keys) {
+
+    let count = 0;
+    if (roles) {
+      roles.forEach(function (role) {
+        if (keys.indexOf(role.name) > -1) {
+          count++;
+        }
+      });
+    }
+
+    if (count === 0) {
+      return window.location.replace("/");
+    }
   }
 
   static isRoleUser(roles, keys) {
