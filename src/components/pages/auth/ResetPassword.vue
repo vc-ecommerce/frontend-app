@@ -19,19 +19,19 @@
 
     <div class="form-group">
       <div class="float-right">
-        <router-link :to="{ name: 'auth.login' }" @click.native="$eventHub.$emit('eventDocumentTitle', {data: 'Fazer Login'})" class="push-right">Cancelar</router-link>
+        <router-link :to="{ name: 'auth.login' }" class="push-right">Cancelar</router-link>
       </div>
     </div>
 
   </form>
 </template>
 <script>
-import ToolsHelper from "@/helpers/ToolsHelper";
 import ValidatesHelper from "@/helpers/ValidatesHelper";
 import JQueryHelper from "@/helpers/JQueryHelper";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import DocumentFactory from "@/factory/DocumentFactory";
 import NotifyHelper from "@/helpers/NotifyHelper";
+import AxiosService from "@/services/AxiosService";
 
 export default {
   name: "ResetPassword",
@@ -57,39 +57,41 @@ export default {
       }
 
       this.btnDisabled = true;
-      const api = `${this.$urlApi}/auth/reset`;
-      Vue.axios
-        .post(api, {
-          email: this.email
-        })
-        .then(response => {
-          swal({
-            title: "Sucesso!",
-            text:
-              "O link para redefinição de senha foi enviado para o seu e-mail!",
-            type: "success",
-            showCancelButton: false,
-            confirmButtonText: "Ok!"
-          });
-          this.email = "";
-          this.btnDisabled = false;
-          this.ok = true;
-        })
-        .catch(error => {
-          this.btnDisabled = false;
 
-          if (error.response.status === 404) {
-            return NotifyHelper.danger("Atenção!", "Email não encontrado.");
-          } else {
-            let errors = Array(JSON.parse(error.response.data.error));
-            errors.forEach(value => {
-              let values = Object.values(value);
-              values.forEach(value => {
-                NotifyHelper.danger("Atenção!", value);
+      return new Promise((resolve, reject) => {
+        AxiosService.post("auth/reset", { email: this.email })
+          .then(response => {
+            resolve(
+              swal({
+                title: "Sucesso!",
+                text:
+                  "O link para redefinição de senha foi enviado para o seu e-mail!",
+                type: "success",
+                showCancelButton: false,
+                confirmButtonText: "Ok!"
+              })
+            );
+
+            this.email = "";
+            this.btnDisabled = false;
+            this.ok = true;
+          })
+          .catch(error => {
+            this.btnDisabled = false;
+
+            if (error.response.status === 404) {
+              reject(NotifyHelper.danger("Atenção!", "Email não encontrado."));
+            } else {
+              let errors = Array(JSON.parse(error.response.data.error));
+              errors.forEach(value => {
+                let values = Object.values(value);
+                values.forEach(value => {
+                  reject(NotifyHelper.danger("Atenção!", value));
+                });
               });
-            });
-          }
-        });
+            }
+          });
+      });
     }
   },
   mounted() {

@@ -39,6 +39,7 @@ import ValidatesHelper from "@/helpers/ValidatesHelper";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import DocumentFactory from "@/factory/DocumentFactory";
 import NotifyHelper from "@/helpers/NotifyHelper";
+import AxiosService from "@/services/AxiosService";
 
 export default {
   name: "Login",
@@ -62,58 +63,68 @@ export default {
       }
 
       this.btnDisabled = true;
-      const api = `${this.$urlApi}/auth/login`;
-      Vue.axios
-        .post(api, {
+
+      return new Promise((resolve, reject) => {
+        AxiosService.post("/auth/login", {
           email: this.email,
           password: this.password
         })
-        .then(response => {
-          NotifyHelper.success("Redirecionando!", "Aguarde carregando dados.");
+          .then(response => {
+            sessionStorage.setItem(
+              "token",
+              JSON.stringify(response.data.HTTP_Authorization)
+            );
+            sessionStorage.setItem(
+              "user",
+              JSON.stringify(response.data.HTTP_Data)
+            );
 
-          sessionStorage.setItem(
-            "token",
-            JSON.stringify(response.data.HTTP_Authorization)
-          );
-          sessionStorage.setItem(
-            "user",
-            JSON.stringify(response.data.HTTP_Data)
-          );
+            this.$store.commit("setUser", response.data);
+            this.$store.commit("setToken", response.data.HTTP_Authorization);
 
-          this.$store.commit("setUser", response.data);
-          this.$store.commit("setToken", response.data.HTTP_Authorization);
+            let redirect = localStorage.getItem("httpReferer")
+              ? localStorage.getItem("httpReferer")
+              : "/";
 
-          let redirect = localStorage.getItem("httpReferer")
-            ? localStorage.getItem("httpReferer")
-            : "/";
+            resolve(
+              NotifyHelper.success(
+                "Redirecionando!",
+                "Aguarde carregando dados."
+              )
+            );
 
-          setTimeout(() => {
-            window.location = redirect;
-          }, 1000);
-        })
-        .catch(error => {
-          this.btnDisabled = false;
-          this.password = "";
-          let errors = error.response.data.error;
+            setTimeout(() => {
+              window.location = redirect;
+            }, 1000);
+          })
+          .catch(error => {
+            this.btnDisabled = false;
+            this.password = "";
+            let errors = error.response.data.error;
 
-          if (errors == "account_inactive") {
-            NotifyHelper.warning("Erro!", "Você ainda não confirmou seu email.");
-          } else if (errors == "invalid_credentials") {
-            NotifyHelper.warning("Erro!", "Email e ou senha inválidos.");
-          } else {
-            errors = Array(JSON.parse(errors));
-            errors.forEach(value => {
-              let values = Object.values(value);
-              values.forEach(value => {
-                NotifyHelper.danger("Atenção!", value);
+            if (errors == "account_inactive") {
+              reject(
+                NotifyHelper.warning(
+                  "Erro!",
+                  "Você ainda não confirmou seu email."
+                )
+              );
+            } else if (errors == "invalid_credentials") {
+              NotifyHelper.warning("Erro!", "Email e ou senha inválidos.");
+            } else {
+              errors = Array(JSON.parse(errors));
+              errors.forEach(value => {
+                let values = Object.values(value);
+                values.forEach(value => {
+                  reject(NotifyHelper.danger("Atenção!", value));
+                });
               });
-            });
-          }
-        });
+            }
+          });
+      });
     }
   },
   mounted() {
-
     DocumentFactory.createTitle("Fazer Login");
 
     if (sessionStorage.getItem("desconected")) {

@@ -40,11 +40,12 @@ import JQueryHelper from "@/helpers/JQueryHelper";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import DocumentFactory from "@/factory/DocumentFactory";
 import NotifyHelper from "@/helpers/NotifyHelper";
+import AxiosService from "@/services/AxiosService";
 
 export default {
   name: "ForgotPassword",
   props: [],
-  components:{
+  components: {
     ButtonSubmit
   },
   data() {
@@ -82,74 +83,82 @@ export default {
     checkToken(disabledNotify) {
       const vm = this;
 
-      const api = `${this.$urlApi}/auth/forgot/check/token`;
-      Vue.axios
-        .post(api, {
+      return new Promise((resolve, reject) => {
+        AxiosService.post("/auth/forgot/check/token", {
           token: this.token
         })
-        .then(response => {
-          if (response.data) {
-            if (disabledNotify !== false) {
-              NotifyHelper.success("Verificação!", "Aceito, token válido.");
+          .then(response => {
+            if (response.data) {
+              if (disabledNotify !== false) {
+                resolve(
+                  NotifyHelper.success("Verificação!", "Aceito, token válido.")
+                );
+              }
+              this.userId = response.data;
             }
-            this.userId = response.data;
-          }
-        })
-        .catch(error => {
-          swal(
-            {
-              title: "Token inválido ou expirado!!!",
-              text: "Deseja gerar um novo token?",
-              type: "warning",
-              showCancelButton: true,
-              confirmButtonClass: "btn-danger",
-              confirmButtonText: "Sim",
-              cancelButtonText: "Não",
-              closeOnConfirm: false,
-            },
-            function() {
-              return (window.location.href = "/password/reset");
-            }
-          );
-        });
+          })
+          .catch(error => {
+            reject(
+              swal(
+                {
+                  title: "Token inválido ou expirado!!!",
+                  text: "Deseja gerar um novo token?",
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonClass: "btn-danger",
+                  confirmButtonText: "Sim",
+                  cancelButtonText: "Não",
+                  closeOnConfirm: false
+                },
+                function() {
+                  return (window.location.href = "/password/reset");
+                }
+              )
+            );
+          });
+      });
     },
     sendData() {
       this.checkToken(false);
       this.btnDisabled = true;
 
-      const api = `${this.$urlApi}/auth/forgot`;
-      Vue.axios
-        .post(api, {
+      return new Promise((resolve, reject) => {
+        AxiosService.put("/auth/forgot", {
           user_id: this.userId,
           token: this.token,
           password: this.password
         })
-        .then(response => {
-          this.btnDisabled = false;
-          this.ok = true;
-          if (response.data === "update_password") {
-            this.password = "";
-            this.confirme = "";
-            swal(
-              {
-                title: "Senha alterada com sucesso!",
-                text: "Deseja efetuar login?",
-                type: "success",
-                showCancelButton: true,
-                confirmButtonClass: "btn-success",
-                confirmButtonText: "Sim",
-                cancelButtonText: "Não",
-                closeOnConfirm: false,
-              },
-              function() {
-                return (window.location.href = "/login");
-              }
-            );
-          }
-        })
-        .catch(error => {
-          this.btnDisabled = false;
-        });
+          .then(response => {
+            this.btnDisabled = false;
+            this.ok = true;
+            if (response.data === "update_password") {
+              this.password = "";
+              this.confirme = "";
+              resolve(
+                swal(
+                  {
+                    title: "Senha alterada com sucesso!",
+                    text: "Deseja efetuar login?",
+                    type: "success",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false
+                  },
+                  function() {
+                    return (window.location.href = "/login");
+                  }
+                )
+              );
+
+            }
+          })
+          .catch(error => {
+            this.btnDisabled = false;
+            reject(error);
+          });
+      });
     },
     submitForm() {
       if (!this.isPasswordValid()) {

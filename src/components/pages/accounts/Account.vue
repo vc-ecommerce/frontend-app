@@ -95,52 +95,50 @@ export default {
 
       this.btnDisabled = true;
 
-      const api = `${this.$urlApi}/admin/users/${
-        this.$store.getters.getUserId
-      }`;
-      Vue.axios
-        .put(
-          api,
-          {
-            name: this.user.name,
-            password: this.password,
-            password_confirmation: this.password
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + this.$store.getters.getToken,
-              "User-ID": this.$store.getters.getUserId
-            }
-          }
-        )
-        .then(response => {
-          let stateUser = this.$store.getters.getUser;
-          stateUser.name = this.user.name;
+      const uri = `/admin/users/${this.$store.getters.getUserId}`;
 
-          sessionStorage.setItem("user", JSON.stringify(stateUser));
-
-          this.btnDisabled = false;
-          this.passwordInvalid = false;
-          this.password = "";
-          this.ok = true;
-
-          this.users = response.data;
-          this.total = response.data.total;
-          NotifyHelper.success("Sucesso!", "Dados do usuário alterados com sucesso.");
+      return new Promise((resolve, reject) => {
+        AxiosService.post(uri, {
+          name: this.user.name,
+          password: this.password,
+          password_confirmation: this.password
         })
-        .catch(error => {
-          this.btnDisabled = false;
-          this.passwordInvalid = false;
-          this.password = "";
-          let errors = error.response.data.error;
-          errors = Array(JSON.parse(errors));
-          errors.forEach(value => {
-            let values = Object.values(value);
-            values.forEach(value => {
-              NotifyHelper.danger("Atenção!", value);
+          .then(response => {
+            let stateUser = this.$store.getters.getUser;
+            stateUser.name = this.user.name;
+
+            sessionStorage.setItem("user", JSON.stringify(stateUser));
+
+            this.btnDisabled = false;
+            this.passwordInvalid = false;
+            this.password = "";
+            this.ok = true;
+
+            this.users = response.data;
+            this.total = response.data.total;
+
+            resolve(
+              NotifyHelper.success(
+                "Sucesso!",
+                "Dados do usuário alterados com sucesso."
+              )
+            );
+          })
+          .catch(error => {
+            this.btnDisabled = false;
+
+            this.passwordInvalid = false;
+            this.password = "";
+            let errors = error.response.data.error;
+            errors = Array(JSON.parse(errors));
+            errors.forEach(value => {
+              let values = Object.values(value);
+              values.forEach(value => {
+                reject(NotifyHelper.danger("Atenção!", value));
+              });
             });
           });
-        });
+      });
     }
   }
 };
