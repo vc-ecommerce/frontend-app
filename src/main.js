@@ -1,5 +1,3 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 require('@/bootstrap')
 
 import App from '@/App'
@@ -9,6 +7,7 @@ import store from '@/stores';
 Vue.config.productionTip = false;
 
 import { userIsAuthorized } from "@/helpers/validates";
+import ValidatesHelper from "@/helpers/ValidatesHelper";
 
 /* eslint-disable no-new */
 new Vue({
@@ -23,7 +22,15 @@ new Vue({
     }
   },
   created() {
-    this.$eventHub.$on("eventPublic", data => this.isPublic = data);
+    if (ValidatesHelper.isPagesPublic()) {
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.remove("with-side-menu");
+        document.body.classList.remove("control-panel");
+        document.body.classList.remove("control-panel-compact");
+        document.body.classList.add("auth");
+      });
+      this.isPublic = true;
+    }
   },
   mounted() {
 

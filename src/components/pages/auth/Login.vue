@@ -44,6 +44,8 @@ import {
 import { validateEmail } from "@/helpers/validates";
 
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
+import DocumentFactory from "@/factory/DocumentFactory";
+import NotifyHelper from "@/helpers/NotifyHelper";
 
 export default {
   name: "Login",
@@ -58,12 +60,6 @@ export default {
       password: "",
       btnDisabled: false
     };
-  },
-  beforeCreate() {
-    document.addEventListener("DOMContentLoaded", () => {
-      document.title = "Login";
-    });
-    this.$eventHub.$emit("eventPublic", true);
   },
   methods: {
     submitForm() {
@@ -124,6 +120,7 @@ export default {
     }
   },
   mounted() {
+    DocumentFactory.createTitle("Fazer Login");
     if (sessionStorage.getItem("desconected")) {
       notifySuccess("Sucesso!", "Você foi desconectado com segurança.");
     }

@@ -32,6 +32,7 @@ import SiteHeader from "@/components/layouts/header/SiteHeader";
 import SidebarMenuLeft from "@/components/layouts/sidebar/SidebarMenuLeft";
 import SidebarMenuRight from "@/components/layouts/sidebar/SidebarMenuRight";
 import AxiosLoader from "@/commons/AxiosLoader";
+import ValidatesHelper from "@/helpers/ValidatesHelper";
 
 export default {
   name: "App",
@@ -46,21 +47,10 @@ export default {
       isPublic: false
     };
   },
-  beforeCreate() {
-    let vm = this;
-    this.$eventHub.$on("eventPublic", data => {
-      document.addEventListener("DOMContentLoaded", () => {
-        document.body.classList.remove("with-side-menu");
-        document.body.classList.remove("control-panel");
-        document.body.classList.remove("control-panel-compact");
-        document.body.classList.add("auth");
-      });
-      if (data) {
-        vm.isPublic = true;
-      }
-    });
-  },
-  mounted() {
+  created() {
+    if (ValidatesHelper.isPagesPublic()) {
+      this.isPublic = true;
+    }
     if (!this.isPublic) {
       document.title = "Painel de Controle";
     }

@@ -37,6 +37,8 @@ import {
 } from "@/helpers/notifications";
 
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
+import DocumentFactory from "@/factory/DocumentFactory";
+import NotifyHelper from "@/helpers/NotifyHelper";
 
 export default {
   name: "ResetPassword",
@@ -50,15 +52,6 @@ export default {
       email: "",
       btnDisabled: false
     };
-  },
-  beforeCreate() {
-    document.addEventListener("DOMContentLoaded", () => {
-      document.title = "Redefinição de Senha";
-    });
-    this.$eventHub.$emit("eventPublic", true);
-  },
-  mounted() {
-    JQueryPageCenter();
   },
   methods: {
     cleanData(data) {
@@ -105,6 +98,10 @@ export default {
           }
         });
     }
+  },
+  mounted() {
+    DocumentFactory.createTitle("Redefinição de Senha");
+    JQueryPageCenter();
   }
 };
 </script>

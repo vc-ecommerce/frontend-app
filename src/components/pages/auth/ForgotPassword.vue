@@ -45,6 +45,8 @@ import {
 } from "@/helpers/notifications";
 
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
+import DocumentFactory from "@/factory/DocumentFactory";
+import NotifyHelper from "@/helpers/NotifyHelper";
 
 export default {
   name: "ForgotPassword",
@@ -64,17 +66,8 @@ export default {
       btnDisabled: false
     };
   },
-  beforeCreate() {
-    document.addEventListener("DOMContentLoaded", () => {
-      document.title = "Redefinir Senha";
-    });
-    this.$eventHub.$emit("eventPublic", true);
-  },
   created() {
     this.checkToken();
-  },
-  mounted() {
-    JQueryPageCenter();
   },
   methods: {
     checkAlert() {
@@ -179,6 +172,10 @@ export default {
         this.sendData();
       }
     }
+  },
+  mounted() {
+    DocumentFactory.createTitle("Redefinir Senha");
+    JQueryPageCenter();
   }
 };
 </script>
