@@ -45,16 +45,16 @@ new Vue({
         return this.$router.push({ name: "auth.login" });
       }
 
-      ValidatesHelper.userIsAuthorized(this.$store.getters.getUserRoles, [
-        "ADMIN",
-        "STAFF_AUDITOR",
-        "STAFF_FINANCE",
-        "STAFF_COMMERCIAL",
-        "STAFF_SUPPORT",
-        "STAFF_SALE",
-        "STAFF_EDITOR",
-        "STAFF_EXPEDITION",
-      ]);
+      // ValidatesHelper.userIsAuthorized(this.$store.getters.getUserRoles, [
+      //   "ADMIN",
+      //   "STAFF_AUDITOR",
+      //   "STAFF_FINANCE",
+      //   "STAFF_COMMERCIAL",
+      //   "STAFF_SUPPORT",
+      //   "STAFF_SALE",
+      //   "STAFF_EDITOR",
+      //   "STAFF_EXPEDITION",
+      // ]);
 
     }
   },
