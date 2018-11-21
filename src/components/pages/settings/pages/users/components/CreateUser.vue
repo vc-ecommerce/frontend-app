@@ -91,9 +91,9 @@ import Modal from "./../../../../../components/modals/Modal";
 import ModalLink from "./../../../../../components/modals/ModalLink";
 import Alert from "./../../../../../components/layouts/Alert";
 import {
-  cleanRole,
-  forcePassword,
-  cleanDataApi
+  ToolsHelper.cleanRole,
+  ToolsHelper.forcePassword,
+  ToolsHelper.cleanDataApi
 } from "./../../../../../helpers/tools";
 
 export default {
@@ -130,12 +130,12 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return cleanDataApi(data);
+      return ToolsHelper.cleanDataApi(data);
     },
 
     submitForm() {
       if (this.user.password !== "") {
-        if (forcePassword(this.user.password) < 50) {
+        if (ToolsHelper.forcePassword(this.user.password) < 50) {
           this.passwordInvalid = true;
 
           setTimeout(() => {
@@ -177,7 +177,6 @@ export default {
           this.$emit("reload");
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           this.status = false;
           this.error = JSON.parse(error.response.data.error);
 

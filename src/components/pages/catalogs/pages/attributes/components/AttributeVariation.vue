@@ -92,7 +92,7 @@ export default {
           this.total = response.data.total;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
+          //
         });
     },
 
@@ -136,7 +136,6 @@ export default {
           }
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           if (error.response.data === "attribute_variation_is_exists") {
             swal({
               title: "Dados duplicado!",

@@ -43,7 +43,7 @@
 <script>
 
 import Table from "./../../../../components/layouts/Table";
-import { cleanRole } from "./../../../../helpers/tools";
+import { ToolsHelper.cleanRole } from "./../../../../helpers/tools";
 
 export default {
   name: "PrivilegeIndex",
@@ -79,7 +79,6 @@ export default {
           this.total = response.data.total;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
         });
     }
   }

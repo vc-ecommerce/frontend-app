@@ -112,7 +112,7 @@ export default {
           this.total = response.data.total;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
+
         });
     },
     getPrivileges() {
@@ -128,7 +128,7 @@ export default {
           this.privileges = response.data.data;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
+
         });
     }
   }

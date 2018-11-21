@@ -1,29 +1,8 @@
 <template>
   <form class="sign-box" @submit.prevent="submitForm">
-
     <header class="sign-title">Redefinição de senha</header>
 
-    <header v-if="error">
-      <div class="alert alert-danger alert-fill alert-close alert-dismissible fade show" role="alert">
-
-        <span v-if="error === 404">
-          Email não encontrado!
-        </span>
-
-        <span v-else v-for="err in error" :key="err._id">
-          {{ cleanData( err ) }}
-        </span>
-
-      </div>
-    </header>
-
-    <header v-else-if="success">
-      <div class="alert alert-success alert-fill alert-close alert-dismissible fade show" role="alert">
-        O link para redefinição de senha foi enviado para o seu e-mail!
-      </div>
-    </header>
-
-    <div v-else class="form-group">
+    <div class="form-group">
       Digite seu e-mail de cadastro abaixo e clique em enviar. <br />
       Nós lhe enviaremos um e-mail com link para recadastrar sua senha.
     </div>
@@ -32,73 +11,92 @@
       <input type="email" required class="form-control" v-model="email" placeholder="Endereço de email"/>
     </div>
 
-    <button type="submit" class="btn btn-rounded" :disabled="btnDisabled">
-      <span v-if="btnDisabled">Enviando...</span>
-      <span v-else>Enviar</span>
-    </button>
+    <ButtonSubmit
+      bntTitle="Enviar"
+      :ok="ok"
+      :btnDisabled="btnDisabled"
+      bntClass="btn btn-rounded" />
+
+    <div class="form-group">
+      <div class="float-right">
+        <router-link :to="{ name: 'auth.login' }" class="push-right">Cancelar</router-link>
+      </div>
+    </div>
 
   </form>
 </template>
 <script>
-import { cleanDataApi } from "@/helpers/tools";
-import { JQueryPageCenter } from "@/commons/jquery-page-center";
+import ValidatesHelper from "@/helpers/ValidatesHelper";
+import JQueryHelper from "@/helpers/JQueryHelper";
+import ButtonSubmit from "@/components/layouts/ButtonSubmit";
+import DocumentFactory from "@/factory/DocumentFactory";
+import NotifyHelper from "@/helpers/NotifyHelper";
+import AxiosService from "@/services/AxiosService";
 
 export default {
   name: "ResetPassword",
   props: [],
+  components: {
+    ButtonSubmit
+  },
   data() {
     return {
+      ok: false,
       email: "",
-      data: "",
-      token: "",
-      loading: false,
-      success: false,
-      btnDisabled: false,
-      error: false
+      btnDisabled: false
     };
-  },
-  beforeCreate() {
-    document.addEventListener("DOMContentLoaded", function() {
-      document.title = "Redefinição de Senha";
-    });
-    this.$eventHub.$emit("eventAuth", true);
-  },
-  mounted() {
-    JQueryPageCenter();
   },
   methods: {
     cleanData(data) {
-      return cleanDataApi(data);
+      return ToolsHelper.cleanDataApi(data);
     },
-
     submitForm() {
+      if (!ValidatesHelper.validateEmail(this.email)) {
+        NotifyHelper.info("Atenção!", "Informe um email válido.");
+        return;
+      }
+
       this.btnDisabled = true;
-      this.loading = true;
-      const api = `${this.$urlApi}/auth/reset`;
-      Vue.axios
-        .post(api, {
-          email: this.email
-        })
-        .then(response => {
-          this.success = true;
-          this.loading = false;
-          this.btnDisabled = false;
-        })
-        .catch(error => {
-          this.loading = false;
-          this.btnDisabled = false;
 
-          if (error.response.status === 404) {
-            this.error = error.response.status;
-          } else {
-            this.error = JSON.parse(error.response.data.error);
-          }
+      return new Promise((resolve, reject) => {
+        AxiosService.post("auth/reset", { email: this.email })
+          .then(response => {
+            resolve(
+              swal({
+                title: "Sucesso!",
+                text:
+                  "O link para redefinição de senha foi enviado para o seu e-mail!",
+                type: "success",
+                showCancelButton: false,
+                confirmButtonText: "Ok!"
+              })
+            );
 
-          setTimeout(() => {
-            this.error = false;
-          }, 5000);
-        });
+            this.email = "";
+            this.btnDisabled = false;
+            this.ok = true;
+          })
+          .catch(error => {
+            this.btnDisabled = false;
+
+            if (error.response.status === 404) {
+              reject(NotifyHelper.danger("Atenção!", "Email não encontrado."));
+            } else {
+              let errors = Array(JSON.parse(error.response.data.error));
+              errors.forEach(value => {
+                let values = Object.values(value);
+                values.forEach(value => {
+                  reject(NotifyHelper.danger("Atenção!", value));
+                });
+              });
+            }
+          });
+      });
     }
+  },
+  mounted() {
+    DocumentFactory.createTitle("Redefinição de Senha");
+    JQueryHelper.pageCenter();
   }
 };
 </script>
@@ -106,40 +104,5 @@ export default {
 <style scoped>
 .sign-title {
   font-weight: bold;
-}
-
-.showError {
-  animation: treme 0.1s;
-  animation-iteration-count: 3;
-}
-
-@keyframes treme {
-  0% {
-    margin-left: 0;
-  }
-  25% {
-    margin-left: 5px;
-  }
-  50% {
-    margin-left: 0;
-  }
-  75% {
-    margin-left: -5px;
-  }
-  100% {
-    margin-left: 0;
-  }
-}
-
-.red {
-  color: #fa424a;
-}
-
-.green {
-  color: #46c35f;
-}
-
-.gray {
-  color: #808080;
 }
 </style>

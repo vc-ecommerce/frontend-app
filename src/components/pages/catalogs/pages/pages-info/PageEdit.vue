@@ -116,7 +116,7 @@ import Panel from "./../../../../components/layouts/Panel";
 import Alert from "./../../../../components/layouts/Alert";
 import WidgetAccordion from "./../../../../components/widgets/WidgetAccordion";
 import WidgetAccordionContent from "./../../../../components/widgets/WidgetAccordionContent";
-import { cleanDataApi, strSlug } from "./../../../../helpers/tools";
+import { ToolsHelper.cleanDataApi, strSlug } from "./../../../../helpers/tools";
 import HtmlEditor from "./../../../../components/summernote/HtmlEditor";
 
 export default {
@@ -152,7 +152,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return cleanDataApi(data);
+      return ToolsHelper.cleanDataApi(data);
     },
     getPage() {
       const api = `${this.$urlApi}/admin/pages/${this.$route.params.id}`;
@@ -167,7 +167,6 @@ export default {
           this.data = response.data;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           this.error = JSON.parse(error.response.data.error);
         });
     },
@@ -217,7 +216,6 @@ export default {
           this.btnDisabled = false;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           this.status = false;
           this.error = JSON.parse(error.response.data.error);
 

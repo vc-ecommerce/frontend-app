@@ -5,10 +5,7 @@
       <img src="@/assets/img/avatar-sign.png" alt="">
     </div>
 
-    <header v-if="status && status == 'account_inactive'" class="sign-title red showError">Você ainda não confirmou seu email.</header>
-    <header v-else-if="status && status == 'invalid_credentials'" class="sign-title red showError">Email e ou senha inválidos</header>
-    <header v-else-if="ok" class="sign-title green">Redirecionando...</header>
-    <header v-else class="sign-title">Login</header>
+    <header class="sign-title">Login</header>
 
     <div class="form-group">
       <input type="email" required class="form-control" v-model="email" placeholder="Entre com seu email"/>
@@ -24,130 +21,126 @@
           <label for="signed-in">Mantenha-me conectado</label>
       </div> -->
       <div class="float-right reset">
-        <router-link :to="{ name: 'auth.reset' }">Recuperar Senha</router-link>
+        <router-link :to="{ name: 'auth.reset' }" @click.native="$eventHub.$emit('eventDocumentTitle', {data: 'Redefinição de senha'})">Recuperar Senha</router-link>
       </div>
     </div>
 
-    <button type="submit" class="btn btn-rounded" :disabled="btnDisabled">
-      <span v-if="btnDisabled">Enviando...</span>
-      <span v-else>Efetuar Login</span>
-    </button>
+    <ButtonSubmit
+        bntTitle="Efetuar Login"
+        :ok="ok"
+        :btnDisabled="btnDisabled"
+        bntClass="btn btn-rounded"  />
 
   </form>
 </template>
 <script>
-import { JQueryPageCenter } from "@/commons/jquery-page-center";
+import JQueryHelper from "@/helpers/JQueryHelper";
+import ValidatesHelper from "@/helpers/ValidatesHelper";
+import ButtonSubmit from "@/components/layouts/ButtonSubmit";
+import DocumentFactory from "@/factory/DocumentFactory";
+import NotifyHelper from "@/helpers/NotifyHelper";
+import AxiosService from "@/services/AxiosService";
 
 export default {
   name: "Login",
   props: [],
+  components: {
+    ButtonSubmit
+  },
   data() {
     return {
+      ok: false,
       email: "",
       password: "",
-      data: "",
-      token: "",
-      status: false,
-      ok: false,
       btnDisabled: false
     };
   },
-  beforeCreate() {
-    document.addEventListener("DOMContentLoaded", function() {
-      document.title = "Login";
-    });
-    this.$eventHub.$emit("eventAuth", true);
-  },
   methods: {
-    showError(code) {
-      if (code === 401) {
-        this.status = true;
-        setTimeout(() => {
-          this.status = false;
-        }, 5000);
-      }
-    },
-    redirectUser() {
-      window.location = "/";
-    },
     submitForm() {
+      if (!ValidatesHelper.validateEmail(this.email)) {
+        NotifyHelper.info("Atenção!", "Informe um email válido.");
+        return;
+      }
+
       this.btnDisabled = true;
-      const api = `${this.$urlApi}/auth/login`;
-      Vue.axios
-        .post(api, {
+
+      return new Promise((resolve, reject) => {
+        AxiosService.post("/auth/login", {
           email: this.email,
           password: this.password
         })
-        .then(response => {
-          this.ok = true;
-          this.status = false;
-          sessionStorage.setItem(
-            "token",
-            JSON.stringify(response.data.HTTP_Authorization)
-          );
-          sessionStorage.setItem(
-            "user",
-            JSON.stringify(response.data.HTTP_Data)
-          );
+          .then(response => {
+            sessionStorage.setItem(
+              "token",
+              JSON.stringify(response.data.HTTP_Authorization)
+            );
+            sessionStorage.setItem(
+              "user",
+              JSON.stringify(response.data.HTTP_Data)
+            );
 
-          this.$store.commit("setUser", response.data);
-          this.$store.commit("setToken", response.data.HTTP_Authorization);
-        })
-        .catch(error => {
-          this.btnDisabled = false;
-          this.status = error.response.data.error;
-        });
+            this.$store.commit("setUser", response.data);
+            this.$store.commit("setToken", response.data.HTTP_Authorization);
+
+            let redirect = localStorage.getItem("httpReferer")
+              ? localStorage.getItem("httpReferer")
+              : "/";
+
+            resolve(
+              NotifyHelper.success(
+                "Redirecionando!",
+                "Aguarde carregando dados."
+              )
+            );
+
+            setTimeout(() => {
+              window.location = redirect;
+            }, 1000);
+          })
+          .catch(error => {
+            this.btnDisabled = false;
+            this.password = "";
+            let errors = error.response.data.error;
+
+            if (errors == "account_inactive") {
+              reject(
+                NotifyHelper.warning(
+                  "Erro!",
+                  "Você ainda não confirmou seu email."
+                )
+              );
+            } else if (errors == "invalid_credentials") {
+              NotifyHelper.warning("Erro!", "Email e ou senha inválidos.");
+            } else {
+              errors = Array(JSON.parse(errors));
+              errors.forEach(value => {
+                let values = Object.values(value);
+                values.forEach(value => {
+                  reject(NotifyHelper.danger("Atenção!", value));
+                });
+              });
+            }
+          });
+      });
     }
   },
   mounted() {
-    // Remove saved data from sessionStorage
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
+    DocumentFactory.createTitle("Fazer Login");
+
+    if (sessionStorage.getItem("desconected")) {
+      NotifyHelper.success("Sucesso!", "Você foi desconectado com segurança.");
+    }
     // Remove all saved data from sessionStorage
     sessionStorage.clear();
-
-    JQueryPageCenter();
+    this.email = "";
+    this.password = "";
+    JQueryHelper.pageCenter();
   }
 };
 </script>
 
 <style scoped>
-.showError {
-  animation: treme 0.1s;
-  animation-iteration-count: 3;
-}
-
 .sign-title {
   font-weight: bold;
-}
-
-@keyframes treme {
-  0% {
-    margin-left: 0;
-  }
-  25% {
-    margin-left: 5px;
-  }
-  50% {
-    margin-left: 0;
-  }
-  75% {
-    margin-left: -5px;
-  }
-  100% {
-    margin-left: 0;
-  }
-}
-
-.red {
-  color: #fa424a;
-}
-
-.green {
-  color: #46c35f;
-}
-
-.gray {
-  color: #808080;
 }
 </style>

@@ -50,7 +50,7 @@ import Table from "./../../../../../components/layouts/Table";
 import Modal from "./../../../../../components/modals/Modal";
 import ModalLink from "./../../../../../components/modals/ModalLink";
 import Alert from "./../../../../../components/layouts/Alert";
-import { cleanDataApi } from "./../../../../../helpers/tools";
+import { ToolsHelper.cleanDataApi } from "./../../../../../helpers/tools";
 
 export default {
   name: "EditRole",
@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return cleanDataApi(data);
+      return ToolsHelper.cleanDataApi(data);
     },
     submitForm() {
       if (!this.$store.getters.getItem) {
@@ -109,7 +109,6 @@ export default {
           this.$emit("reload");
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
 
           if ((error.response.data = "attribute_variation_is_exists")) {
             this.error = `Variação ${data.name} já existe.`;

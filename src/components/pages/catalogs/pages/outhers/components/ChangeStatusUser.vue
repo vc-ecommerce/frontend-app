@@ -48,7 +48,6 @@ export default {
           return false;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
           return false;
         });
     },
