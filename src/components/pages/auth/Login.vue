@@ -79,8 +79,8 @@ export default {
               JSON.stringify(response.data.HTTP_Data)
             );
 
-            let redirect = localStorage.getItem("httpReferer")
-              ? localStorage.getItem("httpReferer")
+            let pathnameReferer = localStorage.getItem("pathnameReferer")
+              ? localStorage.getItem("pathnameReferer")
               : "/";
 
             resolve(
@@ -91,7 +91,11 @@ export default {
             );
 
             setTimeout(() => {
-              window.location = redirect;
+              if (pathnameReferer.indexOf("login")) {
+                window.location.replace("/");
+              }
+
+              window.location.replace(pathnameReferer ? pathnameReferer : "/");
             }, 1000);
           })
           .catch(error => {

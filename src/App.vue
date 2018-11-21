@@ -2,14 +2,17 @@
   <span id="app">
 
     <div v-if="!isPublic">
-      <SiteHeader />
-      <SidebarMenuLeft />
-      <div class="page-content">
-        <div class="container-fluid">
-          <router-view/>
+      <span v-show="showHtml">
+        <SiteHeader />
+        <SidebarMenuLeft />
+        <div class="page-content">
+          <div class="container-fluid">
+            <router-view/>
+          </div>
         </div>
-      </div>
-      <SidebarMenuRight />
+        <SidebarMenuRight />
+      </span>
+
     </div>
 
     <div v-if="isPublic">
@@ -45,25 +48,52 @@ export default {
   },
   data() {
     return {
-      isPublic: false
+      isPublic: false,
+      showHtml: false
     };
   },
   created() {
     const vm = this;
     if (ValidatesHelper.isPagesPublic()) {
+      DocumentFactory.removeClassBody();
       vm.isPublic = true;
     }
-
   },
   mounted() {
+    if (this.isPublic !== true) {
+      let user = this.$store.getters.getUser
+        ? this.$store.getters.getUser
+        : false;
 
-    this.$eventHub.$on('eventDocumentTitle', function (obj) {
-      document.title= obj.data
+      if (!user) {
+        sessionStorage.clear();
+        localStorage.clear();
+        localStorage.setItem("pathnameReferer", window.location.pathname);
+        return window.location.replace("/login");
+      }
+
+      ValidatesHelper.rolesUserAuthorizedPainelAdmin(
+        this.$store.getters.getUserRoles,
+        "ADMIN",
+        "STAFF_AUDITOR",
+        "STAFF_FINANCE",
+        "STAFF_COMMERCIAL",
+        "STAFF_SUPPORT",
+        "STAFF_SALE",
+        "STAFF_EDITOR",
+        "STAFF_EXPEDITION"
+      );
+    }
+
+    this.$eventHub.$on("eventDocumentTitle", function(obj) {
+      document.title = obj.data;
     });
 
     if (!this.isPublic) {
       DocumentFactory.createTitle("Painel de Controle");
     }
+
+    this.showHtml = true;
   }
 };
 </script>

@@ -1,20 +1,15 @@
 class ValidatesHelper {
 
   static isPagesPublic() {
-
-    const url = location.pathname.substring(1).split('/');
-
+    const url = window.location.pathname.substring(1).split('/');
     const pagesPublic = [
       "login",
       "password"
     ];
-
     return pagesPublic.includes(url[0]);
-
   }
 
   static rolesUserAuthorizedPainelAdmin(roles, ...keys) {
-
     let count = 0;
     if (roles) {
       roles.forEach(function (role) {
@@ -23,16 +18,13 @@ class ValidatesHelper {
         }
       });
     }
-
     if (count === 0) {
       sessionStorage.clear();
       return window.location.replace("/login");
     }
-
   }
 
   static userIsAuthorizedPage(roles, keys) {
-
     let count = 0;
     if (roles) {
       roles.forEach(function (role) {
@@ -41,14 +33,12 @@ class ValidatesHelper {
         }
       });
     }
-
     if (count === 0) {
       return window.location.replace("/");
     }
   }
 
   static isRoleUser(roles, keys) {
-
     let count = 0;
     if (roles) {
       roles.forEach(function (role) {
@@ -57,12 +47,10 @@ class ValidatesHelper {
         }
       });
     }
-
     if (count > 0) {
       return true
     }
     return false
-
   }
 
   static validateEmail(email) {

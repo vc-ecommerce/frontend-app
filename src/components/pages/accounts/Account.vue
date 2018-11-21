@@ -55,6 +55,7 @@ import Alert from "@/components/layouts/Alert";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import NotifyHelper from "@/helpers/NotifyHelper";
 import ToolsHelper from "@/helpers/ToolsHelper";
+import AxiosService from "@/services/AxiosService";
 
 export default {
   name: "Account",
@@ -98,7 +99,7 @@ export default {
       const uri = `/admin/users/${this.$store.getters.getUserId}`;
 
       return new Promise((resolve, reject) => {
-        AxiosService.post(uri, {
+        AxiosService.put(uri, {
           name: this.user.name,
           password: this.password,
           password_confirmation: this.password
@@ -125,6 +126,7 @@ export default {
             );
           })
           .catch(error => {
+            console.log(error.response);
             this.btnDisabled = false;
 
             this.passwordInvalid = false;
