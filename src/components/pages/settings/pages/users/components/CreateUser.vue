@@ -86,15 +86,11 @@
   </span>
 </template>
 <script>
-import Table from "./../../../../../components/layouts/Table";
-import Modal from "./../../../../../components/modals/Modal";
-import ModalLink from "./../../../../../components/modals/ModalLink";
-import Alert from "./../../../../../components/layouts/Alert";
-import {
-  ToolsHelper.cleanRole,
-  ToolsHelper.forcePassword,
-  ToolsHelper.cleanDataApi
-} from "./../../../../../helpers/tools";
+import Table from "@/components/layouts/Table";
+import Modal from "@/components/modals/Modal";
+import ModalLink from "@/components/modals/ModalLink";
+import Alert from "@/components/layouts/Alert";
+import ToolsHelper from "@/helpers/ToolsHelper";
 
 export default {
   name: "CreateUser",

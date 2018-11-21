@@ -112,12 +112,12 @@
   </Panel>
 </template>
 <script>
-import Panel from "./../../../../components/layouts/Panel";
-import Alert from "./../../../../components/layouts/Alert";
-import WidgetAccordion from "./../../../../components/widgets/WidgetAccordion";
-import WidgetAccordionContent from "./../../../../components/widgets/WidgetAccordionContent";
-import { ToolsHelper.cleanDataApi, strSlug } from "./../../../../helpers/tools";
-import HtmlEditor from "./../../../../components/summernote/HtmlEditor";
+import Panel from "@/components/layouts/Panel";
+import Alert from "@/components/layouts/Alert";
+import WidgetAccordion from "@/components/widgets/WidgetAccordion";
+import WidgetAccordionContent from "@/components/widgets/WidgetAccordionContent";
+import ToolsHelper from "@/helpers/ToolsHelper";
+import HtmlEditor from "@/components/summernote/HtmlEditor";
 
 export default {
   name: "PageEdit",
@@ -148,7 +148,7 @@ export default {
   computed: {
     applySlug() {
       if (this.data.name) {
-        return strSlug(this.data.name);
+        return ToolsHelper.strSlug(this.data.name);
       }
       return "";
     }
@@ -173,7 +173,7 @@ export default {
             name: vm.data.name,
             description: vm.data.description,
             active: vm.data.active,
-            slug: strSlug(vm.data.name),
+            slug: ToolsHelper.strSlug(vm.data.name),
             meta_description: vm.data.meta_description,
             meta_title: vm.data.meta_title
           },

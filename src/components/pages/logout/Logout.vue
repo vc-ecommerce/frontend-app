@@ -1,5 +1,5 @@
 <template>
-  <div>Desconectando...</div>
+  <h2>Desconectando...</h2>
 </template>
 <script>
 export default {

@@ -59,9 +59,9 @@
 <script>
 import RemovePage from "./components/RemovePage";
 import ChangeStatus from './components/ChangeStatus'
-import Table from "./../../../../components/layouts/Table";
-import Pagination from "./../../../../components/paginations/Pagination";
-import { ToolsHelper.cleanRole } from "./../../../../helpers/tools";
+import Table from "@/components/layouts/Table";
+import Pagination from "@/components/paginations/Pagination";
+import ToolsHelper from "@/helpers/ToolsHelper";
 
 export default {
   name: "PageList",

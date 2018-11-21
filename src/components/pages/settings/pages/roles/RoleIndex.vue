@@ -64,7 +64,7 @@
 import CreateRole from "./components/CreateRole";
 import EditRole from "./components/EditRole";
 import RemoveRole from "./components/RemoveRole";
-import Table from "./../../../../components/layouts/Table";
+import Table from "@/components/layouts/Table";
 
 export default {
   name: "UserIndex",

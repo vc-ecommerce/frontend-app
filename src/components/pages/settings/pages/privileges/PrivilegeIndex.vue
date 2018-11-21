@@ -42,8 +42,8 @@
 </template>
 <script>
 
-import Table from "./../../../../components/layouts/Table";
-import { ToolsHelper.cleanRole } from "./../../../../helpers/tools";
+import Table from "@/components/layouts/Table";
+import ToolsHelper from "@/helpers/ToolsHelper";
 
 export default {
   name: "PrivilegeIndex",

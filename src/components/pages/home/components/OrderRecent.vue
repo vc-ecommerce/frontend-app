@@ -75,8 +75,8 @@
 
 
 <script>
-import Panel from "./../../../components/layouts/Panel";
-import Table from "./../../../components/layouts/Table";
+import Panel from "@/components/layouts/Panel";
+import Table from "@/components/layouts/Table";
 
 export default {
   name: 'OrderRecent',

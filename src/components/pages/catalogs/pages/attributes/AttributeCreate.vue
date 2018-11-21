@@ -44,9 +44,9 @@
   </Panel>
 </template>
 <script>
-import Panel from "./../../../../components/layouts/Panel";
-import Alert from "./../../../../components/layouts/Alert";
-import { ToolsHelper.cleanDataApi } from "./../../../../helpers/tools";
+import Panel from "@/components/layouts/Panel";
+import Alert from "@/components/layouts/Alert";
+import ToolsHelper from "@/helpers/ToolsHelper";
 
 export default {
   name: "AttributeCreate",
