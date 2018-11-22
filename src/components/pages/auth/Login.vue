@@ -90,13 +90,15 @@ export default {
           NotifyHelper.success("Redirecionando!", "Aguarde carregando dados.");
 
           setTimeout(() => {
-
-            if (vm.redirectPathForIndex.includes(pathnameReferer.substring(1))) {
+            if (
+              vm.redirectPathForIndex.includes(pathnameReferer.substring(1))
+            ) {
               return window.location.replace("/");
             }
 
-            return window.location.replace(pathnameReferer ? pathnameReferer : "/");
-
+            return window.location.replace(
+              pathnameReferer ? pathnameReferer : "/"
+            );
           }, 1000);
         })
         .catch(error => {
@@ -119,7 +121,7 @@ export default {
             });
           }
 
-          return Promise.reject(error);
+          console.log(error.response);
         });
     }
   },

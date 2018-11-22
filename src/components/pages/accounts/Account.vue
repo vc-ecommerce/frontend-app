@@ -136,7 +136,7 @@ export default {
             });
           });
 
-          return Promise.reject(error);
+          console.log(error.response);
         });
     }
   }

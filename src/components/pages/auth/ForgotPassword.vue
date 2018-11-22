@@ -148,8 +148,7 @@ export default {
         })
         .catch(error => {
           this.btnDisabled = false;
-
-          return Promise.reject(error);
+          console.log(error.response);
         });
     },
     submitForm() {

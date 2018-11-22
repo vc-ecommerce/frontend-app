@@ -62,7 +62,6 @@ export default {
 
       promise
         .then(response => {
-
           swal({
             title: "Sucesso!",
             text:
@@ -89,7 +88,7 @@ export default {
             });
           }
 
-          return Promise.reject(error);
+          console.log(error.response);
         });
     }
   },
