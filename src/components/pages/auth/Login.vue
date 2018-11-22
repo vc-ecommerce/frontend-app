@@ -73,33 +73,39 @@ export default {
 
       promise
         .then(response => {
-          sessionStorage.setItem(
-            "token",
-            JSON.stringify(response.data.HTTP_Authorization)
-          );
 
-          sessionStorage.setItem(
-            "user",
-            JSON.stringify(response.data.HTTP_Data)
-          );
+          if (response.status === 200) {
 
-          const pathnameReferer = localStorage.getItem("pathnameReferer")
-            ? localStorage.getItem("pathnameReferer")
-            : "/";
-
-          NotifyHelper.success("Redirecionando!", "Aguarde carregando dados.");
-
-          setTimeout(() => {
-            if (
-              vm.redirectPathForIndex.includes(pathnameReferer.substring(1))
-            ) {
-              return window.location.replace("/");
-            }
-
-            return window.location.replace(
-              pathnameReferer ? pathnameReferer : "/"
+            sessionStorage.setItem(
+              "token",
+              JSON.stringify(response.data.HTTP_Authorization)
             );
-          }, 1000);
+
+            sessionStorage.setItem(
+              "user",
+              JSON.stringify(response.data.HTTP_Data)
+            );
+
+            const pathnameReferer = localStorage.getItem("pathnameReferer")
+              ? localStorage.getItem("pathnameReferer")
+              : "/";
+
+            NotifyHelper.success("Redirecionando!", "Aguarde carregando dados.");
+
+            setTimeout(() => {
+              if (
+                vm.redirectPathForIndex.includes(pathnameReferer.substring(1))
+              ) {
+                return window.location.replace("/");
+              }
+
+              return window.location.replace(
+                pathnameReferer ? pathnameReferer : "/"
+              );
+            }, 1000);
+
+          }
+
         })
         .catch(error => {
           this.btnDisabled = false;

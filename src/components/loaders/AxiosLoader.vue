@@ -11,25 +11,31 @@ export default {
   data() {
     return {
       counter: 0
-    }
+    };
   },
   mounted() {
-    Vue.axios.interceptors.request.use((config)=> {
-      this.counter ++;
-      return config;
-    }, (error) => {
-      return Promise.reject(error);
-    })
+    Vue.axios.interceptors.request.use(
+      config => {
+        this.counter++;
+        return config;
+      },
+      error => {
+        return Promise.reject(error);
+      }
+    );
 
-    Vue.axios.interceptors.response.use((response)=> {
-      this.counter --;
-      return response;
-    }, (error) => {
-      this.counter --;
-      return Promise.reject(error);
-    })
+    Vue.axios.interceptors.response.use(
+      response => {
+        this.counter--;
+        return response;
+      },
+      error => {
+        this.counter--;
+        return Promise.reject(error);
+      }
+    );
   }
-}
+};
 </script>
 
 <style>

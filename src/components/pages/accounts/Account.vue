@@ -106,23 +106,25 @@ export default {
 
       promise
         .then(response => {
-          let stateUser = this.$store.getters.getUser;
-          stateUser.name = this.user.name;
+          if (response.status === 200) {
+            let stateUser = this.$store.getters.getUser;
+            stateUser.name = this.user.name;
 
-          sessionStorage.setItem("user", JSON.stringify(stateUser));
+            sessionStorage.setItem("user", JSON.stringify(stateUser));
 
-          this.btnDisabled = false;
-          this.passwordInvalid = false;
-          this.password = "";
-          this.ok = true;
+            this.btnDisabled = false;
+            this.passwordInvalid = false;
+            this.password = "";
+            this.ok = true;
 
-          this.users = response.data;
-          this.total = response.data.total;
+            this.users = response.data;
+            this.total = response.data.total;
 
-          NotifyHelper.success(
-            "Sucesso!",
-            "Dados do usuário alterados com sucesso."
-          );
+            NotifyHelper.success(
+              "Sucesso!",
+              "Dados do usuário alterados com sucesso."
+            );
+          }
         })
         .catch(error => {
           this.btnDisabled = false;

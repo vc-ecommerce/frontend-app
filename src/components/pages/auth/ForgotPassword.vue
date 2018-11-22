@@ -124,11 +124,12 @@ export default {
 
       promise
         .then(response => {
-          this.btnDisabled = false;
-          this.ok = true;
-          if (response.data === "update_password") {
+          if (response.status === 200) {
+            this.btnDisabled = false;
+            this.ok = true;
             this.password = "";
             this.confirme = "";
+
             swal(
               {
                 title: "Senha alterada com sucesso!",

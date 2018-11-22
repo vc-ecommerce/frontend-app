@@ -62,18 +62,20 @@ export default {
 
       promise
         .then(response => {
-          swal({
-            title: "Sucesso!",
-            text:
-              "O link para redefinição de senha foi enviado para o seu e-mail!",
-            type: "success",
-            showCancelButton: false,
-            confirmButtonText: "Ok!"
-          });
+          if (response.status === 200) {
+            swal({
+              title: "Sucesso!",
+              text:
+                "O link para redefinição de senha foi enviado para o seu e-mail!",
+              type: "success",
+              showCancelButton: false,
+              confirmButtonText: "Ok!"
+            });
 
-          this.email = "";
-          this.btnDisabled = false;
-          this.ok = true;
+            this.email = "";
+            this.btnDisabled = false;
+            this.ok = true;
+          }
         })
         .catch(error => {
           this.btnDisabled = false;

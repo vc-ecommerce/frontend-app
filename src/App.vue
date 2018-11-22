@@ -34,7 +34,7 @@
 import SiteHeader from "@/components/layouts/header/SiteHeader";
 import SidebarMenuLeft from "@/components/layouts/sidebar/SidebarMenuLeft";
 import SidebarMenuRight from "@/components/layouts/sidebar/SidebarMenuRight";
-import AxiosLoader from "@/commons/AxiosLoader";
+import AxiosLoader from "@/components/loaders/AxiosLoader";
 import ValidatesHelper from "@/helpers/ValidatesHelper";
 import DocumentFactory from "@/factory/DocumentFactory";
 
