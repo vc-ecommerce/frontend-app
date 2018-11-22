@@ -101,16 +101,16 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
-          this.variations = response.data;
-          this.total = response.data.total;
+          this.variations = res.data;
+          this.total = res.data.total;
           this.status = "Variação editada com sucesso!";
           this.$emit("reload");
         })
         .catch(error => {
 
-          if ((error.response.data = "attribute_variation_is_exists")) {
+          if ((error.res.data = "attribute_variation_is_exists")) {
             this.error = `Variação ${data.name} já existe.`;
           }
         });

@@ -163,11 +163,11 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.data = response.data;
+        .then(res => {
+          this.data = res.data;
         })
         .catch(error => {
-          this.error = JSON.parse(error.response.data.error);
+          this.error = JSON.parse(error.res.data.error);
         });
     },
 
@@ -195,11 +195,11 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
           this.status = false;
 
-          if (response.data === true) {
+          if (res.data === true) {
             swal({
               title: "Dados atualizados!",
               text: "A página foi atualizada com sucesso.",
@@ -217,7 +217,7 @@ export default {
         })
         .catch(error => {
           this.status = false;
-          this.error = JSON.parse(error.response.data.error);
+          this.error = JSON.parse(error.res.data.error);
 
           swal({
             title: "Houve um erro na solicitação!",

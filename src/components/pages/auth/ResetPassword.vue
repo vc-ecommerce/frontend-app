@@ -32,6 +32,7 @@ import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import DocumentFactory from "@/factory/DocumentFactory";
 import NotifyHelper from "@/helpers/NotifyHelper";
 import AxiosService from "@/services/AxiosService";
+import { handleStatus } from "@/helpers/promise-helper";
 
 export default {
   name: "ResetPassword",
@@ -61,36 +62,35 @@ export default {
       let promise = AxiosService.post("auth/reset", { email: this.email });
 
       promise
-        .then(response => {
-          if (response.status === 200) {
-            swal({
-              title: "Sucesso!",
-              text:
-                "O link para redefinição de senha foi enviado para o seu e-mail!",
-              type: "success",
-              showCancelButton: false,
-              confirmButtonText: "Ok!"
-            });
+        .then(handleStatus)
+        .then(res => {
+          swal({
+            title: "Sucesso!",
+            text:
+              "O link para redefinição de senha foi enviado para o seu e-mail!",
+            type: "success",
+            showCancelButton: false,
+            confirmButtonText: "Ok!"
+          });
 
-            this.email = "";
-            this.btnDisabled = false;
-            this.ok = true;
-          }
+          this.email = "";
+          this.btnDisabled = false;
+          this.ok = true;
         })
         .catch(error => {
           this.btnDisabled = false;
 
-          if (error.response.status === 404) {
+          if (error.res.data.error.data === "email_not_found") {
             NotifyHelper.danger("Atenção!", "Email não encontrado.");
           } else {
-            Array(JSON.parse(error.response.data.error)).forEach(value => {
+            Array(JSON.parse(error.res.data.error)).forEach(value => {
               Object.values(value).forEach(value => {
                 NotifyHelper.danger("Atenção!", value);
               });
             });
           }
 
-          console.log(error.response);
+          console.log(error.res);
         });
     }
   },

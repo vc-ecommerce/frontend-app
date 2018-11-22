@@ -107,11 +107,11 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.roles = ToolsHelper.cleanRole(response.data.data);
+        .then(res => {
+          this.roles = ToolsHelper.cleanRole(res.data.data);
         })
         .catch(error => {
-          this.error = JSON.parse(error.response.data.error);
+          this.error = JSON.parse(error.res.data.error);
         });
     },
 
@@ -124,9 +124,9 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.users = response.data;
-          this.total = response.data.total;
+        .then(res => {
+          this.users = res.data;
+          this.total = res.data.total;
         })
         .catch(error => {
         });

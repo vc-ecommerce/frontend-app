@@ -164,17 +164,17 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
-          this.users = response.data;
-          this.total = response.data.total;
+          this.users = res.data;
+          this.total = res.data.total;
           this.status = "Usuário criado com sucesso!";
 
           this.$emit("reload");
         })
         .catch(error => {
           this.status = false;
-          this.error = JSON.parse(error.response.data.error);
+          this.error = JSON.parse(error.res.data.error);
 
           setTimeout(() => {
             this.error = false;

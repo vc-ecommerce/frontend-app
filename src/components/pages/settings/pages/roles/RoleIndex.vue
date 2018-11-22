@@ -107,9 +107,9 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.roles = response.data;
-          this.total = response.data.total;
+        .then(res => {
+          this.roles = res.data;
+          this.total = res.data.total;
         })
         .catch(error => {
 
@@ -124,8 +124,8 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.privileges = response.data.data;
+        .then(res => {
+          this.privileges = res.data.data;
         })
         .catch(error => {
 

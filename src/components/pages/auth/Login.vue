@@ -40,6 +40,7 @@ import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import DocumentFactory from "@/factory/DocumentFactory";
 import NotifyHelper from "@/helpers/NotifyHelper";
 import AxiosService from "@/services/AxiosService";
+import { handleStatus } from "@/helpers/promise-helper";
 
 export default {
   name: "Login",
@@ -72,52 +73,47 @@ export default {
       });
 
       promise
-        .then(response => {
+        .then(handleStatus)
+        .then(res => {
+          sessionStorage.setItem(
+            "token",
+            JSON.stringify(res.data.HTTP_Authorization)
+          );
 
-          if (response.status === 200) {
+          sessionStorage.setItem(
+            "user",
+            JSON.stringify(res.data.HTTP_Data)
+          );
 
-            sessionStorage.setItem(
-              "token",
-              JSON.stringify(response.data.HTTP_Authorization)
+          const pathnameReferer = localStorage.getItem("pathnameReferer")
+            ? localStorage.getItem("pathnameReferer")
+            : "/";
+
+          NotifyHelper.success("Redirecionando!", "Aguarde carregando dados.");
+
+          setTimeout(() => {
+            if (
+              vm.redirectPathForIndex.includes(pathnameReferer.substring(1))
+            ) {
+              return window.location.replace("/");
+            }
+
+            return window.location.replace(
+              pathnameReferer ? pathnameReferer : "/"
             );
-
-            sessionStorage.setItem(
-              "user",
-              JSON.stringify(response.data.HTTP_Data)
-            );
-
-            const pathnameReferer = localStorage.getItem("pathnameReferer")
-              ? localStorage.getItem("pathnameReferer")
-              : "/";
-
-            NotifyHelper.success("Redirecionando!", "Aguarde carregando dados.");
-
-            setTimeout(() => {
-              if (
-                vm.redirectPathForIndex.includes(pathnameReferer.substring(1))
-              ) {
-                return window.location.replace("/");
-              }
-
-              return window.location.replace(
-                pathnameReferer ? pathnameReferer : "/"
-              );
-            }, 1000);
-
-          }
-
+          }, 1000);
         })
         .catch(error => {
           this.btnDisabled = false;
           this.password = "";
-          let errors = error.response.data.error;
+          let errors = error.res.data.error;
 
-          if (errors == "account_inactive") {
+          if (errors.data == "account_inactive") {
             NotifyHelper.warning(
               "Erro!",
               "Você ainda não confirmou seu email."
             );
-          } else if (errors == "invalid_credentials") {
+          } else if (errors.data == "invalid_credentials") {
             NotifyHelper.warning("Erro!", "Email e ou senha inválidos.");
           } else {
             Array(JSON.parse(errors)).forEach(value => {
@@ -127,7 +123,7 @@ export default {
             });
           }
 
-          console.log(error.response);
+          console.log(error.res);
         });
     }
   },

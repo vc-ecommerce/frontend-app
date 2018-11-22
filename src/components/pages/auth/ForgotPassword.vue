@@ -41,6 +41,7 @@ import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import DocumentFactory from "@/factory/DocumentFactory";
 import NotifyHelper from "@/helpers/NotifyHelper";
 import AxiosService from "@/services/AxiosService";
+import { handleStatus } from "@/helpers/promise-helper";
 
 export default {
   name: "ForgotPassword",
@@ -83,16 +84,17 @@ export default {
     checkToken(disabledNotify) {
       const vm = this;
 
-      AxiosService.post("/auth/forgot/check/token", {
+      let promisse = AxiosService.post("/auth/forgot/check/token", {
         token: this.token
-      })
-        .then(response => {
-          if (response.data) {
-            if (disabledNotify !== false) {
-              NotifyHelper.success("Verificação!", "Aceito, token válido.");
-            }
-            this.userId = response.data;
+      });
+
+      promisse
+        .then(handleStatus)
+        .then(res => {
+          if (disabledNotify !== false) {
+            NotifyHelper.success("Verificação!", "Aceito, token válido.");
           }
+          this.userId = res.data;
         })
         .catch(error => {
           swal(
@@ -123,33 +125,32 @@ export default {
       });
 
       promise
-        .then(response => {
-          if (response.status === 200) {
-            this.btnDisabled = false;
-            this.ok = true;
-            this.password = "";
-            this.confirme = "";
+        .then(handleStatus)
+        .then(res => {
+          this.btnDisabled = false;
+          this.ok = true;
+          this.password = "";
+          this.confirme = "";
 
-            swal(
-              {
-                title: "Senha alterada com sucesso!",
-                text: "Deseja efetuar login?",
-                type: "success",
-                showCancelButton: true,
-                confirmButtonClass: "btn-success",
-                confirmButtonText: "Sim",
-                cancelButtonText: "Não",
-                closeOnConfirm: false
-              },
-              function() {
-                return (window.location.href = "/login");
-              }
-            );
-          }
+          swal(
+            {
+              title: "Senha alterada com sucesso!",
+              text: "Deseja efetuar login?",
+              type: "success",
+              showCancelButton: true,
+              confirmButtonClass: "btn-success",
+              confirmButtonText: "Sim",
+              cancelButtonText: "Não",
+              closeOnConfirm: false
+            },
+            function() {
+              return (window.location.href = "/login");
+            }
+          );
         })
         .catch(error => {
           this.btnDisabled = false;
-          console.log(error.response);
+          console.log(error.res);
         });
     },
     submitForm() {

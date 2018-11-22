@@ -184,10 +184,10 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
           this.status = false;
-          if (response.status === 201) {
+          if (res.status === 201) {
             swal({
               title: "Dados cadastrados!",
               text: "Página foi cadastrada com sucesso.",
@@ -205,7 +205,7 @@ export default {
         })
         .catch(error => {
           this.status = false;
-          this.error = JSON.parse(error.response.data.error);
+          this.error = JSON.parse(error.res.data.error);
 
           swal({
             title: "Houve um erro na solicitação!",

@@ -146,16 +146,16 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
-          this.roles = response.data;
-          this.total = response.data.total;
+          this.roles = res.data;
+          this.total = res.data.total;
           this.status = "Função editada com sucesso!";
           this.$emit("reload");
         })
         .catch(error => {
           this.status = false;
-          this.error = JSON.parse(error.response.data.error);
+          this.error = JSON.parse(error.res.data.error);
 
           setTimeout(() => {
             this.error = false;

@@ -96,11 +96,11 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.name = response.data.name;
+        .then(res => {
+          this.name = res.data.name;
         })
         .catch(error => {
-          this.error = JSON.parse(error.response.data.error);
+          this.error = JSON.parse(error.res.data.error);
         });
     },
 
@@ -122,14 +122,14 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
           this.status = "Atributo alterado com sucesso.";
           this.btnDisabled = false;
         })
         .catch(error => {
           this.status = false;
-          this.error = JSON.parse(error.response.data.error);
+          this.error = JSON.parse(error.res.data.error);
           this.btnDisabled = false;
         });
 

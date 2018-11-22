@@ -90,9 +90,9 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
-          let data = response.data;
+          let data = res.data;
           if (data._id) {
             sessionStorage.setItem("attributeCreated", "Atributo criado com sucesso!");
             this.$router.push({
@@ -106,7 +106,7 @@ export default {
         })
         .catch(error => {
           this.status = false;
-          this.error = JSON.parse(error.response.data.error);
+          this.error = JSON.parse(error.res.data.error);
            this.btnDisabled = false;
           setTimeout(() => {
             this.error = false;

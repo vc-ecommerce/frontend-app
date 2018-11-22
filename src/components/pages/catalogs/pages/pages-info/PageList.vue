@@ -110,9 +110,9 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.pages = response.data;
-          this.total = response.data.total;
+        .then(res => {
+          this.pages = res.data;
+          this.total = res.data.total;
         })
         .catch(error => {
 

@@ -56,6 +56,7 @@ import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import NotifyHelper from "@/helpers/NotifyHelper";
 import ToolsHelper from "@/helpers/ToolsHelper";
 import AxiosService from "@/services/AxiosService";
+import { handleStatus } from "@/helpers/promise-helper";
 
 export default {
   name: "Account",
@@ -105,26 +106,25 @@ export default {
       });
 
       promise
-        .then(response => {
-          if (response.status === 200) {
-            let stateUser = this.$store.getters.getUser;
-            stateUser.name = this.user.name;
+        .then(handleStatus)
+        .then(res => {
+          let stateUser = this.$store.getters.getUser;
+          stateUser.name = this.user.name;
 
-            sessionStorage.setItem("user", JSON.stringify(stateUser));
+          sessionStorage.setItem("user", JSON.stringify(stateUser));
 
-            this.btnDisabled = false;
-            this.passwordInvalid = false;
-            this.password = "";
-            this.ok = true;
+          this.btnDisabled = false;
+          this.passwordInvalid = false;
+          this.password = "";
+          this.ok = true;
 
-            this.users = response.data;
-            this.total = response.data.total;
+          this.users = res.data;
+          this.total = res.data.total;
 
-            NotifyHelper.success(
-              "Sucesso!",
-              "Dados do usuário alterados com sucesso."
-            );
-          }
+          NotifyHelper.success(
+            "Sucesso!",
+            "Dados do usuário alterados com sucesso."
+          );
         })
         .catch(error => {
           this.btnDisabled = false;
@@ -132,13 +132,13 @@ export default {
           this.passwordInvalid = false;
           this.password = "";
 
-          Array(JSON.parse(error.response.data.error)).forEach(value => {
+          Array(JSON.parse(error.res.data.error)).forEach(value => {
             Object.values(value).forEach(value => {
               NotifyHelper.danger("Atenção!", value);
             });
           });
 
-          console.log(error.response);
+          console.log(error.res);
         });
     }
   }

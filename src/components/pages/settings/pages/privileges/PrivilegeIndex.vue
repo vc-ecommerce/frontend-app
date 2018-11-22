@@ -74,9 +74,9 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.privileges = response.data;
-          this.total = response.data.total;
+        .then(res => {
+          this.privileges = res.data;
+          this.total = res.data.total;
         })
         .catch(error => {
         });
