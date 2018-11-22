@@ -11,14 +11,14 @@ Vue.prototype.$urlApi = urlApi;
 Vue.prototype.$urlSite = urlSite;
 
 require('@/commons/html-scripts');
-import { swalErrorApi } from '@/helpers/tools';
+import ToolsHelper from '@/helpers/ToolsHelper';
 
 const successCallback = (response) => {
   return response;
 }
 
 const errorCallback = (error) => {
-  swalErrorApi(error);
+  ToolsHelper.swalErrorApi(error);
   return Promise.reject(error);
 }
 

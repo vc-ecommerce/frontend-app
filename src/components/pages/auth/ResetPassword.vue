@@ -58,38 +58,39 @@ export default {
 
       this.btnDisabled = true;
 
-      return new Promise((resolve, reject) => {
-        AxiosService.post("auth/reset", { email: this.email })
-          .then(response => {
-            resolve(
-              swal({
-                title: "Sucesso!",
-                text:
-                  "O link para redefinição de senha foi enviado para o seu e-mail!",
-                type: "success",
-                showCancelButton: false,
-                confirmButtonText: "Ok!"
-              })
-            );
+      let promise = AxiosService.post("auth/reset", { email: this.email });
 
-            this.email = "";
-            this.btnDisabled = false;
-            this.ok = true;
-          })
-          .catch(error => {
-            this.btnDisabled = false;
+      promise
+        .then(response => {
 
-            if (error.response.status === 404) {
-              reject(NotifyHelper.danger("Atenção!", "Email não encontrado."));
-            } else {
-              Array(JSON.parse(error.response.data.error)).forEach(value => {
-                Object.values(value).forEach(value => {
-                  reject(NotifyHelper.danger("Atenção!", value));
-                });
-              });
-            }
+          swal({
+            title: "Sucesso!",
+            text:
+              "O link para redefinição de senha foi enviado para o seu e-mail!",
+            type: "success",
+            showCancelButton: false,
+            confirmButtonText: "Ok!"
           });
-      });
+
+          this.email = "";
+          this.btnDisabled = false;
+          this.ok = true;
+        })
+        .catch(error => {
+          this.btnDisabled = false;
+
+          if (error.response.status === 404) {
+            NotifyHelper.danger("Atenção!", "Email não encontrado.");
+          } else {
+            Array(JSON.parse(error.response.data.error)).forEach(value => {
+              Object.values(value).forEach(value => {
+                NotifyHelper.danger("Atenção!", value);
+              });
+            });
+          }
+
+          return Promise.reject(error);
+        });
     }
   },
   mounted() {

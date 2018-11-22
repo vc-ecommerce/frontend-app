@@ -52,7 +52,8 @@ export default {
       ok: false,
       email: "",
       password: "",
-      btnDisabled: false
+      btnDisabled: false,
+      redirectPathForIndex: ["password", "login", "static"]
     };
   },
   methods: {
@@ -63,64 +64,63 @@ export default {
       }
 
       this.btnDisabled = true;
+      const vm = this;
 
-      return new Promise((resolve, reject) => {
-        AxiosService.post("/auth/login", {
-          email: this.email,
-          password: this.password
-        })
-          .then(response => {
-            sessionStorage.setItem(
-              "token",
-              JSON.stringify(response.data.HTTP_Authorization)
-            );
-            sessionStorage.setItem(
-              "user",
-              JSON.stringify(response.data.HTTP_Data)
-            );
-
-            let pathnameReferer = localStorage.getItem("pathnameReferer")
-              ? localStorage.getItem("pathnameReferer")
-              : "/";
-
-            resolve(
-              NotifyHelper.success(
-                "Redirecionando!",
-                "Aguarde carregando dados."
-              )
-            );
-
-            setTimeout(() => {
-              if (pathnameReferer.indexOf("login")) {
-                window.location.replace("/");
-              }
-
-              window.location.replace(pathnameReferer ? pathnameReferer : "/");
-            }, 1000);
-          })
-          .catch(error => {
-            this.btnDisabled = false;
-            this.password = "";
-            let errors = error.response.data.error;
-
-            if (errors == "account_inactive") {
-              reject(
-                NotifyHelper.warning(
-                  "Erro!",
-                  "Você ainda não confirmou seu email."
-                )
-              );
-            } else if (errors == "invalid_credentials") {
-              NotifyHelper.warning("Erro!", "Email e ou senha inválidos.");
-            } else {
-              Array(JSON.parse(errors)).forEach(value => {
-                Object.values(value).forEach(value => {
-                  reject(NotifyHelper.danger("Atenção!", value));
-                });
-              });
-            }
-          });
+      let promise = AxiosService.post("/auth/login", {
+        email: this.email,
+        password: this.password
       });
+
+      promise
+        .then(response => {
+          sessionStorage.setItem(
+            "token",
+            JSON.stringify(response.data.HTTP_Authorization)
+          );
+
+          sessionStorage.setItem(
+            "user",
+            JSON.stringify(response.data.HTTP_Data)
+          );
+
+          const pathnameReferer = localStorage.getItem("pathnameReferer")
+            ? localStorage.getItem("pathnameReferer")
+            : "/";
+
+          NotifyHelper.success("Redirecionando!", "Aguarde carregando dados.");
+
+          setTimeout(() => {
+
+            if (vm.redirectPathForIndex.includes(pathnameReferer.substring(1))) {
+              return window.location.replace("/");
+            }
+
+            return window.location.replace(pathnameReferer ? pathnameReferer : "/");
+
+          }, 1000);
+        })
+        .catch(error => {
+          this.btnDisabled = false;
+          this.password = "";
+          let errors = error.response.data.error;
+
+          if (errors == "account_inactive") {
+            NotifyHelper.warning(
+              "Erro!",
+              "Você ainda não confirmou seu email."
+            );
+          } else if (errors == "invalid_credentials") {
+            NotifyHelper.warning("Erro!", "Email e ou senha inválidos.");
+          } else {
+            Array(JSON.parse(errors)).forEach(value => {
+              Object.values(value).forEach(value => {
+                NotifyHelper.danger("Atenção!", value);
+              });
+            });
+          }
+
+          return Promise.reject(error);
+        });
     }
   },
   mounted() {

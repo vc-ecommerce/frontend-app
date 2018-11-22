@@ -83,82 +83,74 @@ export default {
     checkToken(disabledNotify) {
       const vm = this;
 
-      return new Promise((resolve, reject) => {
-        AxiosService.post("/auth/forgot/check/token", {
-          token: this.token
-        })
-          .then(response => {
-            if (response.data) {
-              if (disabledNotify !== false) {
-                resolve(
-                  NotifyHelper.success("Verificação!", "Aceito, token válido.")
-                );
-              }
-              this.userId = response.data;
+      AxiosService.post("/auth/forgot/check/token", {
+        token: this.token
+      })
+        .then(response => {
+          if (response.data) {
+            if (disabledNotify !== false) {
+              NotifyHelper.success("Verificação!", "Aceito, token válido.");
             }
-          })
-          .catch(error => {
-            reject(
-              swal(
-                {
-                  title: "Token inválido ou expirado!!!",
-                  text: "Deseja gerar um novo token?",
-                  type: "warning",
-                  showCancelButton: true,
-                  confirmButtonClass: "btn-danger",
-                  confirmButtonText: "Sim",
-                  cancelButtonText: "Não",
-                  closeOnConfirm: false
-                },
-                function() {
-                  return (window.location.href = "/password/reset");
-                }
-              )
-            );
-          });
-      });
+            this.userId = response.data;
+          }
+        })
+        .catch(error => {
+          swal(
+            {
+              title: "Token inválido ou expirado!!!",
+              text: "Deseja gerar um novo token?",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonClass: "btn-danger",
+              confirmButtonText: "Sim",
+              cancelButtonText: "Não",
+              closeOnConfirm: false
+            },
+            function() {
+              return (window.location.href = "/password/reset");
+            }
+          );
+        });
     },
     sendData() {
       this.checkToken(false);
       this.btnDisabled = true;
 
-      return new Promise((resolve, reject) => {
-        AxiosService.put("/auth/forgot", {
-          user_id: this.userId,
-          token: this.token,
-          password: this.password
-        })
-          .then(response => {
-            this.btnDisabled = false;
-            this.ok = true;
-            if (response.data === "update_password") {
-              this.password = "";
-              this.confirme = "";
-              resolve(
-                swal(
-                  {
-                    title: "Senha alterada com sucesso!",
-                    text: "Deseja efetuar login?",
-                    type: "success",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-success",
-                    confirmButtonText: "Sim",
-                    cancelButtonText: "Não",
-                    closeOnConfirm: false
-                  },
-                  function() {
-                    return (window.location.href = "/login");
-                  }
-                )
-              );
-
-            }
-          })
-          .catch(error => {
-            this.btnDisabled = false;
-            reject(error);
-          });
+      let promise = AxiosService.put("/auth/forgot", {
+        user_id: this.userId,
+        token: this.token,
+        password: this.password
       });
+
+      promise
+        .then(response => {
+          this.btnDisabled = false;
+          this.ok = true;
+          if (response.data === "update_password") {
+            this.password = "";
+            this.confirme = "";
+            swal(
+              {
+                title: "Senha alterada com sucesso!",
+                text: "Deseja efetuar login?",
+                type: "success",
+                showCancelButton: true,
+                confirmButtonClass: "btn-success",
+                confirmButtonText: "Sim",
+                cancelButtonText: "Não",
+                closeOnConfirm: false
+              },
+              function() {
+                return (window.location.href = "/login");
+              }
+            );
+          }
+        })
+        .catch(error => {
+          this.btnDisabled = false;
+
+          return Promise.reject(error);
+        });
     },
     submitForm() {
       if (!this.isPasswordValid()) {

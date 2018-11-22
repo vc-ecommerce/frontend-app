@@ -98,46 +98,46 @@ export default {
 
       const uri = `/admin/users/${this.$store.getters.getUserId}`;
 
-      return new Promise((resolve, reject) => {
-        AxiosService.put(uri, {
-          name: this.user.name,
-          password: this.password,
-          password_confirmation: this.password
+      let promise = AxiosService.put(uri, {
+        name: this.user.name,
+        password: this.password,
+        password_confirmation: this.password
+      });
+
+      promise
+        .then(response => {
+          let stateUser = this.$store.getters.getUser;
+          stateUser.name = this.user.name;
+
+          sessionStorage.setItem("user", JSON.stringify(stateUser));
+
+          this.btnDisabled = false;
+          this.passwordInvalid = false;
+          this.password = "";
+          this.ok = true;
+
+          this.users = response.data;
+          this.total = response.data.total;
+
+          NotifyHelper.success(
+            "Sucesso!",
+            "Dados do usuário alterados com sucesso."
+          );
         })
-          .then(response => {
-            let stateUser = this.$store.getters.getUser;
-            stateUser.name = this.user.name;
+        .catch(error => {
+          this.btnDisabled = false;
 
-            sessionStorage.setItem("user", JSON.stringify(stateUser));
+          this.passwordInvalid = false;
+          this.password = "";
 
-            this.btnDisabled = false;
-            this.passwordInvalid = false;
-            this.password = "";
-            this.ok = true;
-
-            this.users = response.data;
-            this.total = response.data.total;
-
-            resolve(
-              NotifyHelper.success(
-                "Sucesso!",
-                "Dados do usuário alterados com sucesso."
-              )
-            );
-          })
-          .catch(error => {
-            this.btnDisabled = false;
-
-            this.passwordInvalid = false;
-            this.password = "";
-
-            Array(JSON.parse(error.response.data.error)).forEach(value => {
-              Object.values(value).forEach(value => {
-                reject(NotifyHelper.danger("Atenção!", value));
-              });
+          Array(JSON.parse(error.response.data.error)).forEach(value => {
+            Object.values(value).forEach(value => {
+              NotifyHelper.danger("Atenção!", value);
             });
           });
-      });
+
+          return Promise.reject(error);
+        });
     }
   }
 };

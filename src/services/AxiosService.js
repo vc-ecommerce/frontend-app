@@ -41,8 +41,7 @@ class AxiosService {
         headers: AxiosService._authorizationBearer()
       }).then(res => {
         resolve(res)
-      }).catch(function (error) {
-        console.log(error)
+      }).catch(error => {
         reject(error)
       });
 
