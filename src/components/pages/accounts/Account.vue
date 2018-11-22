@@ -126,16 +126,13 @@ export default {
             );
           })
           .catch(error => {
-            console.log(error.response);
             this.btnDisabled = false;
 
             this.passwordInvalid = false;
             this.password = "";
-            let errors = error.response.data.error;
-            errors = Array(JSON.parse(errors));
-            errors.forEach(value => {
-              let values = Object.values(value);
-              values.forEach(value => {
+
+            Array(JSON.parse(error.response.data.error)).forEach(value => {
+              Object.values(value).forEach(value => {
                 reject(NotifyHelper.danger("Atenção!", value));
               });
             });

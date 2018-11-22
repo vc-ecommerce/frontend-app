@@ -15,7 +15,7 @@ class AxiosService {
     this._auth = {}
   }
 
-  static authorizationBearer() {
+  static _authorizationBearer() {
     if (store.getters.getToken) {
       return {
         Authorization: "Bearer " + store.getters.getToken,
@@ -38,7 +38,7 @@ class AxiosService {
         method: this._method ? this._method : 'get',
         url,
         data: this._data ? this._data : "",
-        headers: AxiosService.authorizationBearer()
+        headers: AxiosService._authorizationBearer()
       }).then(res => {
         resolve(res)
       }).catch(function (error) {

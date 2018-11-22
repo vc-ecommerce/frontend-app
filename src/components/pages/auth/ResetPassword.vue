@@ -82,10 +82,8 @@ export default {
             if (error.response.status === 404) {
               reject(NotifyHelper.danger("Atenção!", "Email não encontrado."));
             } else {
-              let errors = Array(JSON.parse(error.response.data.error));
-              errors.forEach(value => {
-                let values = Object.values(value);
-                values.forEach(value => {
+              Array(JSON.parse(error.response.data.error)).forEach(value => {
+                Object.values(value).forEach(value => {
                   reject(NotifyHelper.danger("Atenção!", value));
                 });
               });

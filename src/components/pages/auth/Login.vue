@@ -113,10 +113,8 @@ export default {
             } else if (errors == "invalid_credentials") {
               NotifyHelper.warning("Erro!", "Email e ou senha inválidos.");
             } else {
-              errors = Array(JSON.parse(errors));
-              errors.forEach(value => {
-                let values = Object.values(value);
-                values.forEach(value => {
+              Array(JSON.parse(errors)).forEach(value => {
+                Object.values(value).forEach(value => {
                   reject(NotifyHelper.danger("Atenção!", value));
                 });
               });
