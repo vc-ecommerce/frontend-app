@@ -116,7 +116,7 @@ import Panel from "@/components/layouts/Panel";
 import Alert from "@/components/layouts/Alert";
 import WidgetAccordion from "@/components/widgets/WidgetAccordion";
 import WidgetAccordionContent from "@/components/widgets/WidgetAccordionContent";
-import ToolsHelper from "@/helpers/ToolsHelper";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
 import HtmlEditor from "@/components/summernote/HtmlEditor";
 
 export default {
@@ -141,7 +141,7 @@ export default {
   computed: {
     applySlug() {
       if (this.data.name) {
-        return ToolsHelper.strSlug(this.data.name);
+        return tool.strSlug(this.data.name);
       }
       return "";
     }
@@ -152,7 +152,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+      return tool.cleanDataApi(data);
     },
     getPage() {
       const api = `${this.$urlApi}/admin/pages/${this.$route.params.id}`;
@@ -167,7 +167,7 @@ export default {
           this.data = res.data;
         })
         .catch(error => {
-          this.error = JSON.parse(error.res.data.error);
+          this.error = JSON.parse(error.response.data.error);
         });
     },
 
@@ -184,7 +184,7 @@ export default {
             name: vm.data.name,
             description: vm.data.description,
             active: vm.data.active,
-            slug: ToolsHelper.strSlug(vm.data.name),
+            slug: tool.strSlug(vm.data.name),
             meta_description: vm.data.meta_description,
             meta_title: vm.data.meta_title
           },
@@ -217,7 +217,7 @@ export default {
         })
         .catch(error => {
           this.status = false;
-          this.error = JSON.parse(error.res.data.error);
+          this.error = JSON.parse(error.response.data.error);
 
           swal({
             title: "Houve um erro na solicitação!",

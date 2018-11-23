@@ -62,7 +62,7 @@ import ChangeStatusUser from "./components/ChangeStatusUser";
 import RemoveUser from "./components/RemoveUser";
 import Table from "@/components/layouts/Table";
 import Pagination from "@/components/paginations/Pagination";
-import ToolsHelper from "@/helpers/ToolsHelper";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
 
 export default {
   name: "AttributeIndex",
@@ -108,10 +108,10 @@ export default {
           }
         })
         .then(res => {
-          this.roles = ToolsHelper.cleanRole(res.data.data);
+          this.roles = tool.cleanRole(res.data.data);
         })
         .catch(error => {
-          this.error = JSON.parse(error.res.data.error);
+          this.error = JSON.parse(error.response.data.error);
         });
     },
 

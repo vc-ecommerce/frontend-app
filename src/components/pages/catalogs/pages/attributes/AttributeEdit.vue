@@ -50,7 +50,7 @@
 <script>
 import Panel from "@/components/layouts/Panel";
 import Alert from "@/components/layouts/Alert";
-import ToolsHelper from "@/helpers/ToolsHelper";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
 
 import AttributeVariation from "./components/AttributeVariation";
 
@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+      return tool.cleanDataApi(data);
     },
 
     getAttribute() {
@@ -100,7 +100,7 @@ export default {
           this.name = res.data.name;
         })
         .catch(error => {
-          this.error = JSON.parse(error.res.data.error);
+          this.error = JSON.parse(error.response.data.error);
         });
     },
 
@@ -129,7 +129,7 @@ export default {
         })
         .catch(error => {
           this.status = false;
-          this.error = JSON.parse(error.res.data.error);
+          this.error = JSON.parse(error.response.data.error);
           this.btnDisabled = false;
         });
 

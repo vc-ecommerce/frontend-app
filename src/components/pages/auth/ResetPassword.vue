@@ -26,13 +26,14 @@
   </form>
 </template>
 <script>
-import ValidatesHelper from "@/helpers/ValidatesHelper";
-import JQueryHelper from "@/helpers/JQueryHelper";
-import ButtonSubmit from "@/components/layouts/ButtonSubmit";
-import DocumentFactory from "@/factory/DocumentFactory";
-import NotifyHelper from "@/helpers/NotifyHelper";
+import { validateHelpers as validate } from "@/utils/validate-helpers";
+import { domHelpers as dom } from "@/utils/dom-helpers";
+import { notifyHelpers as notify } from "@/utils/notify-helpers";
+import { htmlPageCenter } from "@/utils/jquery-helpers";
+import { handleStatus } from "@/utils/promise-helpers";
+import { errorWithNotify } from "@/utils/array-helpers";
 import AxiosService from "@/services/AxiosService";
-import { handleStatus } from "@/helpers/promise-helper";
+import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 
 export default {
   name: "ResetPassword",
@@ -49,11 +50,11 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+      return tool.cleanDataApi(data);
     },
     submitForm() {
-      if (!ValidatesHelper.validateEmail(this.email)) {
-        NotifyHelper.info("Atenção!", "Informe um email válido.");
+      if (!validate.validateEmail(this.email)) {
+        notify.info("Atenção!", "Informe um email válido.");
         return;
       }
 
@@ -80,23 +81,21 @@ export default {
         .catch(error => {
           this.btnDisabled = false;
 
-          if (error.res.data.error.data === "email_not_found") {
-            NotifyHelper.danger("Atenção!", "Email não encontrado.");
+          let errors = error.response.data.error;
+
+          if (errors.data === "email_not_found") {
+            notify.danger("Atenção!", "Email não encontrado.");
           } else {
-            Array(JSON.parse(error.res.data.error)).forEach(value => {
-              Object.values(value).forEach(value => {
-                NotifyHelper.danger("Atenção!", value);
-              });
-            });
+            errorWithNotify(errors);
           }
 
-          console.log(error.res);
+          console.log(error.response);
         });
     }
   },
   mounted() {
-    DocumentFactory.createTitle("Redefinição de Senha");
-    JQueryHelper.pageCenter();
+    dom.createTitle("Redefinição de Senha");
+    htmlPageCenter();
   }
 };
 </script>

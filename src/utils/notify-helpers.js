@@ -1,6 +1,6 @@
-class NotifyHelper {
+export const notifyHelpers = {
 
-  static success(title, message) {
+  success(title, message) {
 
     if (!title)
       throw new Error('Informe o título notify');
@@ -15,9 +15,9 @@ class NotifyHelper {
     }, {
         type: 'success'
       });
-  }
+  },
 
-  static danger(title, message) {
+  danger(title, message) {
 
     if (!title)
       throw new Error('Informe o título notify');
@@ -32,9 +32,9 @@ class NotifyHelper {
     }, {
         type: 'danger'
       });
-  }
+  },
 
-  static warning(title, message) {
+  warning(title, message) {
 
     if (!title)
       throw new Error('Informe o título notify');
@@ -50,9 +50,9 @@ class NotifyHelper {
         type: 'warning'
       });
 
-  }
+  },
 
-  static info(title, message) {
+  info(title, message) {
 
     if (!title)
       throw new Error('Informe o título notify');
@@ -71,5 +71,3 @@ class NotifyHelper {
   }
 
 }
-
-export default NotifyHelper;

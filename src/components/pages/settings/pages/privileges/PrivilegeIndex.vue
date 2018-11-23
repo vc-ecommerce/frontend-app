@@ -43,7 +43,7 @@
 <script>
 
 import Table from "@/components/layouts/Table";
-import ToolsHelper from "@/helpers/ToolsHelper";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
 
 export default {
   name: "PrivilegeIndex",

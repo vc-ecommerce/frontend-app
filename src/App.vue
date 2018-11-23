@@ -31,12 +31,13 @@
 </template>
 
 <script>
+
+import AxiosLoader from "@/components/loaders/AxiosLoader";
+import { validateHelpers as validate } from "@/utils/validate-helpers";
+import { domHelpers as dom } from "@/utils/dom-helpers";
 import SiteHeader from "@/components/layouts/header/SiteHeader";
 import SidebarMenuLeft from "@/components/layouts/sidebar/SidebarMenuLeft";
 import SidebarMenuRight from "@/components/layouts/sidebar/SidebarMenuRight";
-import AxiosLoader from "@/components/loaders/AxiosLoader";
-import ValidatesHelper from "@/helpers/ValidatesHelper";
-import DocumentFactory from "@/factory/DocumentFactory";
 
 export default {
   name: "App",
@@ -54,8 +55,8 @@ export default {
   },
   created() {
     const vm = this;
-    if (ValidatesHelper.isPagesPublic()) {
-      DocumentFactory.removeClassBody();
+    if (validate.isPagesPublic()) {
+      dom.removeClassBody();
       vm.isPublic = true;
     }
   },
@@ -72,7 +73,7 @@ export default {
         return window.location.replace("/login");
       }
 
-      ValidatesHelper.rolesUserAuthorizedPainelAdmin(
+      validate.rolesUserAuthorizedPainelAdmin(
         this.$store.getters.getUserRoles,
         "ADMIN",
         "STAFF_AUDITOR",
@@ -90,7 +91,7 @@ export default {
     });
 
     if (!this.isPublic) {
-      DocumentFactory.createTitle("Painel de Controle");
+      dom.createTitle("Painel de Controle");
     }
 
     this.showHtml = true;

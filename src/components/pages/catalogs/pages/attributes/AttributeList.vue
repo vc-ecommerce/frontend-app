@@ -68,7 +68,7 @@
 import RemoveAttribute from "./components/RemoveAttribute";
 import Table from "@/components/layouts/Table";
 import Pagination from "@/components/paginations/Pagination";
-import ToolsHelper from "@/helpers/ToolsHelper";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
 
 export default {
   name: "AttributeList",

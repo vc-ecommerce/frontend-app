@@ -1,6 +1,6 @@
-class ToolsHelper {
+export const toolHelpers = {
 
-  static cleanRole(roles) {
+  cleanRole(roles) {
     return roles ? roles.filter(function (role) {
       delete role["_id"];
       delete role["default"];
@@ -9,9 +9,9 @@ class ToolsHelper {
       delete role["created_at"];
       return role;
     }) : [];
-  }
+  },
 
-  static forcePassword(password) {
+  forcePassword(password) {
 
     let force = 0;
 
@@ -44,9 +44,9 @@ class ToolsHelper {
 
     return force;
 
-  }
+  },
 
-  static swalErrorUnauthorized() {
+  swalErrorUnauthorized() {
 
     swal({
       title: "Atenção!!!",
@@ -62,15 +62,15 @@ class ToolsHelper {
         sessionStorage.clear();
         window.location.replace("/login");
       });
-  }
+  },
 
-  static cleanDataApi(data) {
+  cleanDataApi(data) {
     if (!data) return '';
     data = data.toString();
     return data.replace(["[", "]"], '');
-  }
+  },
 
-  static strSlug(str, separator = '-') {
+  strSlug(str, separator = '-') {
 
     if (!str) {
       throw new Error('Informe a String')
@@ -95,13 +95,13 @@ class ToolsHelper {
       .replace(/^-+/, "") // trim - from start of text
       .replace(/-+$/, "") // trim - from end of text
       .replace(/-/g, separator);
-  }
+  },
 
-  static strRandon() {
+  strRandon() {
     return Math.floor(Math.random() * 1000000 + 1);
-  }
+  },
 
-  static swalErrorApi(error) {
+  swalErrorApi(error) {
 
     if (error.response.status == 401) {
 
@@ -120,7 +120,7 @@ class ToolsHelper {
         });
     }
 
-  }
+  },
 
   // return swal({
   //   title: 'Erro',
@@ -143,5 +143,3 @@ class ToolsHelper {
   // }
 
 }
-
-export default ToolsHelper;

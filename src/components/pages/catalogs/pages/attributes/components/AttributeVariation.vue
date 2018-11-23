@@ -136,7 +136,7 @@ export default {
           }
         })
         .catch(error => {
-          if (error.res.data === "attribute_variation_is_exists") {
+          if (error.response.data === "attribute_variation_is_exists") {
             swal({
               title: "Dados duplicado!",
               text: `Variação ${this.name} já existe.`

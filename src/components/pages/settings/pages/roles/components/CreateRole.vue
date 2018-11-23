@@ -69,7 +69,7 @@ import Table from "@/components/layouts/Table";
 import Modal from "@/components/modals/Modal";
 import ModalLink from "@/components/modals/ModalLink";
 import Alert from "@/components/layouts/Alert";
-import ToolsHelper from "@/components/helpers/ToolsHelper";
+import tool from "@/components/helpers/tool";
 
 export default {
   name: "CreateRole",
@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+      return tool.cleanDataApi(data);
     },
     submitForm() {
       this.status = "Enviando...";
@@ -135,7 +135,7 @@ export default {
         .catch(error => {
           this.$eventHub.$emit("eventError", { data: error.res });
           this.status = false;
-          this.error = JSON.parse(error.res.data.error);
+          this.error = JSON.parse(error.response.data.error);
 
           setTimeout(() => {
             this.error = false;

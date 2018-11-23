@@ -35,13 +35,13 @@
   </form>
 </template>
 <script>
-import ToolsHelper from "@/helpers/ToolsHelper";
-import JQueryHelper from "@/helpers/JQueryHelper";
-import ButtonSubmit from "@/components/layouts/ButtonSubmit";
-import DocumentFactory from "@/factory/DocumentFactory";
-import NotifyHelper from "@/helpers/NotifyHelper";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
+import { domHelpers as dom } from "@/utils/dom-helpers";
+import { notifyHelpers as notify } from "@/utils/notify-helpers";
+import { handleStatus } from "@/utils/promise-helpers";
+import { htmlPageCenter } from "@/utils/jquery-helpers";
 import AxiosService from "@/services/AxiosService";
-import { handleStatus } from "@/helpers/promise-helper";
+import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 
 export default {
   name: "ForgotPassword",
@@ -92,7 +92,7 @@ export default {
         .then(handleStatus)
         .then(res => {
           if (disabledNotify !== false) {
-            NotifyHelper.success("Verificação!", "Aceito, token válido.");
+            notify.success("Verificação!", "Aceito, token válido.");
           }
           this.userId = res.data;
         })
@@ -112,6 +112,7 @@ export default {
               return (window.location.href = "/password/reset");
             }
           );
+          console.log(error.response);
         });
     },
     sendData() {
@@ -150,7 +151,7 @@ export default {
         })
         .catch(error => {
           this.btnDisabled = false;
-          console.log(error.res);
+          console.log(error.response);
         });
     },
     submitForm() {
@@ -158,7 +159,7 @@ export default {
         return;
       }
 
-      if (ToolsHelper.forcePassword(this.password) < 50) {
+      if (tool.forcePassword(this.password) < 50) {
         this.passwordInvalid = true;
         return;
       }
@@ -169,8 +170,8 @@ export default {
     }
   },
   mounted() {
-    DocumentFactory.createTitle("Redefinir Senha");
-    JQueryHelper.pageCenter();
+    dom.createTitle("Redefinir Senha");
+    htmlPageCenter();
   }
 };
 </script>

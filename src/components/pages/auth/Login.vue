@@ -34,13 +34,14 @@
   </form>
 </template>
 <script>
-import JQueryHelper from "@/helpers/JQueryHelper";
-import ValidatesHelper from "@/helpers/ValidatesHelper";
-import ButtonSubmit from "@/components/layouts/ButtonSubmit";
-import DocumentFactory from "@/factory/DocumentFactory";
-import NotifyHelper from "@/helpers/NotifyHelper";
+import { validateHelpers as validate } from "@/utils/validate-helpers";
+import { domHelpers as dom } from "@/utils/dom-helpers";
+import { notifyHelpers as notify } from "@/utils/notify-helpers";
+import { htmlPageCenter } from "@/utils/jquery-helpers";
+import { handleStatus } from "@/utils/promise-helpers";
+import { errorWithNotify } from "@/utils/array-helpers";
 import AxiosService from "@/services/AxiosService";
-import { handleStatus } from "@/helpers/promise-helper";
+import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 
 export default {
   name: "Login",
@@ -59,8 +60,8 @@ export default {
   },
   methods: {
     submitForm() {
-      if (!ValidatesHelper.validateEmail(this.email)) {
-        NotifyHelper.info("Atenção!", "Informe um email válido.");
+      if (!validate.validateEmail(this.email)) {
+        notify.info("Atenção!", "Informe um email válido.");
         return;
       }
 
@@ -80,16 +81,13 @@ export default {
             JSON.stringify(res.data.HTTP_Authorization)
           );
 
-          sessionStorage.setItem(
-            "user",
-            JSON.stringify(res.data.HTTP_Data)
-          );
+          sessionStorage.setItem("user", JSON.stringify(res.data.HTTP_Data));
 
           const pathnameReferer = localStorage.getItem("pathnameReferer")
             ? localStorage.getItem("pathnameReferer")
             : "/";
 
-          NotifyHelper.success("Redirecionando!", "Aguarde carregando dados.");
+          notify.success("Redirecionando!", "Aguarde carregando dados.");
 
           setTimeout(() => {
             if (
@@ -106,38 +104,34 @@ export default {
         .catch(error => {
           this.btnDisabled = false;
           this.password = "";
-          let errors = error.res.data.error;
+
+          let errors = error.response.data.error;
 
           if (errors.data == "account_inactive") {
-            NotifyHelper.warning(
+            notify.warning(
               "Erro!",
               "Você ainda não confirmou seu email."
             );
           } else if (errors.data == "invalid_credentials") {
-            NotifyHelper.warning("Erro!", "Email e ou senha inválidos.");
+            notify.warning("Erro!", "Email e ou senha inválidos.");
           } else {
-            Array(JSON.parse(errors)).forEach(value => {
-              Object.values(value).forEach(value => {
-                NotifyHelper.danger("Atenção!", value);
-              });
-            });
+            errorWithNotify(errors);
           }
-
-          console.log(error.res);
+          console.log(error.response);
         });
     }
   },
   mounted() {
-    DocumentFactory.createTitle("Fazer Login");
+    dom.createTitle("Fazer Login");
 
     if (sessionStorage.getItem("desconected")) {
-      NotifyHelper.success("Sucesso!", "Você foi desconectado com segurança.");
+      notify.success("Sucesso!", "Você foi desconectado com segurança.");
     }
     // Remove all saved data from sessionStorage
     sessionStorage.clear();
     this.email = "";
     this.password = "";
-    JQueryHelper.pageCenter();
+    htmlPageCenter();
   }
 };
 </script>

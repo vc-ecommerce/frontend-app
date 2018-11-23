@@ -51,12 +51,14 @@
   </form>
 </template>
 <script>
+
+import { toolHelpers as tool } from "@/utils/tool-helpers";
+import { notifyHelpers as notify } from "@/utils/notify-helpers";
+import { handleStatus } from "@/utils/promise-helpers";
+import { errorWithNotify } from "@/utils/array-helpers";
+import AxiosService from "@/services/AxiosService";
 import Alert from "@/components/layouts/Alert";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
-import NotifyHelper from "@/helpers/NotifyHelper";
-import ToolsHelper from "@/helpers/ToolsHelper";
-import AxiosService from "@/services/AxiosService";
-import { handleStatus } from "@/helpers/promise-helper";
 
 export default {
   name: "Account",
@@ -80,11 +82,11 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+      return tool.cleanDataApi(data);
     },
     submitForm() {
       if (this.password !== "") {
-        if (ToolsHelper.forcePassword(this.password) < 50) {
+        if (tool.forcePassword(this.password) < 50) {
           this.passwordInvalid = true;
 
           setTimeout(() => {
@@ -121,24 +123,18 @@ export default {
           this.users = res.data;
           this.total = res.data.total;
 
-          NotifyHelper.success(
+          notify.success(
             "Sucesso!",
             "Dados do usuário alterados com sucesso."
           );
         })
         .catch(error => {
           this.btnDisabled = false;
-
           this.passwordInvalid = false;
           this.password = "";
 
-          Array(JSON.parse(error.res.data.error)).forEach(value => {
-            Object.values(value).forEach(value => {
-              NotifyHelper.danger("Atenção!", value);
-            });
-          });
-
-          console.log(error.res);
+          errorWithNotify(error.response.data.error);
+          console.log(error.response);
         });
     }
   }

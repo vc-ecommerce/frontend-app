@@ -90,7 +90,7 @@ import Table from "@/components/layouts/Table";
 import Modal from "@/components/modals/Modal";
 import ModalLink from "@/components/modals/ModalLink";
 import Alert from "@/components/layouts/Alert";
-import ToolsHelper from "@/helpers/ToolsHelper";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
 
 export default {
   name: "CreateUser",
@@ -126,12 +126,12 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+      return tool.cleanDataApi(data);
     },
 
     submitForm() {
       if (this.user.password !== "") {
-        if (ToolsHelper.forcePassword(this.user.password) < 50) {
+        if (tool.forcePassword(this.user.password) < 50) {
           this.passwordInvalid = true;
 
           setTimeout(() => {
@@ -174,7 +174,7 @@ export default {
         })
         .catch(error => {
           this.status = false;
-          this.error = JSON.parse(error.res.data.error);
+          this.error = JSON.parse(error.response.data.error);
 
           setTimeout(() => {
             this.error = false;
