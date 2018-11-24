@@ -1,12 +1,19 @@
+const infoTitle = 'Informe o parâmetro "title" em notifyHelpers';
+const infoMessage = 'Informe o parâmetro "message" em notifyHelpers';
+
+const showError = (title, message) => {
+  if (!title)
+    alert(infoTitle)
+
+  if (!message)
+    alert(infoMessage)
+}
+
 export const notifyHelpers = {
 
   success(title, message) {
 
-    if (!title)
-      throw new Error('Informe o título notify');
-
-    if (!message)
-      throw new Error('Informe o mensagem notify');
+    showError(title, message);
 
     $.notify({
       icon: 'font-icon font-icon-check-circle',
@@ -19,11 +26,7 @@ export const notifyHelpers = {
 
   danger(title, message) {
 
-    if (!title)
-      throw new Error('Informe o título notify');
-
-    if (!message)
-      throw new Error('Informe o mensagem notify');
+    showError(title, message);
 
     $.notify({
       icon: 'font-icon font-icon-warning',
@@ -36,11 +39,7 @@ export const notifyHelpers = {
 
   warning(title, message) {
 
-    if (!title)
-      throw new Error('Informe o título notify');
-
-    if (!message)
-      throw new Error('Informe o mensagem notify');
+    showError(title, message);
 
     $.notify({
       icon: 'font-icon font-icon-warning',
@@ -54,11 +53,7 @@ export const notifyHelpers = {
 
   info(title, message) {
 
-    if (!title)
-      throw new Error('Informe o título notify');
-
-    if (!message)
-      throw new Error('Informe o mensagem notify');
+    showError(title, message);
 
     $.notify({
       icon: 'font-icon font-icon-warning',

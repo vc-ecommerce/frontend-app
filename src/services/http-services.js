@@ -1,18 +1,37 @@
 import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
-import { urlApi } from '@/configs';
 import store from '@/stores';
+import { urlApi } from '@/configs';
+import { isObject } from "@/utils/array-helpers";
 
 Vue.use(VueAxios, axios);
 
-class AxiosService {
+export class HttpService {
 
   constructor() {
     this._uri = "";
     this._data = {};
     this._method = "";
     this._auth = {}
+  }
+
+  static _checkIsObjetct(data) {
+
+    let text = 'Variable data is not Objetc {}';
+
+    if (!data)
+      throw new Error(text);
+
+    if (!isObject(data))
+      throw new Error(text);
+  }
+
+  static _urlFull() {
+    if (!this._uri)
+      throw new Error('Informe a URI da API')
+
+    return `${urlApi}/${this._uri.toString().replace(/^\//g, "")}`;
   }
 
   static _authorizationBearer() {
@@ -27,18 +46,13 @@ class AxiosService {
 
   static _http() {
 
-    if (!this._uri)
-      throw new Error('Informe a URI da API')
-
-    const url = urlApi + "/" + this._uri.toString().replace(/^\//g, "");
-
     return new Promise((resolve, reject) => {
 
       Vue.axios({
         method: this._method ? this._method : 'get',
-        url,
+        url: this._urlFull(),
         data: this._data ? this._data : "",
-        headers: AxiosService._authorizationBearer()
+        headers: this._authorizationBearer()
       }).then(res => {
         resolve(res)
       }).catch(error => {
@@ -56,6 +70,7 @@ class AxiosService {
   }
 
   static post(uri, data) {
+    this._checkIsObjetct(data);
     this._method = 'post';
     this._uri = uri;
     this._data = data;
@@ -63,6 +78,7 @@ class AxiosService {
   }
 
   static put(uri, data) {
+    this._checkIsObjetct(data);
     this._method = 'put';
     this._uri = uri;
     this._data = data;
@@ -76,5 +92,3 @@ class AxiosService {
   }
 
 }
-
-export default AxiosService;

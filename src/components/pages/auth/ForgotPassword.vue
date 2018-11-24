@@ -40,7 +40,7 @@ import { domHelpers as dom } from "@/utils/dom-helpers";
 import { notifyHelpers as notify } from "@/utils/notify-helpers";
 import { handleStatus } from "@/utils/promise-helpers";
 import { htmlPageCenter } from "@/utils/jquery-helpers";
-import AxiosService from "@/services/AxiosService";
+import { HttpService as service } from "@/services/http-services";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 
 export default {
@@ -84,7 +84,7 @@ export default {
     checkToken(disabledNotify) {
       const vm = this;
 
-      let promisse = AxiosService.post("/auth/forgot/check/token", {
+      let promisse = service.post("/auth/forgot/check/token", {
         token: this.token
       });
 
@@ -119,7 +119,7 @@ export default {
       this.checkToken(false);
       this.btnDisabled = true;
 
-      let promise = AxiosService.put("/auth/forgot", {
+      let promise = service.put("/auth/forgot", {
         user_id: this.userId,
         token: this.token,
         password: this.password

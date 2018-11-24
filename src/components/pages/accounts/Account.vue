@@ -51,12 +51,11 @@
   </form>
 </template>
 <script>
-
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { notifyHelpers as notify } from "@/utils/notify-helpers";
 import { handleStatus } from "@/utils/promise-helpers";
 import { errorWithNotify } from "@/utils/array-helpers";
-import AxiosService from "@/services/AxiosService";
+import { HttpService as service } from "@/services/http-services";
 import Alert from "@/components/layouts/Alert";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 
@@ -101,7 +100,7 @@ export default {
 
       const uri = `/admin/users/${this.$store.getters.getUserId}`;
 
-      let promise = AxiosService.put(uri, {
+      let promise = service.put(uri, {
         name: this.user.name,
         password: this.password,
         password_confirmation: this.password
@@ -123,17 +122,16 @@ export default {
           this.users = res.data;
           this.total = res.data.total;
 
-          notify.success(
-            "Sucesso!",
-            "Dados do usuário alterados com sucesso."
-          );
+          notify.success("Sucesso!", "Dados do usuário alterados com sucesso.");
         })
         .catch(error => {
           this.btnDisabled = false;
           this.passwordInvalid = false;
           this.password = "";
+          if ("data" in error.response) {
+            errorWithNotify(error.response.data.error);
+          }
 
-          errorWithNotify(error.response.data.error);
           console.log(error.response);
         });
     }

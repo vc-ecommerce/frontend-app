@@ -1,5 +1,5 @@
 return new Promise((resolve, reject) => {
-  AxiosService.post("/auth/forgot/check/token", {
+  HttpService.post("/auth/forgot/check/token", {
     token: this.token
   })
     .then(response => {

@@ -32,7 +32,7 @@ import { notifyHelpers as notify } from "@/utils/notify-helpers";
 import { htmlPageCenter } from "@/utils/jquery-helpers";
 import { handleStatus } from "@/utils/promise-helpers";
 import { errorWithNotify } from "@/utils/array-helpers";
-import AxiosService from "@/services/AxiosService";
+import { HttpService as service } from "@/services/http-services";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 
 export default {
@@ -60,7 +60,7 @@ export default {
 
       this.btnDisabled = true;
 
-      let promise = AxiosService.post("auth/reset", { email: this.email });
+      let promise = service.post("auth/reset", { email: this.email });
 
       promise
         .then(handleStatus)
@@ -81,12 +81,14 @@ export default {
         .catch(error => {
           this.btnDisabled = false;
 
-          let errors = error.response.data.error;
+          if ("data" in error.response) {
+            let errors = error.response.data.error;
 
-          if (errors.data === "email_not_found") {
-            notify.danger("Atenção!", "Email não encontrado.");
-          } else {
-            errorWithNotify(errors);
+            if (errors.data === "email_not_found") {
+              notify.danger("Atenção!", "Email não encontrado.");
+            } else {
+              errorWithNotify(errors);
+            }
           }
 
           console.log(error.response);
