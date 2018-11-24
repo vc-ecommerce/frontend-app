@@ -1,6 +1,6 @@
 export const validateHelpers = {
 
-  isPagesPublic() {
+  isPagesPublic: () => {
     const url = window.location.pathname.substring(1).split('/');
     const pagesPublic = [
       "login",
@@ -9,7 +9,7 @@ export const validateHelpers = {
     return pagesPublic.includes(url[0]);
   },
 
-  rolesUserAuthorizedPainelAdmin(roles, ...keys) {
+  rolesUserAuthorizedPainelAdmin: (roles, ...keys) => {
     let count = 0;
     if (roles) {
       roles.forEach(function (role) {
@@ -24,7 +24,7 @@ export const validateHelpers = {
     }
   },
 
-  userIsAuthorizedPage(roles, keys) {
+  userIsAuthorizedPage: (roles, keys) => {
     let count = 0;
     if (roles) {
       roles.forEach(function (role) {
@@ -38,7 +38,7 @@ export const validateHelpers = {
     }
   },
 
-  isRoleUser(roles, keys) {
+  isRoleUser: (roles, keys) => {
     let count = 0;
     if (roles) {
       roles.forEach(function (role) {
@@ -53,7 +53,7 @@ export const validateHelpers = {
     return false
   },
 
-  validateEmail(email) {
+  validateEmail: (email) => {
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
   }

@@ -1,12 +1,12 @@
 export const domHelpers = {
 
-  createTitle(title) {
+  createTitle: (title) => {
     document.addEventListener("DOMContentLoaded", () => {
       document.title = title;
     });
   },
 
-  removeClassBody() {
+  removeClassBody: () => {
     document.addEventListener("DOMContentLoaded", () => {
       document.body.classList.remove("with-side-menu");
       document.body.classList.remove("control-panel");

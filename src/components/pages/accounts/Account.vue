@@ -80,11 +80,10 @@ export default {
     };
   },
   methods: {
-    cleanData(data) {
-      return tool.cleanDataApi(data);
-    },
+    cleanData: data => tool.cleanDataApi(data),
+
     submitForm() {
-      if (this.password !== "") {
+      if (this.password) {
         if (tool.forcePassword(this.password) < 50) {
           this.passwordInvalid = true;
 

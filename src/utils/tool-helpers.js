@@ -1,6 +1,6 @@
 export const toolHelpers = {
 
-  cleanRole(roles) {
+  cleanRole: (roles) => {
     return roles ? roles.filter(function (role) {
       delete role["_id"];
       delete role["default"];
@@ -11,7 +11,7 @@ export const toolHelpers = {
     }) : [];
   },
 
-  forcePassword(password) {
+  forcePassword: (password) => {
 
     let force = 0;
 
@@ -46,7 +46,7 @@ export const toolHelpers = {
 
   },
 
-  swalErrorUnauthorized() {
+  swalErrorUnauthorized: () => {
 
     swal({
       title: "Atenção!!!",
@@ -64,13 +64,13 @@ export const toolHelpers = {
       });
   },
 
-  cleanDataApi(data) {
+  cleanDataApi: (data) => {
     if (!data) return '';
     data = data.toString();
     return data.replace(["[", "]"], '');
   },
 
-  strSlug(str, separator = '-') {
+  strSlug: (str, separator = '-') => {
 
     if (!str) {
       throw new Error('Informe a String')
@@ -97,11 +97,9 @@ export const toolHelpers = {
       .replace(/-/g, separator);
   },
 
-  strRandon() {
-    return Math.floor(Math.random() * 1000000 + 1);
-  },
+  strRandon: () => Math.floor(Math.random() * 1000000 + 1),
 
-  swalErrorApi(error) {
+  swalErrorApi: (error) => {
 
     if (error.response.status == 401) {
 
