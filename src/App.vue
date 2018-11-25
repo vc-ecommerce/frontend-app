@@ -32,6 +32,7 @@ import { domHelpers as dom } from "@/utils/dom-helpers";
 import SiteHeader from "@/components/layouts/header/SiteHeader";
 import SidebarMenuLeft from "@/components/layouts/sidebar/SidebarMenuLeft";
 import SidebarMenuRight from "@/components/layouts/sidebar/SidebarMenuRight";
+import { checkInternetConnected } from "@/utils/observer.helpers";
 
 export default {
   name: "App",
@@ -116,6 +117,8 @@ export default {
     }
 
     this.showHtml = true;
+    checkInternetConnected();
+
   }
 };
 </script>
