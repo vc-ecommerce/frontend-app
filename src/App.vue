@@ -93,7 +93,7 @@ export default {
         return window.location.replace("/login");
       }
 
-      validate.rolesUserAuthorizedPainelAdmin(
+      validate.rolesUserAuthorizedPanelAdmin(
         this.$store.getters.getUserRoles,
         "ADMIN",
         "STAFF_AUDITOR",

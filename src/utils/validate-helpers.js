@@ -9,7 +9,7 @@ export const validateHelpers = {
     return pagesPublic.includes(url[0]);
   },
 
-  rolesUserAuthorizedPainelAdmin: (roles, ...keys) => {
+  rolesUserAuthorizedPanelAdmin: (roles, ...keys) => {
     let count = 0;
     if (roles) {
       roles.forEach(function (role) {

@@ -2,21 +2,66 @@ import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import store from '@/stores';
-import { urlApi } from '@/configs';
-import { isObject } from "@/utils/array-helpers";
+import {urlApi} from '@/configs';
+import {isObject} from "@/utils/array-helpers";
 
 Vue.use(VueAxios, axios);
 
-export class HttpService {
+export class HttpServices {
 
   constructor() {
-    this._uri = "";
-    this._data = {};
-    this._method = "";
-    this._auth = {}
+    throw new Error('Não é possivel criar instâncias de HttpServices!');
   }
 
-  static _checkIsObjetct(data) {
+  static get(uri) {
+
+    const obj = {
+      uri: uri,
+      method: 'get'
+    };
+
+    return HttpServices._http(obj);
+  }
+
+  static post(uri, data) {
+
+    HttpServices._checkIsObject(data);
+
+    const obj = {
+      uri: uri,
+      method: 'post',
+      data: data
+    };
+
+    return HttpServices._http(obj);
+
+  }
+
+  static put(uri, data) {
+
+    HttpServices._checkIsObject(data);
+
+    const obj = {
+      uri: uri,
+      method: 'put',
+      data: data
+    };
+
+    return HttpServices._http(obj);
+  }
+
+  static delete(uri) {
+
+    const obj = {
+      uri: uri,
+      method: 'delete'
+    };
+
+    return HttpServices._http(obj);
+
+  }
+
+  static _checkIsObject(data) {
 
     let text = 'Variable data is not Objetc {}';
 
@@ -25,34 +70,40 @@ export class HttpService {
 
     if (!isObject(data))
       throw new Error(text);
+
   }
 
-  static _urlFull() {
-    if (!this._uri)
-      throw new Error('Informe a URI da API')
+  static _urlFull(obj) {
 
-    return `${urlApi}/${this._uri.toString().replace(/^\//g, "")}`;
+    if (!obj.uri)
+      throw new Error('Informe a URI da API');
+
+    return `${urlApi}/${obj.uri.toString().replace(/^\//g, "")}`;
+
   }
 
   static _authorizationBearer() {
+
     if (store.getters.getToken) {
       return {
         Authorization: "Bearer " + store.getters.getToken,
         "User-ID": store.getters.getUserId
       }
     }
+
     return {};
+
   }
 
-  static _http() {
+  static _http(obj) {
 
     return new Promise((resolve, reject) => {
 
       Vue.axios({
-        method: this._method ? this._method : 'get',
-        url: this._urlFull(),
-        data: this._data ? this._data : "",
-        headers: this._authorizationBearer()
+        method: obj.method ? obj.method : 'get',
+        url: HttpServices._urlFull(obj),
+        data: obj.data ? obj.data : "",
+        headers: HttpServices._authorizationBearer()
       }).then(res => {
         resolve(res)
       }).catch(error => {
@@ -61,34 +112,6 @@ export class HttpService {
 
     });
 
-  }
-
-  static get(uri) {
-    this._uri = uri;
-    this._method = 'get';
-    return this._http();
-  }
-
-  static post(uri, data) {
-    this._checkIsObjetct(data);
-    this._method = 'post';
-    this._uri = uri;
-    this._data = data;
-    return this._http();
-  }
-
-  static put(uri, data) {
-    this._checkIsObjetct(data);
-    this._method = 'put';
-    this._uri = uri;
-    this._data = data;
-    return this._http();
-  }
-
-  static delete(uri) {
-    this._method = 'delete';
-    this._uri = uri;
-    return this._http();
   }
 
 }

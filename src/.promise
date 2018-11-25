@@ -1,5 +1,5 @@
 return new Promise((resolve, reject) => {
-  HttpService.post("/auth/forgot/check/token", {
+  HttpServices.post("/auth/forgot/check/token", {
     token: this.token
   })
     .then(response => {

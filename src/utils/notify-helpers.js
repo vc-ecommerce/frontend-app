@@ -20,8 +20,8 @@ export const notifyHelpers = {
       title: `<strong>${title}</strong>`,
       message
     }, {
-        type: 'success'
-      });
+      type: 'success'
+    });
   },
 
   danger(title, message) {
@@ -33,8 +33,8 @@ export const notifyHelpers = {
       title: `<strong>${title}</strong>`,
       message
     }, {
-        type: 'danger'
-      });
+      type: 'danger'
+    });
   },
 
   warning(title, message) {
@@ -46,8 +46,8 @@ export const notifyHelpers = {
       title: `<strong>${title}</strong>`,
       message
     }, {
-        type: 'warning'
-      });
+      type: 'warning'
+    });
 
   },
 
@@ -60,8 +60,8 @@ export const notifyHelpers = {
       title: `<strong>${title}</strong>`,
       message
     }, {
-        type: 'purple'
-      });
+      type: 'purple'
+    });
 
   }
 

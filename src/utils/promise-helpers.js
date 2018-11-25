@@ -6,7 +6,7 @@ export const timeoutPromise = (milliseconds, promise) => {
 
   const timeout = new Promise((resolve, reject) =>
     setTimeout(() =>
-      reject(`Limite da promisse excedido (Limite: ${milliseconds}) ms`),
+        reject(`Limite da promisse excedido (Limite: ${milliseconds}) ms`),
       milliseconds));
 
   return Promise.race([
