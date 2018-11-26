@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     submitForm() {
-      if (!validate.validateEmail(this.email)) {
+      if (!validate.isEmail(this.email)) {
         notify.info("Atenção!", "Informe um email válido.");
         return;
       }
@@ -129,12 +129,13 @@ export default {
     dom.createTitle("Fazer Login");
 
     if (sessionStorage.getItem("desconected")) {
+      // Remove all saved data from sessionStorage
+      sessionStorage.clear();
+      this.email = "";
+      this.password = "";
       notify.success("Sucesso!", "Você foi desconectado com segurança.");
     }
-    // Remove all saved data from sessionStorage
-    sessionStorage.clear();
-    this.email = "";
-    this.password = "";
+
     htmlPageCenter();
   }
 };

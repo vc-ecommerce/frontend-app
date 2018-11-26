@@ -5,7 +5,7 @@ import router from './pages/pages-info/router'
 
 import PageIndex from './pages/pages-info/PageIndex'
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs'
-import { userIsAuthorizedPage } from "../../helpers/validates";
+import { rolesAuthorizedToPage } from '@/utils/authorizations-helpers';
 
 new Vue({
   el: '#content',
@@ -16,7 +16,7 @@ new Vue({
     PageIndex
   },
   beforeCreate() {
-    userIsAuthorizedPage(this.$store.getters.getUserRoles, [
+    rolesAuthorizedToPage(this.$store.getters.getUserRoles, [
       "ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR"
     ]);
   }

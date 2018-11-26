@@ -3,7 +3,7 @@ require('../../bootstrap')
 import store from '../../stores';
 
 import PrivilegeIndex from './pages/privileges/PrivilegeIndex'
-import { userIsAuthorizedPage } from "../../helpers/validates";
+import { rolesAuthorizedToPage } from '@/utils/authorizations-helpers';
 
 new Vue({
   el: '#content',
@@ -12,7 +12,7 @@ new Vue({
     PrivilegeIndex
   },
   beforeCreate() {
-    userIsAuthorizedPage(this.$store.getters.getUserRoles, [
+    rolesAuthorizedToPage(this.$store.getters.getUserRoles, [
       "ADMIN"
     ]);
   }

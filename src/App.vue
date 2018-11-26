@@ -2,32 +2,33 @@
   <span id="app">
     <div v-if="!isPublic">
       <span v-show="showHtml">
-        <SiteHeader />
-        <SidebarMenuLeft />
+        <SiteHeader/>
+        <SidebarMenuLeft/>
         <div class="page-content">
           <div class="container-fluid">
             <router-view/>
           </div>
         </div>
-        <SidebarMenuRight />
+        <SidebarMenuRight/>
       </span>
     </div>
     <div v-if="isPublic">
       <div class="page-center">
         <div class="page-center-in">
-            <div class="container-fluid">
-              <router-view/>
-            </div>
+          <div class="container-fluid">
+            <router-view/>
+          </div>
         </div>
       </div>
     </div>
-    <AxiosLoader />
+    <AxiosLoader/>
   </span>
 </template>
 
 <script>
 import AxiosLoader from "@/components/loaders/AxiosLoader";
 import { validateHelpers as validate } from "@/utils/validate-helpers";
+import { rolesAuthorizedPanelAdmin } from '@/utils/authorizations-helpers'
 import { domHelpers as dom } from "@/utils/dom-helpers";
 import SiteHeader from "@/components/layouts/header/SiteHeader";
 import SidebarMenuLeft from "@/components/layouts/sidebar/SidebarMenuLeft";
@@ -83,10 +84,15 @@ export default {
   mounted() {
     this.$eventHub.$on("eventLogout", obj => this.logout());
 
-    if (this.isPublic !== true) {
-      let user = this.$store.getters.getUser
-        ? this.$store.getters.getUser
-        : false;
+    let user = this.$store.getters.getUser ? this.$store.getters.getUser : false;
+
+    if (this.isPublic) {
+      if (user) {
+        return window.location.replace("/");
+      }
+    }
+
+    if (!this.isPublic) {
 
       if (!user) {
         this.cleanDataStorage();
@@ -94,16 +100,9 @@ export default {
         return window.location.replace("/login");
       }
 
-      validate.rolesUserAuthorizedPanelAdmin(
-        this.$store.getters.getUserRoles,
-        "ADMIN",
-        "STAFF_AUDITOR",
-        "STAFF_FINANCE",
-        "STAFF_COMMERCIAL",
-        "STAFF_SUPPORT",
-        "STAFF_SALE",
-        "STAFF_EDITOR",
-        "STAFF_EXPEDITION"
+      rolesAuthorizedPanelAdmin(this.$store.getters.getUserRoles,
+        "ADMIN", "STAFF_AUDITOR", "STAFF_FINANCE", "STAFF_COMMERCIAL",
+        "STAFF_SUPPORT", "STAFF_SALE", "STAFF_EDITOR", "STAFF_EXPEDITION"
       );
     }
 

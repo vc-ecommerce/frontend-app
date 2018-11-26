@@ -53,7 +53,7 @@
         return tool.cleanDataApi(data);
       },
       submitForm() {
-        if (!validate.validateEmail(this.email)) {
+        if (!validate.isEmail(this.email)) {
           notify.info("Atenção!", "Informe um email válido.");
           return;
         }
