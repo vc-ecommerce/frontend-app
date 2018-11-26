@@ -38,110 +38,110 @@
   </form>
 </template>
 <script>
-  import {validateHelpers as validate} from "@/utils/validate-helpers";
-  import {domHelpers as dom} from "@/utils/dom-helpers";
-  import {notifyHelpers as notify} from "@/utils/notify-helpers";
-  import {htmlPageCenter} from "@/utils/jquery-helpers";
-  import {handleStatus} from "@/utils/promise-helpers";
-  import {errorWithNotify} from "@/utils/array-helpers";
-  import {HttpServices as service} from "@/services/http-services";
-  import ButtonSubmit from "@/components/layouts/ButtonSubmit";
+import { validateHelpers as validate } from "@/utils/validate-helpers";
+import { domHelpers as dom } from "@/utils/dom-helpers";
+import { notifyHelpers as notify } from "@/utils/notify-helpers";
+import { htmlPageCenter } from "@/utils/jquery-helpers";
+import { handleStatus } from "@/utils/promise-helpers";
+import { errorWithNotify } from "@/utils/array-helpers";
+import { HttpServices as service } from "@/services/http-services";
+import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 
-  export default {
-    name: "Login",
-    props: [],
-    components: {
-      ButtonSubmit
-    },
-    data() {
-      return {
-        ok: false,
-        email: "",
-        password: "",
-        btnDisabled: false,
-        redirectPathForIndex: ["password", "login", "static"]
-      };
-    },
-    methods: {
-      submitForm() {
-        if (!validate.validateEmail(this.email)) {
-          notify.info("Atenção!", "Informe um email válido.");
-          return;
-        }
+export default {
+  name: "Login",
+  props: [],
+  components: {
+    ButtonSubmit
+  },
+  data() {
+    return {
+      ok: false,
+      email: "",
+      password: "",
+      btnDisabled: false,
+      redirectPathForIndex: ["password", "login", "static"]
+    };
+  },
+  methods: {
+    submitForm() {
+      if (!validate.validateEmail(this.email)) {
+        notify.info("Atenção!", "Informe um email válido.");
+        return;
+      }
 
-        this.btnDisabled = true;
-        const vm = this;
+      this.btnDisabled = true;
+      const vm = this;
 
-        let promise = service.post("/auth/login", {
-          email: this.email,
-          password: this.password
-        });
+      let promise = service.post("/auth/login", {
+        email: this.email,
+        password: this.password
+      });
 
-        promise
-          .then(handleStatus)
-          .then(res => {
-            sessionStorage.setItem(
-              "token",
-              JSON.stringify(res.data.HTTP_Authorization)
-            );
+      promise
+        .then(handleStatus)
+        .then(res => {
+          sessionStorage.setItem(
+            "token",
+            JSON.stringify(res.data.HTTP_Authorization)
+          );
 
-            sessionStorage.setItem("user", JSON.stringify(res.data.HTTP_Data));
+          sessionStorage.setItem("user", JSON.stringify(res.data.HTTP_Data));
 
-            const pathnameReferer = localStorage.getItem("pathnameReferer")
-              ? localStorage.getItem("pathnameReferer")
-              : "/";
+          const pathnameReferer = localStorage.getItem("pathnameReferer")
+            ? localStorage.getItem("pathnameReferer")
+            : "/";
 
-            notify.success("Redirecionando!", "Aguarde carregando dados.");
+          notify.success("Redirecionando!", "Aguarde carregando dados.");
 
-            setTimeout(() => {
-              if (
-                vm.redirectPathForIndex.includes(pathnameReferer.substring(1))
-              ) {
-                return window.location.replace("/");
-              }
-
-              return window.location.replace(
-                pathnameReferer ? pathnameReferer : "/"
-              );
-            }, 1000);
-          })
-          .catch(error => {
-            this.btnDisabled = false;
-            this.password = "";
-
-            if ("data" in error.response) {
-              let errors = error.response.data.error;
-
-              if (errors.data === "account_inactive") {
-                notify.warning("Erro!", "Você ainda não confirmou seu email.");
-              } else if (errors.data === "invalid_credentials") {
-                notify.warning("Erro!", "Email e ou senha inválidos.");
-              } else {
-                errorWithNotify(errors);
-              }
+          setTimeout(() => {
+            if (
+              vm.redirectPathForIndex.includes(pathnameReferer.substring(1))
+            ) {
+              return window.location.replace("/");
             }
 
-            console.log(error.response);
-          });
-      }
-    },
-    mounted() {
-      dom.createTitle("Fazer Login");
+            return window.location.replace(
+              pathnameReferer ? pathnameReferer : "/"
+            );
+          }, 1000);
+        })
+        .catch(error => {
+          this.btnDisabled = false;
+          this.password = "";
 
-      if (sessionStorage.getItem("desconected")) {
-        notify.success("Sucesso!", "Você foi desconectado com segurança.");
-      }
-      // Remove all saved data from sessionStorage
-      sessionStorage.clear();
-      this.email = "";
-      this.password = "";
-      htmlPageCenter();
+          if ("data" in error.response) {
+            let errors = error.response.data.error;
+
+            if (errors.data === "account_inactive") {
+              notify.warning("Erro!", "Você ainda não confirmou seu email.");
+            } else if (errors.data === "invalid_credentials") {
+              notify.warning("Erro!", "Email e ou senha inválidos.");
+            } else {
+              errorWithNotify(errors);
+            }
+          }
+
+          console.log(error.response);
+        });
     }
-  };
+  },
+  mounted() {
+    dom.createTitle("Fazer Login");
+
+    if (sessionStorage.getItem("desconected")) {
+      notify.success("Sucesso!", "Você foi desconectado com segurança.");
+    }
+    // Remove all saved data from sessionStorage
+    sessionStorage.clear();
+    this.email = "";
+    this.password = "";
+    htmlPageCenter();
+  }
+};
 </script>
 
 <style scoped>
-  .sign-title {
-    font-weight: bold;
-  }
+.sign-title {
+  font-weight: bold;
+}
 </style>

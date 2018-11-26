@@ -44,6 +44,7 @@
 
 import Table from "@/components/layouts/Table";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
+import { HttpServices as service } from "@/services/http-services";
 
 export default {
   name: "PrivilegeIndex",
@@ -66,20 +67,13 @@ export default {
   },
   methods: {
     getPrivileges() {
-      const api = `${this.$urlApi}/admin/privileges`;
-      Vue.axios
-        .get(api, {
-          headers: {
-            Authorization: "Bearer " + this.$store.getters.getToken,
-            "User-ID": this.$store.getters.getUserId
-          }
-        })
-        .then(res => {
+
+      const = promise = service.get('/admin/privileges')
+      promise.then(res => {
           this.privileges = res.data;
           this.total = res.data.total;
         })
-        .catch(error => {
-        });
+        .catch(console.log);
     }
   }
 };
