@@ -28,20 +28,20 @@ const countTotalRoles = (roles, rolesAuthorized) => {
 }
 
 export const rolesAuthorizedPanelAdmin = (roles, ...rolesAuthorized) => {
-  if (countTotalRoles(roles, rolesAuthorized) === 0) {
+  if (countTotalRoles(roles, rolesAuthorized) <= 0) {
     sessionStorage.clear();
     return window.location.replace("/login");
   }
 }
 
 export const rolesAuthorizedToPage = (roles, ...rolesAuthorized) => {
-  if (countTotalRoles(roles, rolesAuthorized) === 0) {
+  if (countTotalRoles(roles, rolesAuthorized) <= 0) {
     return window.location.replace("/");
   }
 }
 
 export const filterLinksUserToRoles = (roles, ...rolesAuthorized) => {
-  if (countTotalRoles(roles, rolesAuthorized) > 0)
-    return true;
-  return false;
+  if (countTotalRoles(roles, rolesAuthorized) <= 0)
+    return false;
+  return true;
 }

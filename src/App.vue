@@ -50,7 +50,7 @@ export default {
     };
   },
   created() {
-    if (validate.isPagesPublic()) {
+    if (validate.isPagePublic()) {
       dom.removeClassBody();
       this.isPublic = true;
     }

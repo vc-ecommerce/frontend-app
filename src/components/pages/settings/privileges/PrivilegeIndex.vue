@@ -1,5 +1,19 @@
 <template>
   <div>
+    <section>
+      <Breadcrumb title="Privilégios">
+
+        <li><a href="javascript::void(0)">Configurações</a></li>
+        <li>
+          <router-link :to="{ name: 'settings.privileges.index'}">
+            Privilégios
+          </router-link>
+        </li>
+        <li class="active">Listar</li>
+
+      </Breadcrumb>
+    </section>
+
     <section class="box-typical">
       <header class="box-typical-header">
         <div class="tbl-row">
@@ -43,13 +57,16 @@
 <script>
 
 import Table from "@/components/layouts/Table";
+import Breadcrumb from "@/components/layouts/Breadcrumb";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
+import { rolesAuthorizedToPage } from '@/utils/authorizations-helpers';
 
 export default {
   name: "PrivilegeIndex",
   components: {
     Table,
+    Breadcrumb,
   },
   props: [],
   data() {
@@ -58,23 +75,24 @@ export default {
       privileges: []
     };
   },
+  beforeCreate() {
+    rolesAuthorizedToPage(this.$store.getters.getUserRoles, "ADMIN");
+  },
   mounted() {
     this.getPrivileges();
-    const vm = this;
-    this.$eventHub.$on("totalUser", function(t) {
-      vm.total = t;
-    });
   },
   methods: {
     getPrivileges() {
-
-      const = promise = service.get('/admin/privileges')
+      const promise = service.get('/admin/privileges')
       promise.then(res => {
           this.privileges = res.data;
           this.total = res.data.total;
         })
         .catch(console.log);
     }
+  },
+  mounted() {
+    this.getPrivileges();
   }
 };
 </script>

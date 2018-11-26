@@ -135,7 +135,11 @@
                 <li><a href="#"><span class="lbl">Funções [Roles]</span></a></li>
               </ul>
               <ul>
-                  <li><a href="#"><span class="lbl">Privilégios [Privileges]</span></a></li>
+                  <li>
+                    <router-link :to="{ name: 'settings.privileges.index'}">
+                      <span class="lbl">Privilégios [Privileges]</span>
+                    </router-link>
+                  </li>
                 </ul>
             </li>
 
@@ -184,7 +188,11 @@
             <li><a href="#"><span class="lbl">Relatórios</span></a></li>
             <li><a href="#"><span class="lbl">Usuários online</span></a></li>
             <li><a href="#"><span class="lbl">Estatísticas</span></a></li>
-            <li><router-link :to="{ name: 'user.account'}"><span class="lbl">Acounte</span></router-link> </li>
+            <li>
+              <router-link :to="{ name: 'user.account'}">
+                <span class="lbl">Acounte</span>
+              </router-link>
+            </li>
           </ul>
         </li>
 
