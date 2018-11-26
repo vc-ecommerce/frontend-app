@@ -87,9 +87,9 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.variations = response;
-          this.total = response.data.total;
+        .then(res => {
+          this.variations = res;
+          this.total = res.data.total;
         })
         .catch(error => {
           //
@@ -117,9 +117,9 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
-          let data = response.data;
+          let data = res.data;
           this.btnDisabled = false;
           if (data._id) {
             this.getVariations();

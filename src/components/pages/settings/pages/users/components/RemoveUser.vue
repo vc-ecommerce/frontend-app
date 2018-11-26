@@ -35,14 +35,14 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          if (Boolean(response.data) === true) {
+        .then(res => {
+          if (Boolean(res.data) === true) {
             return true;
           }
           return false;
         })
         .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.response });
+          this.$eventHub.$emit("eventError", { data: error.res });
           return false;
         });
     },

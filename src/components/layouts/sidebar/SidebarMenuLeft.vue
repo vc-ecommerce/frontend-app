@@ -172,7 +172,6 @@
               </ul>
             </li>
 
-
           </ul>
         </li>
 
@@ -196,7 +195,7 @@
 </template>
 <script>
 
-import ValidatesHelper from '@/helpers/ValidatesHelper';
+import { validateHelpers as validate } from "@/utils/validate-helpers";
 
 export default {
   name: "SidebarMenuLeft",
@@ -211,27 +210,27 @@ export default {
   },
   created(){
 
-    this.isRoleAdmin = ValidatesHelper.isRoleUser(
+    this.isRoleAdmin = validate.isRoleUser(
       this.$store.getters.getUserRoles,
       "ADMIN"
     );
 
-    this.isRoleEditor = ValidatesHelper.isRoleUser(
+    this.isRoleEditor = validate.isRoleUser(
       this.$store.getters.getUserRoles,
       "STAFF_EDITOR"
     );
 
-    this.isRoleAuditor = ValidatesHelper.isRoleUser(
+    this.isRoleAuditor = validate.isRoleUser(
       this.$store.getters.getUserRoles,
       "STAFF_AUDITOR"
     );
 
-    this.isRoleFinance = ValidatesHelper.isRoleUser(
+    this.isRoleFinance = validate.isRoleUser(
       this.$store.getters.getUserRoles,
       "STAFF_FINANCE"
     );
 
-    this.isRoleExpedition = ValidatesHelper.isRoleUser(
+    this.isRoleExpedition = validate.isRoleUser(
       this.$store.getters.getUserRoles,
       "STAFF_EXPEDITION"
     );

@@ -22,10 +22,10 @@
       -->
       <div class="dropdown-divider"></div>
 
-      <router-link :to="{ name: 'logout'}" class="dropdown-item">
+      <a href="javascript:void(0)"  @click="$eventHub.$emit('eventLogout', true)" class="dropdown-item">
         <span class="font-icon glyphicon glyphicon-log-out"></span>
         Sair
-      </router-link>
+      </a>
 
     </div>
   </div>

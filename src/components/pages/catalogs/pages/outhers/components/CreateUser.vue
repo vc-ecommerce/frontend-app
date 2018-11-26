@@ -90,7 +90,7 @@ import Table from "@/components/layouts/Table";
 import Modal from "@/components/modals/Modal";
 import ModalLink from "@/components/modals/ModalLink";
 import Alert from "@/components/layouts/Alert";
-import ToolsHelper from "@/components/helpers/ToolsHelper";
+import tool from "@/components/helpers/tool";
 
 export default {
   name: "CreateUser",
@@ -126,12 +126,12 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+      return tool.cleanDataApi(data);
     },
 
     submitForm() {
       if (this.user.password !== "") {
-        if (ToolsHelper.forcePassword(this.user.password) < 50) {
+        if (tool.forcePassword(this.user.password) < 50) {
           this.passwordInvalid = true;
 
           setTimeout(() => {
@@ -164,10 +164,10 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
-          this.users = response.data;
-          this.total = response.data.total;
+          this.users = res.data;
+          this.total = res.data.total;
           this.status = "Usuário criado com sucesso!";
 
           this.$emit("reload");

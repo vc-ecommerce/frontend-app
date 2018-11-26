@@ -71,7 +71,7 @@ import Table from "@/components/layouts/Table";
 import Modal from "@/components/modals/Modal";
 import ModalLink from "@/components/modals/ModalLink";
 import Alert from "@/components/layouts/Alert";
-import ToolsHelper from "@/components/helpers/ToolsHelper";
+import tool from "@/components/helpers/tool";
 
 export default {
   name: "EditRole",
@@ -117,7 +117,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+      return tool.cleanDataApi(data);
     },
     submitForm() {
       if (!this.$store.getters.getItem) {
@@ -146,10 +146,10 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
-          this.roles = response.data;
-          this.total = response.data.total;
+          this.roles = res.data;
+          this.total = res.data.total;
           this.status = "Função editada com sucesso!";
           this.$emit("reload");
         })

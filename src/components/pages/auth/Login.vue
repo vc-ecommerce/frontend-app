@@ -12,7 +12,8 @@
     </div>
 
     <div class="form-group">
-      <input type="password" required minlength="6" class="form-control" v-model="password"  placeholder="Digite a senha"/>
+      <input type="password" required minlength="6" class="form-control" v-model="password"
+             placeholder="Digite a senha"/>
     </div>
 
     <div class="form-group">
@@ -21,25 +22,30 @@
           <label for="signed-in">Mantenha-me conectado</label>
       </div> -->
       <div class="float-right reset">
-        <router-link :to="{ name: 'auth.reset' }" @click.native="$eventHub.$emit('eventDocumentTitle', {data: 'Redefinição de senha'})">Recuperar Senha</router-link>
+        <router-link :to="{ name: 'auth.reset' }"
+                     @click.native="$eventHub.$emit('eventDocumentTitle', {data: 'Redefinição de senha'})">Recuperar
+          Senha
+        </router-link>
       </div>
     </div>
 
     <ButtonSubmit
-        bntTitle="Efetuar Login"
-        :ok="ok"
-        :btnDisabled="btnDisabled"
-        bntClass="btn btn-rounded"  />
+      bntTitle="Efetuar Login"
+      :ok="ok"
+      :btnDisabled="btnDisabled"
+      bntClass="btn btn-rounded"/>
 
   </form>
 </template>
 <script>
-import JQueryHelper from "@/helpers/JQueryHelper";
-import ValidatesHelper from "@/helpers/ValidatesHelper";
+import { validateHelpers as validate } from "@/utils/validate-helpers";
+import { domHelpers as dom } from "@/utils/dom-helpers";
+import { notifyHelpers as notify } from "@/utils/notify-helpers";
+import { htmlPageCenter } from "@/utils/jquery-helpers";
+import { handleStatus } from "@/utils/promise-helpers";
+import { errorWithNotify } from "@/utils/array-helpers";
+import { HttpServices as service } from "@/services/http-services";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
-import DocumentFactory from "@/factory/DocumentFactory";
-import NotifyHelper from "@/helpers/NotifyHelper";
-import AxiosService from "@/services/AxiosService";
 
 export default {
   name: "Login",
@@ -52,90 +58,84 @@ export default {
       ok: false,
       email: "",
       password: "",
-      btnDisabled: false
+      btnDisabled: false,
+      redirectPathForIndex: ["password", "login", "static"]
     };
   },
   methods: {
     submitForm() {
-      if (!ValidatesHelper.validateEmail(this.email)) {
-        NotifyHelper.info("Atenção!", "Informe um email válido.");
+      if (!validate.validateEmail(this.email)) {
+        notify.info("Atenção!", "Informe um email válido.");
         return;
       }
 
       this.btnDisabled = true;
+      const vm = this;
 
-      return new Promise((resolve, reject) => {
-        AxiosService.post("/auth/login", {
-          email: this.email,
-          password: this.password
+      let promise = service.post("/auth/login", {
+        email: this.email,
+        password: this.password
+      });
+
+      promise
+        .then(handleStatus)
+        .then(res => {
+          sessionStorage.setItem(
+            "token",
+            JSON.stringify(res.data.HTTP_Authorization)
+          );
+
+          sessionStorage.setItem("user", JSON.stringify(res.data.HTTP_Data));
+
+          const pathnameReferer = localStorage.getItem("pathnameReferer")
+            ? localStorage.getItem("pathnameReferer")
+            : "/";
+
+          notify.success("Redirecionando!", "Aguarde carregando dados.");
+
+          setTimeout(() => {
+            if (
+              vm.redirectPathForIndex.includes(pathnameReferer.substring(1))
+            ) {
+              return window.location.replace("/");
+            }
+
+            return window.location.replace(
+              pathnameReferer ? pathnameReferer : "/"
+            );
+          }, 1000);
         })
-          .then(response => {
-            sessionStorage.setItem(
-              "token",
-              JSON.stringify(response.data.HTTP_Authorization)
-            );
-            sessionStorage.setItem(
-              "user",
-              JSON.stringify(response.data.HTTP_Data)
-            );
+        .catch(error => {
+          this.btnDisabled = false;
+          this.password = "";
 
-            let pathnameReferer = localStorage.getItem("pathnameReferer")
-              ? localStorage.getItem("pathnameReferer")
-              : "/";
-
-            resolve(
-              NotifyHelper.success(
-                "Redirecionando!",
-                "Aguarde carregando dados."
-              )
-            );
-
-            setTimeout(() => {
-              if (pathnameReferer.indexOf("login")) {
-                window.location.replace("/");
-              }
-
-              window.location.replace(pathnameReferer ? pathnameReferer : "/");
-            }, 1000);
-          })
-          .catch(error => {
-            this.btnDisabled = false;
-            this.password = "";
+          if ("data" in error.response) {
             let errors = error.response.data.error;
 
-            if (errors == "account_inactive") {
-              reject(
-                NotifyHelper.warning(
-                  "Erro!",
-                  "Você ainda não confirmou seu email."
-                )
-              );
-            } else if (errors == "invalid_credentials") {
-              NotifyHelper.warning("Erro!", "Email e ou senha inválidos.");
+            if (errors.data === "account_inactive") {
+              notify.warning("Erro!", "Você ainda não confirmou seu email.");
+            } else if (errors.data === "invalid_credentials") {
+              notify.warning("Erro!", "Email e ou senha inválidos.");
             } else {
-              errors = Array(JSON.parse(errors));
-              errors.forEach(value => {
-                let values = Object.values(value);
-                values.forEach(value => {
-                  reject(NotifyHelper.danger("Atenção!", value));
-                });
-              });
+              errorWithNotify(errors);
             }
-          });
-      });
+          }
+
+          console.log(error.response);
+        });
     }
   },
   mounted() {
-    DocumentFactory.createTitle("Fazer Login");
+    dom.createTitle("Fazer Login");
 
     if (sessionStorage.getItem("desconected")) {
-      NotifyHelper.success("Sucesso!", "Você foi desconectado com segurança.");
+      notify.success("Sucesso!", "Você foi desconectado com segurança.");
     }
     // Remove all saved data from sessionStorage
     sessionStorage.clear();
     this.email = "";
     this.password = "";
-    JQueryHelper.pageCenter();
+    htmlPageCenter();
   }
 };
 </script>

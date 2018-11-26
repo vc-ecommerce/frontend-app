@@ -1,6 +1,5 @@
 <template>
   <span id="app">
-
     <div v-if="!isPublic">
       <span v-show="showHtml">
         <SiteHeader />
@@ -12,9 +11,7 @@
         </div>
         <SidebarMenuRight />
       </span>
-
     </div>
-
     <div v-if="isPublic">
       <div class="page-center">
         <div class="page-center-in">
@@ -24,19 +21,18 @@
         </div>
       </div>
     </div>
-
     <AxiosLoader />
-
   </span>
 </template>
 
 <script>
+import AxiosLoader from "@/components/loaders/AxiosLoader";
+import { validateHelpers as validate } from "@/utils/validate-helpers";
+import { domHelpers as dom } from "@/utils/dom-helpers";
 import SiteHeader from "@/components/layouts/header/SiteHeader";
 import SidebarMenuLeft from "@/components/layouts/sidebar/SidebarMenuLeft";
 import SidebarMenuRight from "@/components/layouts/sidebar/SidebarMenuRight";
-import AxiosLoader from "@/commons/AxiosLoader";
-import ValidatesHelper from "@/helpers/ValidatesHelper";
-import DocumentFactory from "@/factory/DocumentFactory";
+import { checkInternetConnected } from "@/utils/observer.helpers";
 
 export default {
   name: "App",
@@ -53,26 +49,52 @@ export default {
     };
   },
   created() {
-    const vm = this;
-    if (ValidatesHelper.isPagesPublic()) {
-      DocumentFactory.removeClassBody();
-      vm.isPublic = true;
+    if (validate.isPagesPublic()) {
+      dom.removeClassBody();
+      this.isPublic = true;
+    }
+  },
+  methods: {
+    cleanDataStorage() {
+      sessionStorage.clear();
+      localStorage.clear();
+    },
+    logout() {
+      const vm = this;
+      return swal(
+        {
+          title: "Logout!",
+          text: "Deseja realemente sair do sistema?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "Sim",
+          cancelButtonText: "Não",
+          closeOnConfirm: false
+        },
+        function() {
+          vm.cleanDataStorage();
+          sessionStorage.setItem("desconected", true);
+          return window.location.replace("/login");
+        }
+      );
     }
   },
   mounted() {
+    this.$eventHub.$on("eventLogout", obj => this.logout());
+
     if (this.isPublic !== true) {
       let user = this.$store.getters.getUser
         ? this.$store.getters.getUser
         : false;
 
       if (!user) {
-        sessionStorage.clear();
-        localStorage.clear();
+        this.cleanDataStorage();
         localStorage.setItem("pathnameReferer", window.location.pathname);
         return window.location.replace("/login");
       }
 
-      ValidatesHelper.rolesUserAuthorizedPainelAdmin(
+      validate.rolesUserAuthorizedPanelAdmin(
         this.$store.getters.getUserRoles,
         "ADMIN",
         "STAFF_AUDITOR",
@@ -85,15 +107,18 @@ export default {
       );
     }
 
-    this.$eventHub.$on("eventDocumentTitle", function(obj) {
-      document.title = obj.data;
-    });
+    this.$eventHub.$on(
+      "eventDocumentTitle",
+      obj => (document.title = obj.data)
+    );
 
     if (!this.isPublic) {
-      DocumentFactory.createTitle("Painel de Controle");
+      dom.createTitle("Painel de Controle");
     }
 
     this.showHtml = true;
+    checkInternetConnected();
+
   }
 };
 </script>

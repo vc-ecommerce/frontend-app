@@ -101,7 +101,7 @@ import Table from "@/components/layouts/Table";
 import ModalLink from "@/components/modals/ModalLink";
 import Modal from "@/components/modals/Modal";
 import Alert from "@/components/layouts/Alert";
-import ToolsHelper from "@/components/helpers/ToolsHelper";
+import tool from "@/components/helpers/tool";
 
 export default {
   name: "EditUser",
@@ -131,7 +131,7 @@ export default {
     },
     roleUser: {
       get() {
-        return ToolsHelper.cleanRole(
+        return tool.cleanRole(
           this.$store.getters.getItem ? this.$store.getters.getItem.roles : []
         );
       },
@@ -158,7 +158,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+      return tool.cleanDataApi(data);
     },
     submitForm() {
       if (!this.$store.getters.getItem) {
@@ -168,7 +168,7 @@ export default {
       let data = this.$store.getters.getItem;
 
       if (this.password !== "") {
-        if (ToolsHelper.forcePassword(this.password) < 50) {
+        if (tool.forcePassword(this.password) < 50) {
           this.passwordInvalid = true;
 
           setTimeout(() => {
@@ -201,11 +201,11 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.password = "";
           this.error = false;
-          this.users = response.data;
-          this.total = response.data.total;
+          this.users = res.data;
+          this.total = res.data.total;
           this.status = "Usuário alterado com sucesso!";
         })
         .catch(error => {

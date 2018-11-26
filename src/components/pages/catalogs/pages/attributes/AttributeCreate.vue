@@ -46,7 +46,7 @@
 <script>
 import Panel from "@/components/layouts/Panel";
 import Alert from "@/components/layouts/Alert";
-import ToolsHelper from "@/helpers/ToolsHelper";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
 
 export default {
   name: "AttributeCreate",
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+      return tool.cleanDataApi(data);
     },
     submitForm() {
       this.status = "Enviando...";
@@ -90,9 +90,9 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
-          let data = response.data;
+          let data = res.data;
           if (data._id) {
             sessionStorage.setItem("attributeCreated", "Atributo criado com sucesso!");
             this.$router.push({

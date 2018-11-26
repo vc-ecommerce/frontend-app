@@ -116,7 +116,7 @@ import Panel from "@/components/layouts/Panel";
 import Alert from "@/components/layouts/Alert";
 import WidgetAccordion from "@/components/widgets/WidgetAccordion";
 import WidgetAccordionContent from "@/components/widgets/WidgetAccordionContent";
-import ToolsHelper from "@/helpers/ToolsHelper";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
 import HtmlEditor from "@/components/summernote/HtmlEditor";
 
 export default {
@@ -148,7 +148,7 @@ export default {
   computed: {
     applySlug() {
       if (this.data.name) {
-        return ToolsHelper.strSlug(this.data.name);
+        return tool.strSlug(this.data.name);
       }
       return "";
     }
@@ -158,7 +158,7 @@ export default {
   },
   methods: {
     cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+      return tool.cleanDataApi(data);
     },
     submitForm() {
       const vm = this;
@@ -173,7 +173,7 @@ export default {
             name: vm.data.name,
             description: vm.data.description,
             active: vm.data.active,
-            slug: ToolsHelper.strSlug(vm.data.name),
+            slug: tool.strSlug(vm.data.name),
             meta_description: vm.data.meta_description,
             meta_title: vm.data.meta_title
           },
@@ -184,10 +184,10 @@ export default {
             }
           }
         )
-        .then(response => {
+        .then(res => {
           this.error = false;
           this.status = false;
-          if (response.status === 201) {
+          if (res.status === 201) {
             swal({
               title: "Dados cadastrados!",
               text: "Página foi cadastrada com sucesso.",

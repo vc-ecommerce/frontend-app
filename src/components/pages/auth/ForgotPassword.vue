@@ -11,7 +11,8 @@
     </header>
 
     <header v-else-if="passwordInvalid">
-      <div class="alert alert-danger alert-fill alert-close alert-dismissible fade show __web-inspector-hide-shortcut__" role="alert">
+      <div class="alert alert-danger alert-fill alert-close alert-dismissible fade show __web-inspector-hide-shortcut__"
+           role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
@@ -20,180 +21,177 @@
     </header>
 
     <div class="form-group">
-      <input type="password" @click="checkAlert" required minlength="6" class="form-control" v-model="password"  placeholder="Nova senha"/>
+      <input type="password" @click="checkAlert" required minlength="6" class="form-control" v-model="password"
+             placeholder="Nova senha"/>
     </div>
 
     <div class="form-group">
-      <input type="password" @click="checkAlert" required minlength="6" class="form-control" v-model="confirme"  placeholder="Confirme a senha"/>
+      <input type="password" @click="checkAlert" required minlength="6" class="form-control" v-model="confirm"
+             placeholder="confirm a senha"/>
     </div>
+
     <ButtonSubmit
       bntTitle="Redefinir senha agora"
       :ok="ok"
       :btnDisabled="btnDisabled"
-      bntClass="btn btn-rounded" />
+      bntClass="btn btn-rounded"/>
 
   </form>
 </template>
 <script>
-import ToolsHelper from "@/helpers/ToolsHelper";
-import JQueryHelper from "@/helpers/JQueryHelper";
-import ButtonSubmit from "@/components/layouts/ButtonSubmit";
-import DocumentFactory from "@/factory/DocumentFactory";
-import NotifyHelper from "@/helpers/NotifyHelper";
-import AxiosService from "@/services/AxiosService";
+  import {toolHelpers as tool} from "@/utils/tool-helpers";
+  import {domHelpers as dom} from "@/utils/dom-helpers";
+  import {notifyHelpers as notify} from "@/utils/notify-helpers";
+  import {handleStatus} from "@/utils/promise-helpers";
+  import {htmlPageCenter} from "@/utils/jquery-helpers";
+  import {HttpServices as service} from "@/services/http-services";
+  import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 
-export default {
-  name: "ForgotPassword",
-  props: [],
-  components: {
-    ButtonSubmit
-  },
-  data() {
-    return {
-      ok: false,
-      password: "",
-      confirme: "",
-      passwordNotEquals: false,
-      passwordInvalid: false,
-      userId: "",
-      token: this.$route.params.token,
-      btnDisabled: false
-    };
-  },
-  created() {
-    this.checkToken();
-  },
-  methods: {
-    checkAlert() {
-      if (this.passwordInvalid === true) {
-        this.passwordInvalid = false;
-        this.btnDisabled = false;
-      }
+  export default {
+    name: "ForgotPassword",
+    props: [],
+    components: {
+      ButtonSubmit
     },
-    isPasswordValid() {
-      if (this.password !== this.confirme) {
-        this.passwordNotEquals = true;
-        setTimeout(() => {
-          this.passwordNotEquals = false;
-        }, 6000);
-        return false;
-      }
-      return true;
+    data() {
+      return {
+        ok: false,
+        password: "",
+        confirm: "",
+        passwordNotEquals: false,
+        passwordInvalid: false,
+        userId: "",
+        token: this.$route.params.token,
+        btnDisabled: false
+      };
     },
-    checkToken(disabledNotify) {
-      const vm = this;
+    created() {
+      this.checkToken();
+    },
+    methods: {
+      checkAlert() {
+        if (this.passwordInvalid === true) {
+          this.passwordInvalid = false;
+          this.btnDisabled = false;
+        }
+      },
+      isPasswordValid() {
+        if (this.password !== this.confirm) {
+          this.passwordNotEquals = true;
+          setTimeout(() => {
+            this.passwordNotEquals = false;
+          }, 6000);
+          return false;
+        }
+        return true;
+      },
+      checkToken(disabledNotify) {
+        const vm = this;
 
-      return new Promise((resolve, reject) => {
-        AxiosService.post("/auth/forgot/check/token", {
+        let promisse = service.post("/auth/forgot/check/token", {
           token: this.token
-        })
-          .then(response => {
-            if (response.data) {
-              if (disabledNotify !== false) {
-                resolve(
-                  NotifyHelper.success("Verificação!", "Aceito, token válido.")
-                );
-              }
-              this.userId = response.data;
+        });
+
+        promisse
+          .then(handleStatus)
+          .then(res => {
+            if (disabledNotify !== false) {
+              notify.success("Verificação!", "Aceito, token válido.");
             }
+            this.userId = res.data;
           })
           .catch(error => {
-            reject(
-              swal(
-                {
-                  title: "Token inválido ou expirado!!!",
-                  text: "Deseja gerar um novo token?",
-                  type: "warning",
-                  showCancelButton: true,
-                  confirmButtonClass: "btn-danger",
-                  confirmButtonText: "Sim",
-                  cancelButtonText: "Não",
-                  closeOnConfirm: false
-                },
-                function() {
-                  return (window.location.href = "/password/reset");
-                }
-              )
+            swal(
+              {
+                title: "Token inválido ou expirado!!!",
+                text: "Deseja gerar um novo token?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Sim",
+                cancelButtonText: "Não",
+                closeOnConfirm: false
+              },
+              function () {
+                return (window.location.href = "/password/reset");
+              }
             );
+            console.log(error.response);
           });
-      });
-    },
-    sendData() {
-      this.checkToken(false);
-      this.btnDisabled = true;
+      },
+      sendData() {
+        this.checkToken(false);
+        this.btnDisabled = true;
 
-      return new Promise((resolve, reject) => {
-        AxiosService.put("/auth/forgot", {
+        let promise = service.put("/auth/forgot", {
           user_id: this.userId,
           token: this.token,
           password: this.password
-        })
-          .then(response => {
+        });
+
+        promise
+          .then(handleStatus)
+          .then(res => {
             this.btnDisabled = false;
             this.ok = true;
-            if (response.data === "update_password") {
-              this.password = "";
-              this.confirme = "";
-              resolve(
-                swal(
-                  {
-                    title: "Senha alterada com sucesso!",
-                    text: "Deseja efetuar login?",
-                    type: "success",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-success",
-                    confirmButtonText: "Sim",
-                    cancelButtonText: "Não",
-                    closeOnConfirm: false
-                  },
-                  function() {
-                    return (window.location.href = "/login");
-                  }
-                )
-              );
+            this.password = "";
+            this.confirm = "";
 
-            }
+            swal(
+              {
+                title: "Senha alterada com sucesso!",
+                text: "Deseja efetuar login?",
+                type: "success",
+                showCancelButton: true,
+                confirmButtonClass: "btn-success",
+                confirmButtonText: "Sim",
+                cancelButtonText: "Não",
+                closeOnConfirm: false
+              },
+              function () {
+                return (window.location.href = "/login");
+              }
+            );
           })
           .catch(error => {
             this.btnDisabled = false;
-            reject(error);
+            console.log(error.response);
           });
-      });
+      },
+      submitForm() {
+        if (!this.isPasswordValid()) {
+          return;
+        }
+
+        if (tool.forcePassword(this.password) < 50) {
+          this.passwordInvalid = true;
+          return;
+        }
+
+        if (this.userId !== "") {
+          this.sendData();
+        }
+      }
     },
-    submitForm() {
-      if (!this.isPasswordValid()) {
-        return;
-      }
-
-      if (ToolsHelper.forcePassword(this.password) < 50) {
-        this.passwordInvalid = true;
-        return;
-      }
-
-      if (this.userId !== "") {
-        this.sendData();
-      }
+    mounted() {
+      dom.createTitle("Redefinir Senha");
+      htmlPageCenter();
     }
-  },
-  mounted() {
-    DocumentFactory.createTitle("Redefinir Senha");
-    JQueryHelper.pageCenter();
-  }
-};
+  };
 </script>
 
 <style scoped>
-.sign-title {
-  font-weight: bold;
-}
+  .sign-title {
+    font-weight: bold;
+  }
 
-.red {
-  color: #fa424a;
-}
+  .red {
+    color: #fa424a;
+  }
 
-.sign-box a {
-  text-decoration: none;
-  color: #f3ecca;
-  border-bottom: solid 1px transparent;
-}
+  .sign-box a {
+    text-decoration: none;
+    color: #f3ecca;
+    border-bottom: solid 1px transparent;
+  }
 </style>

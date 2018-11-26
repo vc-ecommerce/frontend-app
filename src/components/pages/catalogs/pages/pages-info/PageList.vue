@@ -61,7 +61,7 @@ import RemovePage from "./components/RemovePage";
 import ChangeStatus from './components/ChangeStatus'
 import Table from "@/components/layouts/Table";
 import Pagination from "@/components/paginations/Pagination";
-import ToolsHelper from "@/helpers/ToolsHelper";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
 
 export default {
   name: "PageList",
@@ -110,9 +110,9 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.pages = response.data;
-          this.total = response.data.total;
+        .then(res => {
+          this.pages = res.data;
+          this.total = res.data.total;
         })
         .catch(error => {
 

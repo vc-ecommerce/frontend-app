@@ -1,15 +1,15 @@
-class ValidatesHelper {
+export const validateHelpers = {
 
-  static isPagesPublic() {
+  isPagesPublic: () => {
     const url = window.location.pathname.substring(1).split('/');
     const pagesPublic = [
       "login",
       "password"
     ];
     return pagesPublic.includes(url[0]);
-  }
+  },
 
-  static rolesUserAuthorizedPainelAdmin(roles, ...keys) {
+  rolesUserAuthorizedPanelAdmin: (roles, ...keys) => {
     let count = 0;
     if (roles) {
       roles.forEach(function (role) {
@@ -22,9 +22,9 @@ class ValidatesHelper {
       sessionStorage.clear();
       return window.location.replace("/login");
     }
-  }
+  },
 
-  static userIsAuthorizedPage(roles, keys) {
+  userIsAuthorizedPage: (roles, keys) => {
     let count = 0;
     if (roles) {
       roles.forEach(function (role) {
@@ -36,9 +36,9 @@ class ValidatesHelper {
     if (count === 0) {
       return window.location.replace("/");
     }
-  }
+  },
 
-  static isRoleUser(roles, keys) {
+  isRoleUser: (roles, keys) => {
     let count = 0;
     if (roles) {
       roles.forEach(function (role) {
@@ -51,13 +51,11 @@ class ValidatesHelper {
       return true
     }
     return false
-  }
+  },
 
-  static validateEmail(email) {
+  validateEmail: (email) => {
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
   }
 
 }
-
-export default ValidatesHelper;

@@ -15,8 +15,8 @@
         <div v-if="user" class="row">
           <div class="col-lg-6">
             <fieldset class="form-group">
-              <label class="form-label" for="exampleInput">Nome</label>
-              <input type="text" v-model="user.name" class="form-control maxlength-simple" placeholder="Seu Nome" >
+              <label class="form-label" for="name">Nome</label>
+              <input type="text" v-model="user.name" class="form-control maxlength-simple" placeholder="Seu Nome">
             </fieldset>
           </div>
         </div>
@@ -24,8 +24,9 @@
         <div v-if="user" class="row">
           <div class="col-md-6 col-sm-6">
             <fieldset class="form-group">
-              <label class="form-label" for="exampleInputEmail1">E-mail</label>
-              <input type="email" v-model="user.email" disabled class="form-control maxlength-custom-message" placeholder="Seu Email">
+              <label class="form-label" for="email">E-mail</label>
+              <input type="email" v-model="user.email" disabled class="form-control maxlength-custom-message"
+                     placeholder="Seu Email">
             </fieldset>
           </div>
           <div class="col-md-4 col-sm-6">
@@ -42,7 +43,7 @@
             <ButtonSubmit
               bntTitle="Salvar Alterações"
               :ok="ok"
-              :btnDisabled="btnDisabled" />
+              :btnDisabled="btnDisabled"/>
 
           </div>
         </div>
@@ -51,60 +52,63 @@
   </form>
 </template>
 <script>
-import Alert from "@/components/layouts/Alert";
-import ButtonSubmit from "@/components/layouts/ButtonSubmit";
-import NotifyHelper from "@/helpers/NotifyHelper";
-import ToolsHelper from "@/helpers/ToolsHelper";
-import AxiosService from "@/services/AxiosService";
+  import {toolHelpers as tool} from "@/utils/tool-helpers";
+  import {notifyHelpers as notify} from "@/utils/notify-helpers";
+  import {handleStatus} from "@/utils/promise-helpers";
+  import {errorWithNotify} from "@/utils/array-helpers";
+  import {HttpServices as service} from "@/services/http-services";
+  import Alert from "@/components/layouts/Alert";
+  import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 
-export default {
-  name: "Account",
-  components: {
-    Alert,
-    ButtonSubmit
-  },
-  props: [],
-  data() {
-    return {
-      ok: false,
-      user: this.$store.getters.getUser,
-      password: "",
-      options: [
-        { text: "Ativo", value: true },
-        { text: "Desativado", value: false }
-      ],
-      passwordInvalid: false,
-      btnDisabled: false
-    };
-  },
-  methods: {
-    cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+  export default {
+    name: "Account",
+    components: {
+      Alert,
+      ButtonSubmit
     },
-    submitForm() {
-      if (this.password !== "") {
-        if (ToolsHelper.forcePassword(this.password) < 50) {
-          this.passwordInvalid = true;
+    props: [],
+    data() {
+      return {
+        ok: false,
+        user: this.$store.getters.getUser,
+        password: "",
+        options: [
+          {text: "Ativo", value: true},
+          {text: "Desativado", value: false}
+        ],
+        passwordInvalid: false,
+        btnDisabled: false
+      };
+    },
+    methods: {
+      cleanData: data => tool.cleanDataApi(data),
 
-          setTimeout(() => {
-            this.passwordInvalid = false;
-          }, 5000);
+      submitForm() {
+        if (this.password) {
+          if (tool.forcePassword(this.password) < 50) {
+            this.passwordInvalid = true;
 
-          return;
+            setTimeout(() => {
+              this.passwordInvalid = false;
+            }, 5000);
+
+            return;
+          }
         }
-      }
 
-      this.btnDisabled = true;
+        this.btnDisabled = true;
 
-      const uri = `/admin/users/${this.$store.getters.getUserId}`;
+        const uri = `/admin/users/${this.$store.getters.getUserId}`;
 
-      return new Promise((resolve, reject) => {
-        AxiosService.put(uri, {
+        let promise = service.put(uri, {
           name: this.user.name,
           password: this.password,
           password_confirmation: this.password
-        })
-          .then(response => {
+        });
+
+        promise
+          .then(handleStatus)
+          .then(res => {
             let stateUser = this.$store.getters.getUser;
             stateUser.name = this.user.name;
 
@@ -115,33 +119,22 @@ export default {
             this.password = "";
             this.ok = true;
 
-            this.users = response.data;
-            this.total = response.data.total;
+            this.users = res.data;
+            this.total = res.data.total;
 
-            resolve(
-              NotifyHelper.success(
-                "Sucesso!",
-                "Dados do usuário alterados com sucesso."
-              )
-            );
+            notify.success("Sucesso!", "Dados do usuário alterados com sucesso.");
           })
           .catch(error => {
-            console.log(error.response);
             this.btnDisabled = false;
-
             this.passwordInvalid = false;
             this.password = "";
-            let errors = error.response.data.error;
-            errors = Array(JSON.parse(errors));
-            errors.forEach(value => {
-              let values = Object.values(value);
-              values.forEach(value => {
-                reject(NotifyHelper.danger("Atenção!", value));
-              });
-            });
+            if ("data" in error.response) {
+              errorWithNotify(error.response.data.error);
+            }
+
+            console.log(error.response);
           });
-      });
+      }
     }
-  }
-};
+  };
 </script>

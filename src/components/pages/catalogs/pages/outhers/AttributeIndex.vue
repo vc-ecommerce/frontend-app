@@ -62,7 +62,7 @@ import ChangeStatusUser from "./components/ChangeStatusUser";
 import RemoveUser from "./components/RemoveUser";
 import Table from "@/components/layouts/Table";
 import Pagination from "@/components/paginations/Pagination";
-import ToolsHelper from "@/helpers/ToolsHelper";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
 
 export default {
   name: "AttributeIndex",
@@ -107,8 +107,8 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.roles = ToolsHelper.cleanRole(response.data.data);
+        .then(res => {
+          this.roles = tool.cleanRole(res.data.data);
         })
         .catch(error => {
           this.error = JSON.parse(error.response.data.error);
@@ -124,9 +124,9 @@ export default {
             "User-ID": this.$store.getters.getUserId
           }
         })
-        .then(response => {
-          this.users = response.data;
-          this.total = response.data.total;
+        .then(res => {
+          this.users = res.data;
+          this.total = res.data.total;
         })
         .catch(error => {
         });

@@ -3,7 +3,7 @@
     <header class="sign-title">Redefinição de senha</header>
 
     <div class="form-group">
-      Digite seu e-mail de cadastro abaixo e clique em enviar. <br />
+      Digite seu e-mail de cadastro abaixo e clique em enviar. <br/>
       Nós lhe enviaremos um e-mail com link para recadastrar sua senha.
     </div>
 
@@ -15,7 +15,7 @@
       bntTitle="Enviar"
       :ok="ok"
       :btnDisabled="btnDisabled"
-      bntClass="btn btn-rounded" />
+      bntClass="btn btn-rounded"/>
 
     <div class="form-group">
       <div class="float-right">
@@ -26,51 +26,53 @@
   </form>
 </template>
 <script>
-import ValidatesHelper from "@/helpers/ValidatesHelper";
-import JQueryHelper from "@/helpers/JQueryHelper";
-import ButtonSubmit from "@/components/layouts/ButtonSubmit";
-import DocumentFactory from "@/factory/DocumentFactory";
-import NotifyHelper from "@/helpers/NotifyHelper";
-import AxiosService from "@/services/AxiosService";
+  import {validateHelpers as validate} from "@/utils/validate-helpers";
+  import {domHelpers as dom} from "@/utils/dom-helpers";
+  import {notifyHelpers as notify} from "@/utils/notify-helpers";
+  import {htmlPageCenter} from "@/utils/jquery-helpers";
+  import {handleStatus} from "@/utils/promise-helpers";
+  import {errorWithNotify} from "@/utils/array-helpers";
+  import {HttpServices as service} from "@/services/http-services";
+  import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 
-export default {
-  name: "ResetPassword",
-  props: [],
-  components: {
-    ButtonSubmit
-  },
-  data() {
-    return {
-      ok: false,
-      email: "",
-      btnDisabled: false
-    };
-  },
-  methods: {
-    cleanData(data) {
-      return ToolsHelper.cleanDataApi(data);
+  export default {
+    name: "ResetPassword",
+    props: [],
+    components: {
+      ButtonSubmit
     },
-    submitForm() {
-      if (!ValidatesHelper.validateEmail(this.email)) {
-        NotifyHelper.info("Atenção!", "Informe um email válido.");
-        return;
-      }
+    data() {
+      return {
+        ok: false,
+        email: "",
+        btnDisabled: false
+      };
+    },
+    methods: {
+      cleanData(data) {
+        return tool.cleanDataApi(data);
+      },
+      submitForm() {
+        if (!validate.validateEmail(this.email)) {
+          notify.info("Atenção!", "Informe um email válido.");
+          return;
+        }
 
-      this.btnDisabled = true;
+        this.btnDisabled = true;
 
-      return new Promise((resolve, reject) => {
-        AxiosService.post("auth/reset", { email: this.email })
-          .then(response => {
-            resolve(
-              swal({
-                title: "Sucesso!",
-                text:
-                  "O link para redefinição de senha foi enviado para o seu e-mail!",
-                type: "success",
-                showCancelButton: false,
-                confirmButtonText: "Ok!"
-              })
-            );
+        let promise = service.post("auth/reset", {email: this.email});
+
+        promise
+          .then(handleStatus)
+          .then(res => {
+            swal({
+              title: "Sucesso!",
+              text:
+                "O link para redefinição de senha foi enviado para o seu e-mail!",
+              type: "success",
+              showCancelButton: false,
+              confirmButtonText: "Ok!"
+            });
 
             this.email = "";
             this.btnDisabled = false;
@@ -79,30 +81,29 @@ export default {
           .catch(error => {
             this.btnDisabled = false;
 
-            if (error.response.status === 404) {
-              reject(NotifyHelper.danger("Atenção!", "Email não encontrado."));
-            } else {
-              let errors = Array(JSON.parse(error.response.data.error));
-              errors.forEach(value => {
-                let values = Object.values(value);
-                values.forEach(value => {
-                  reject(NotifyHelper.danger("Atenção!", value));
-                });
-              });
+            if ("data" in error.response) {
+              let errors = error.response.data.error;
+
+              if (errors.data === "email_not_found") {
+                notify.danger("Atenção!", "Email não encontrado.");
+              } else {
+                errorWithNotify(errors);
+              }
             }
+
+            console.log(error.response);
           });
-      });
+      }
+    },
+    mounted() {
+      dom.createTitle("Redefinição de Senha");
+      htmlPageCenter();
     }
-  },
-  mounted() {
-    DocumentFactory.createTitle("Redefinição de Senha");
-    JQueryHelper.pageCenter();
-  }
-};
+  };
 </script>
 
 <style scoped>
-.sign-title {
-  font-weight: bold;
-}
+  .sign-title {
+    font-weight: bold;
+  }
 </style>
