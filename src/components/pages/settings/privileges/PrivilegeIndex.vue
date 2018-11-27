@@ -2,15 +2,13 @@
   <div>
     <section>
       <Breadcrumb title="Privilégios">
-
-        <li><a href="javascript::void(0)">Configurações</a></li>
         <li>
-          <router-link :to="{ name: 'settings.privileges.index'}">
-            Privilégios
-          </router-link>
+          <a href="javascript::void(0)">Configurações</a>
+        </li>
+        <li>
+          <router-link :to="{ name: 'settings.privileges.index'}">Privilégios</router-link>
         </li>
         <li class="active">Listar</li>
-
       </Breadcrumb>
     </section>
 
@@ -21,15 +19,14 @@
             <h3 v-if="total == 1">{{ total }} Privilégio</h3>
             <h3 v-else>{{ total }} Privilégios</h3>
           </div>
-
         </div>
       </header>
       <div class="box-typical-body">
         <div class="table-responsive">
-          <Table elementId="table-edit" className="table table-hover">
+          <Table elementId="table-edit" class="table table-hover">
             <template slot="thead">
               <tr>
-                <th width="200" >Privilégios</th>
+                <th width="200">Privilégios</th>
                 <th>Name</th>
               </tr>
             </template>
@@ -38,20 +35,17 @@
                 <td class="tabledit-view-mode">
                   {{ privilege.description }}
                   <br>
-                  <small>
-                  </small>
+                  <small></small>
                 </td>
                 <td class="tabledit-view-mode">
                   <span class="label label-info">{{ privilege.name }}</span>
                 </td>
-
               </tr>
             </template>
           </Table>
         </div>
       </div>
     </section>
-
   </div>
 </template>
 <script>

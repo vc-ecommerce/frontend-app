@@ -1,9 +1,9 @@
-import Account from '@/components/pages/accounts/Account';
+import AccountIndex from '@/components/pages/accounts/AccountIndex';
 
 export const index = [
   {
     path: '/accounts',
-    name: 'user.account',
-    component: Account
+    name: 'account.index',
+    component: AccountIndex
   }
 ];
