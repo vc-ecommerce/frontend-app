@@ -135,7 +135,11 @@
                 <li><a href="#"><span class="lbl">Funções [Roles]</span></a></li>
               </ul>
               <ul>
-                  <li><a href="#"><span class="lbl">Privilégios [Privileges]</span></a></li>
+                  <li>
+                    <router-link :to="{ name: 'settings.privileges.index'}">
+                      <span class="lbl">Privilégios [Privileges]</span>
+                    </router-link>
+                  </li>
                 </ul>
             </li>
 
@@ -184,7 +188,11 @@
             <li><a href="#"><span class="lbl">Relatórios</span></a></li>
             <li><a href="#"><span class="lbl">Usuários online</span></a></li>
             <li><a href="#"><span class="lbl">Estatísticas</span></a></li>
-            <li><router-link :to="{ name: 'user.account'}"><span class="lbl">Acounte</span></router-link> </li>
+            <li>
+              <router-link :to="{ name: 'user.account'}">
+                <span class="lbl">Acounte</span>
+              </router-link>
+            </li>
           </ul>
         </li>
 
@@ -195,7 +203,7 @@
 </template>
 <script>
 
-import { validateHelpers as validate } from "@/utils/validate-helpers";
+import { filterLinksUserToRoles } from '@/utils/authorizations-helpers'
 
 export default {
   name: "SidebarMenuLeft",
@@ -210,27 +218,27 @@ export default {
   },
   created(){
 
-    this.isRoleAdmin = validate.isRoleUser(
+    this.isRoleAdmin = filterLinksUserToRoles(
       this.$store.getters.getUserRoles,
       "ADMIN"
     );
 
-    this.isRoleEditor = validate.isRoleUser(
+    this.isRoleEditor = filterLinksUserToRoles(
       this.$store.getters.getUserRoles,
       "STAFF_EDITOR"
     );
 
-    this.isRoleAuditor = validate.isRoleUser(
+    this.isRoleAuditor = filterLinksUserToRoles(
       this.$store.getters.getUserRoles,
       "STAFF_AUDITOR"
     );
 
-    this.isRoleFinance = validate.isRoleUser(
+    this.isRoleFinance = filterLinksUserToRoles(
       this.$store.getters.getUserRoles,
       "STAFF_FINANCE"
     );
 
-    this.isRoleExpedition = validate.isRoleUser(
+    this.isRoleExpedition = filterLinksUserToRoles(
       this.$store.getters.getUserRoles,
       "STAFF_EXPEDITION"
     );

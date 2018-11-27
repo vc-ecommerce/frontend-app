@@ -46,24 +46,6 @@ export const toolHelpers = {
 
   },
 
-  swalErrorUnauthorized: () => {
-
-    swal({
-        title: "Atenção!!!",
-        text: "Acesso não autorizado ou negado pelo servidor.",
-        type: "error",
-        showCancelButton: false,
-        cancelButtonClass: "btn-default",
-        confirmButtonClass: "btn-danger",
-        confirmButtonText: "Fazer login",
-        closeOnConfirm: false
-      },
-      function () {
-        sessionStorage.clear();
-        window.location.replace("/login");
-      });
-  },
-
   cleanDataApi: (data) => {
     if (!data) return '';
     data = data.toString();
@@ -120,25 +102,18 @@ export const toolHelpers = {
 
   },
 
+  dateToText(date) {
+      return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
+  },
+
+  textToDate(text) {
+
+      if(!/\d{2}\/\d{2}\/\d{4}/.test(text))
+          throw new Error('Deve estar no formato dd/mm/aaaa');
+
+      return new Date(...text.split('/').reverse().map((item, indice) => item - indice % 2));
+  }
 
 }
 
-// return swal({
-//   title: 'Erro',
-//   text: 'Algo deu errado, tente novamente!',
-//   type: 'error',
-//   showCancelButton: false,
-//   confirmButtonText: 'Ok!'
-// });
 
-// static dataParaTexto(data) {
-//     return `${data.getDate()}/${data.getMonth()+1}/${data.getFullYear()}`;
-// }
-
-// static textoParaData(texto) {
-
-//     if(!/\d{2}\/\d{2}\/\d{4}/.test(texto))
-//         throw new Error('Deve estar no formato dd/mm/aaaa');
-
-//     return new Date(...texto.split('/').reverse().map((item, indice) => item - indice % 2));
-// }
