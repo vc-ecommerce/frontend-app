@@ -5,17 +5,17 @@ import PageEdit from '@/components/pages/catalogs/pages-info/PageEdit'
 export const pages = [
   {
     path: '/catalogs/pages',
-    name: 'pages.list',
+    name: 'catalogs.pages.list',
     component: PageList
   },
   {
     path: '/catalogs/pages/create',
-    name: 'pages.create',
+    name: 'catalogs.pages.create',
     component: PageCreate
   },
   {
     path: '/catalogs/pages/:id/edit',
-    name: 'pages.edit',
+    name: 'catalogs.pages.edit',
     component: PageEdit
   }
 ];

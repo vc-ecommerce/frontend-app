@@ -29,9 +29,9 @@
             <!-- <li><a href="#"><span class="lbl">Tipos de assinatura</span></a></li>
             <li><a href="#"><span class="lbl">Filtros</span></a></li>-->
             <li>
-              <a href="#">
+              <router-link :to="{ name: 'catalogs.attributes.list'}">
                 <span class="lbl">Atributos</span>
-              </a>
+              </router-link>
             </li>
             <!-- <li><a href="#"><span class="lbl">Opções</span></a></li> -->
             <li>
@@ -46,9 +46,9 @@
               </a>
             </li>
             <li>
-              <a href="#">
+              <router-link :to="{ name: 'catalogs.pages.list'}">
                 <span class="lbl">Páginas de informações</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </li>
@@ -190,9 +190,9 @@
               </span>
               <ul>
                 <li>
-                  <a href="#">
+                  <router-link :to="{ name: 'settings.users.list'}">
                     <span class="lbl">Gerenciar usuários</span>
-                  </a>
+                  </router-link>
                 </li>
                 <li>
                   <a href="#">
@@ -209,14 +209,14 @@
               </span>
               <ul>
                 <li>
-                  <a href="#">
+                  <router-link :to="{ name: 'settings.roles.list'}">
                     <span class="lbl">Funções [Roles]</span>
-                  </a>
+                  </router-link>
                 </li>
               </ul>
               <ul>
                 <li>
-                  <router-link :to="{ name: 'settings.privileges.index'}">
+                  <router-link :to="{ name: 'settings.privileges.list'}">
                     <span class="lbl">Privilégios [Privileges]</span>
                   </router-link>
                 </li>
@@ -314,11 +314,6 @@
               <a href="#">
                 <span class="lbl">Estatísticas</span>
               </a>
-            </li>
-            <li>
-              <router-link :to="{ name: 'account.index'}">
-                <span class="lbl">Acounte</span>
-              </router-link>
             </li>
           </ul>
         </li>

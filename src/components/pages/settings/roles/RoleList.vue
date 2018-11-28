@@ -8,16 +8,16 @@
             <h3 v-else>{{ total }} Funções</h3>
           </div>
           <div class="tbl-cell tbl-cell-action-bordered">
-            <CreateRole @reload="getRoles()" :dataPrivilegies="privileges" />
+            <CreateRole @reload="getRoles()" :dataPrivilegies="privileges"/>
           </div>
         </div>
       </header>
       <div class="box-typical-body">
         <div class="table-responsive">
-          <Table elementId="table-edit" className="table table-hover">
+          <Table elementId="table-edit" class="table table-hover">
             <template slot="thead">
               <tr>
-                <th width="200" >Funções</th>
+                <th width="200">Funções</th>
                 <th>Name</th>
                 <th>Privilégios</th>
                 <th width="300" class="tabledit-toolbar-column">Editar</th>
@@ -28,33 +28,39 @@
                 <td class="tabledit-view-mode">
                   {{ role.description }}
                   <br>
-                  <small>
-                  </small>
+                  <small></small>
                 </td>
                 <td class="tabledit-view-mode">
                   <span class="label label-info">{{ role.name }}</span>
                 </td>
                 <td>
-                  <span v-for="(privilege) in role.privileges" :key="privilege._id" class="label label-success" style="margin:2px">{{ privilege.description }}</span>
+                  <span
+                    v-for="(privilege) in role.privileges"
+                    :key="privilege._id"
+                    class="label label-success"
+                    style="margin:2px"
+                  >{{ privilege.description }}</span>
                 </td>
 
                 <td style="white-space: nowrap; width: 1%;">
                   <div class="tabledit-toolbar btn-toolbar" style="text-align: left;">
                     <div class="btn-group btn-group-sm" style="float: none;">
-                      <EditRole v-if="!role.default" :dataPrivilegies="privileges" :dataRoles="roles" :dataItem="role" />
+                      <EditRole
+                        v-if="!role.default"
+                        :dataPrivilegies="privileges"
+                        :dataRoles="roles"
+                        :dataItem="role"
+                      />
                       <RemoveRole v-if="!role.default" :dataRoles="roles" :dataItem="role"/>
                     </div>
-
                   </div>
                 </td>
-
               </tr>
             </template>
           </Table>
         </div>
       </div>
     </section>
-
   </div>
 </template>
 <script>
@@ -62,16 +68,16 @@ import CreateRole from "./components/CreateRole";
 import EditRole from "./components/EditRole";
 import RemoveRole from "./components/RemoveRole";
 import Table from "@/components/layouts/Table";
-import { isAclToPage } from '@/utils/authorizations-helpers';
+import { isAclToPage } from "@/utils/authorizations-helpers";
 import { HttpServices as service } from "@/services/http-services";
 
 export default {
-  name: "UserIndex",
+  name: "RoleList",
   components: {
     CreateRole,
     EditRole,
     RemoveRole,
-    Table,
+    Table
   },
   props: [],
   data() {
@@ -85,11 +91,11 @@ export default {
         current_page: 1
       },
       offset: 4,
-      privileges: [],
+      privileges: []
     };
   },
   beforeCreate() {
-    isAclToPage(this.$store.getters.getUserRoles, "ADMIN");
+    isAclToPage("ADMIN");
   },
   mounted() {
     this.getRoles();
@@ -113,9 +119,7 @@ export default {
           this.roles = res.data;
           this.total = res.data.total;
         })
-        .catch(error => {
-
-        });
+        .catch(error => {});
     },
     getPrivileges() {
       const api = `${this.$urlApi}/admin/privileges`;
@@ -129,9 +133,7 @@ export default {
         .then(res => {
           this.privileges = res.data.data;
         })
-        .catch(error => {
-
-        });
+        .catch(error => {});
     }
   }
 };

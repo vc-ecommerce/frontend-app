@@ -8,13 +8,13 @@
             <h3 v-else>{{ total }} Usuários</h3>
           </div>
           <div class="tbl-cell tbl-cell-action-bordered">
-            <CreateUser :dataRoles="roles" @reload="getUsers()" />
+            <CreateUser :dataRoles="roles" @reload="getUsers()"/>
           </div>
         </div>
       </header>
       <div class="box-typical-body">
         <div class="table-responsive">
-          <Table elementId="table-edit" className="table table-hover">
+          <Table elementId="table-edit" class="table table-hover">
             <template slot="thead">
               <tr>
                 <th>Usuários</th>
@@ -22,16 +22,20 @@
                 <th class="tabledit-toolbar-column">Editar</th>
               </tr>
             </template>
-              <template slot="tbody">
+            <template slot="tbody">
               <tr v-for="(user, index) in users.data" :key="index">
                 <td class="tabledit-view-mode">
                   {{ user.name }}
                   <br>
-                  <small>
-                  </small>
+                  <small></small>
                 </td>
                 <td>
-                  <span v-for="(role, index) in user.roles" :key="index" class="label label-info" style="margin:2px">{{ role.description }}</span>
+                  <span
+                    v-for="(role, index) in user.roles"
+                    :key="index"
+                    class="label label-info"
+                    style="margin:2px"
+                  >{{ role.description }}</span>
                 </td>
                 <td style="white-space: nowrap; width: 1%;">
                   <div class="tabledit-toolbar btn-toolbar" style="text-align: left;">
@@ -49,9 +53,7 @@
       </div>
     </section>
     <section>
-      <Pagination v-if="total>15" :pagination="users"
-        @paginate="getUsers()"
-        :offset="4" />
+      <Pagination v-if="total>15" :pagination="users" @paginate="getUsers()" :offset="4"/>
     </section>
   </div>
 </template>
@@ -63,18 +65,18 @@ import RemoveUser from "./components/RemoveUser";
 import Table from "@/components/layouts/Table";
 import Pagination from "@/components/paginations/Pagination";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
-import { isAclToPage } from '@/utils/authorizations-helpers';
+import { isAclToPage } from "@/utils/authorizations-helpers";
 import { HttpServices as service } from "@/services/http-services";
 
 export default {
-  name: "UserIndex",
+  name: "UserList",
   components: {
     CreateUser,
     EditUser,
     ChangeStatusUser,
     RemoveUser,
     Table,
-    Pagination,
+    Pagination
   },
   props: [],
   data() {
@@ -92,7 +94,7 @@ export default {
     };
   },
   beforeCreate() {
-    isAclToPage(this.$store.getters.getUserRoles, "ADMIN");
+    isAclToPage("ADMIN");
   },
   mounted() {
     this.getUsers();
@@ -104,14 +106,8 @@ export default {
   },
   methods: {
     getRoles() {
-      const api = `${this.$urlApi}/admin/roles`;
-      Vue.axios
-        .get(api, {
-          headers: {
-            Authorization: "Bearer " + this.$store.getters.getToken,
-            "User-ID": this.$store.getters.getUserId
-          }
-        })
+      const promise = service.get("/admin/roles");
+      promise
         .then(res => {
           this.roles = tool.cleanRole(res.data.data);
         })
@@ -119,22 +115,14 @@ export default {
           this.error = JSON.parse(error.response.data.error);
         });
     },
-
     getUsers() {
-      const api = `${this.$urlApi}/admin/users?page=${this.users.current_page}`;
-      Vue.axios
-        .get(api, {
-          headers: {
-            Authorization: "Bearer " + this.$store.getters.getToken,
-            "User-ID": this.$store.getters.getUserId
-          }
-        })
+        const promise = service.get(`/admin/users?page=${this.users.current_page}`);
+        promise
         .then(res => {
           this.users = res.data;
           this.total = res.data.total;
         })
-        .catch(error => {
-        });
+        .catch(console.log);
     }
   },
   beforeDestroy() {

@@ -1,9 +1,9 @@
-import RoleIndex from '@/components/pages/settings/roles/RoleIndex';
+import RoleList from '@/components/pages/settings/roles/RoleList';
 
 export const role = [
   {
     path: '/settings/roles',
-    name: 'settings.roles.index',
-    component: RoleIndex
+    name: 'settings.roles.list',
+    component: RoleList
   }
 ];

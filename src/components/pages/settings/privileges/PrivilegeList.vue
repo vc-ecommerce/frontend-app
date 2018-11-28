@@ -6,7 +6,7 @@
           <a href="javascript::void(0)">Configurações</a>
         </li>
         <li>
-          <router-link :to="{ name: 'settings.privileges.index'}">Privilégios</router-link>
+          <router-link :to="{ name: 'settings.privileges.list'}">Privilégios</router-link>
         </li>
         <li class="active">Listar</li>
       </Breadcrumb>
@@ -57,7 +57,7 @@ import { HttpServices as service } from "@/services/http-services";
 import { isAclToPage } from '@/utils/authorizations-helpers';
 
 export default {
-  name: "PrivilegeIndex",
+  name: "PrivilegeList",
   components: {
     Table,
     Breadcrumb,
