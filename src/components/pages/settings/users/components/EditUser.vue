@@ -4,31 +4,30 @@
       :idModalLink="$store.getters.getItem ? $store.getters.getItem._id : ''"
       showTypeClassName="tabledit-edit-button btn btn-sm btn-default"
       classIcon="glyphicon glyphicon-pencil"
-      :dataItem="dataItem" />
+      :dataItem="dataItem"
+    />
 
     <Modal
       :idModal="$store.getters.getItem ? $store.getters.getItem._id : ''"
       titleModal="Editar dados de Usuário"
-      sizeModal="lg">
-
+      sizeModal="lg"
+    >
       <div v-if="status && error === false" class="row">
-        <Alert className="alert alert-success alert-fill alert-close alert-dismissible fade show">
-          {{ status }}
-        </Alert>
+        <Alert
+          class="alert alert-success alert-fill alert-close alert-dismissible fade show"
+        >{{ status }}</Alert>
       </div>
 
       <div v-if="passwordInvalid" class="row">
-        <Alert className="alert alert-danger alert-fill alert-close alert-dismissible fade show">
+        <Alert class="alert alert-danger alert-fill alert-close alert-dismissible fade show">
           <strong>Atenção:</strong> Senha administrativa fraca, tente outra mais forte.
         </Alert>
       </div>
 
       <div v-if="error && status === false" class="row">
-        <Alert className="alert alert-danger alert-fill alert-close alert-dismissible fade show">
+        <Alert class="alert alert-danger alert-fill alert-close alert-dismissible fade show">
           <dl>
-            <dt v-for="err in error" :key="err.id">
-              {{ cleanData( err ) }}
-            </dt>
+            <dt v-for="err in error" :key="err.id">{{ cleanData( err ) }}</dt>
           </dl>
         </Alert>
       </div>
@@ -36,18 +35,31 @@
       <span :class="formId = generateId"></span>
 
       <form :id="'edit-user-'+ formId" @submit.prevent="submitForm">
-
         <div class="row">
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label semibold" for="inputName">Nome</label>
-              <input v-if="$store.getters.getItem" type="text" required class="form-control" v-model="$store.getters.getItem.name" placeholder="Nome">
+              <input
+                v-if="$store.getters.getItem"
+                type="text"
+                required
+                class="form-control"
+                v-model="$store.getters.getItem.name"
+                placeholder="Nome"
+              >
             </fieldset>
           </div>
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label" for="inputEmail">Email</label>
-              <input v-if="$store.getters.getItem" type="email" required class="form-control" placeholder="E-mail" v-model="$store.getters.getItem.email">
+              <input
+                v-if="$store.getters.getItem"
+                type="email"
+                required
+                class="form-control"
+                placeholder="E-mail"
+                v-model="$store.getters.getItem.email"
+              >
             </fieldset>
           </div>
         </div>
@@ -58,15 +70,25 @@
             <fieldset class="form-group">
               <label class="form-label" for="inputPassword">Usuário ativo?</label>
               <select class="form-control" required v-model="selectedOption">
-                <option disabled value="">Escolha um item</option>
-                <option v-for="option in options" :key="option.id" :value="option.value">{{ option.text }}</option>
+                <option disabled value>Escolha um item</option>
+                <option
+                  v-for="option in options"
+                  :key="option.id"
+                  :value="option.value"
+                >{{ option.text }}</option>
               </select>
             </fieldset>
           </div>
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label" for="inputPassword">Senha</label>
-              <input type="password" class="form-control" minlength="6" v-model="password" placeholder="Senha">
+              <input
+                type="password"
+                class="form-control"
+                minlength="6"
+                v-model="password"
+                placeholder="Senha"
+              >
             </fieldset>
           </div>
         </div>
@@ -77,13 +99,17 @@
         </div>
 
         <div class="row">
-          <div class="checkbox-toggle" v-for="(role, index) in dataRoles" :key="role.id" style="margin:20px">
+          <div
+            class="checkbox-toggle"
+            v-for="(role, index) in dataRoles"
+            :key="role.id"
+            style="margin:20px"
+          >
             <span :class="index = index + generateId"></span>
             <input type="checkbox" v-model="roleUser" :id="'check-toggle-'+ index" :value="role">
             <label :for="'check-toggle-'+ index">{{role.description}}</label>
           </div>
         </div>
-
       </form>
 
       <span slot="btn">
@@ -91,9 +117,7 @@
           <i class="glyphicon glyphicon-ok"></i> Salvar Alterações
         </button>
       </span>
-
     </Modal>
-
   </span>
 </template>
 <script>
@@ -182,26 +206,16 @@ export default {
 
       this.status = "Enviando...";
 
-      const api = `${this.$urlApi}/admin/users/${data._id}`;
-      Vue.axios
-        .put(
-          api,
-          {
-            name: data.name,
-            email: data.email,
-            active: data.active,
-            action: "edit-user",
-            password: this.password,
-            password_confirmation: this.password,
-            roles: data.roles
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + this.$store.getters.getToken,
-              "User-ID": this.$store.getters.getUserId
-            }
-          }
-        )
+      service
+        .put(`/admin/users/${data._id}`, {
+          name: data.name,
+          email: data.email,
+          active: data.active,
+          action: "edit-user",
+          password: this.password,
+          password_confirmation: this.password,
+          roles: data.roles
+        })
         .then(res => {
           this.password = "";
           this.error = false;

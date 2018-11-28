@@ -1,29 +1,43 @@
 <template>
   <form class="sign-box" @submit.prevent="submitForm">
-
     <div class="sign-avatar">
-      <img src="@/assets/img/avatar-sign.png" alt="">
+      <img src="@/assets/img/avatar-sign.png" alt>
     </div>
 
     <header class="sign-title">Login</header>
 
     <div class="form-group">
-      <input type="email" required class="form-control" v-model="email" placeholder="Entre com seu email"/>
+      <input
+        type="email"
+        required
+        class="form-control"
+        v-model="email"
+        placeholder="Entre com seu email"
+      >
     </div>
 
     <div class="form-group">
-      <input type="password" required minlength="6" class="form-control" v-model="password"
-             placeholder="Digite a senha"/>
+      <input
+        type="password"
+        required
+        minlength="6"
+        class="form-control"
+        v-model="password"
+        placeholder="Digite a senha"
+      >
     </div>
 
     <div class="form-group">
       <!-- <div class="checkbox float-left">
           <input type="checkbox" id="signed-in"/>
           <label for="signed-in">Mantenha-me conectado</label>
-      </div> -->
+      </div>-->
       <div class="float-right reset">
-        <router-link :to="{ name: 'auth.reset' }"
-                     @click.native="$eventHub.$emit('eventDocumentTitle', {data: 'Redefinição de senha'})">Recuperar
+        <router-link
+          :to="{ name: 'auth.reset' }"
+          @click.native="$eventHub.$emit('eventDocumentTitle', {data: 'Redefinição de senha'})"
+        >
+          Recuperar
           Senha
         </router-link>
       </div>
@@ -33,8 +47,8 @@
       bntTitle="Efetuar Login"
       :ok="ok"
       :btnDisabled="btnDisabled"
-      bntClass="btn btn-rounded"/>
-
+      bntClass="btn btn-rounded"
+    />
   </form>
 </template>
 <script>
@@ -72,12 +86,11 @@ export default {
       this.btnDisabled = true;
       const vm = this;
 
-      let promise = service.post("/auth/login", {
-        email: this.email,
-        password: this.password
-      });
-
-      promise
+      service
+        .post("/auth/login", {
+          email: this.email,
+          password: this.password
+        })
         .then(handleStatus)
         .then(res => {
           sessionStorage.setItem(

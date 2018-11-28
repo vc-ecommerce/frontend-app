@@ -106,18 +106,16 @@ export default {
   },
   methods: {
     getRoles() {
-      const promise = service.get("/admin/roles");
-      promise
+      service
+        .get("/admin/roles")
         .then(res => {
           this.roles = tool.cleanRole(res.data.data);
         })
-        .catch(error => {
-          this.error = JSON.parse(error.response.data.error);
-        });
+        .catch(console.log);
     },
     getUsers() {
-        const promise = service.get(`/admin/users?page=${this.users.current_page}`);
-        promise
+      service
+        .get(`/admin/users?page=${this.users.current_page}`)
         .then(res => {
           this.users = res.data;
           this.total = res.data.total;

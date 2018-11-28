@@ -31,12 +31,11 @@ export default {
   methods: {
     send(user) {
       return new Promise((resolve, reject) => {
-        const promise = service.put(`/admin/users/${user._id}`, {
-          active: !Boolean(user.active),
-          action: "edit-status"
-        });
-
-        promise
+        service
+          .put(`/admin/users/${user._id}`, {
+            active: !Boolean(user.active),
+            action: "edit-status"
+          })
           .then(res => {
             if (Boolean(res.data) === true) {
               resolve(true);
@@ -75,9 +74,7 @@ export default {
         },
         function(isConfirm) {
           if (isConfirm) {
-            let result = vm.send(user);
-
-            result
+            vm.send(user)
               .then(res => {
                 if (status === true) {
                   titleResp = "Ativado";

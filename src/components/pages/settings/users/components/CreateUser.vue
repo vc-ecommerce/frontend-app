@@ -1,50 +1,52 @@
 <template>
   <span>
+    <ModalLink idModalLink="create-user" titleLink="Criar" classIcon="glyphicon glyphicon-plus"/>
 
-    <ModalLink
-      idModalLink="create-user"
-      titleLink="Criar"
-      classIcon="glyphicon glyphicon-plus" />
-
-    <Modal idModal="create-user"
-      titleModal="Criar novo usuário"
-      sizeModal="lg">
-
+    <Modal idModal="create-user" titleModal="Criar novo usuário" sizeModal="lg">
       <div v-if="status && error === false" class="row">
-        <Alert className="alert alert-success alert-fill alert-close alert-dismissible fade show">
-          {{ status }}
-        </Alert>
+        <Alert
+          class="alert alert-success alert-fill alert-close alert-dismissible fade show"
+        >{{ status }}</Alert>
       </div>
 
       <div v-if="passwordInvalid" class="row">
-        <Alert className="alert alert-danger alert-fill alert-close alert-dismissible fade show">
+        <Alert class="alert alert-danger alert-fill alert-close alert-dismissible fade show">
           <strong>Atenção:</strong> Senha administrativa fraca, tente outra mais forte.
         </Alert>
       </div>
 
       <div v-if="error && status === false" class="row">
-        <Alert className="alert alert-danger alert-fill alert-close alert-dismissible fade show">
+        <Alert class="alert alert-danger alert-fill alert-close alert-dismissible fade show">
           <dl>
-            <dt v-for="err in error" :key="err.id">
-              {{ cleanData( err ) }}
-            </dt>
+            <dt v-for="err in error" :key="err.id">{{ cleanData( err ) }}</dt>
           </dl>
         </Alert>
       </div>
 
       <form id="add-user" @submit.prevent="submitForm">
-
         <div class="row">
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label semibold" for="inputName">Nome</label>
-              <input type="text" required class="form-control" v-model="user.name" placeholder="Nome">
+              <input
+                type="text"
+                required
+                class="form-control"
+                v-model="user.name"
+                placeholder="Nome"
+              >
             </fieldset>
           </div>
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label" for="inputEmail">Email</label>
-              <input type="email" required class="form-control" placeholder="E-mail" v-model="user.email">
+              <input
+                type="email"
+                required
+                class="form-control"
+                placeholder="E-mail"
+                v-model="user.email"
+              >
             </fieldset>
           </div>
         </div>
@@ -53,15 +55,27 @@
             <fieldset class="form-group">
               <label class="form-label" for="inputPassword">Usuário ativo?</label>
               <select required class="form-control" v-model="user.active">
-                <option disabled value="">Escolha um item</option>
-                <option v-for="option in options" :key="option.id" :value="option.value">{{ option.text }}</option>
+                <option disabled value>Escolha um item</option>
+                <option
+                  v-for="option in options"
+                  :key="option.id"
+                  :value="option.value"
+                >{{ option.text }}</option>
               </select>
             </fieldset>
           </div>
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label" for="hide-show-password">Senha</label>
-              <input type="password" id="hide-show-password" required class="form-control" minlength="6" v-model="user.password" placeholder="Senha">
+              <input
+                type="password"
+                id="hide-show-password"
+                required
+                class="form-control"
+                minlength="6"
+                v-model="user.password"
+                placeholder="Senha"
+              >
             </fieldset>
           </div>
         </div>
@@ -70,7 +84,12 @@
         </div>
 
         <div class="row">
-          <div class="checkbox-toggle" v-for="(role, index) in dataRoles" :key="role.id" style="margin-left:20px">
+          <div
+            class="checkbox-toggle"
+            v-for="(role, index) in dataRoles"
+            :key="role.id"
+            style="margin-left:20px"
+          >
             <span :class="index = index + generateId"></span>
             <input type="checkbox" v-model="user.roles" :id="'check-toggle-'+ index" :value="role">
             <label :for="'check-toggle-'+ index">{{role.description}}</label>
@@ -79,9 +98,10 @@
       </form>
 
       <span slot="btn">
-        <button form="add-user" type="submit" class="btn btn-rounded btn-primary"><i class="glyphicon glyphicon-ok"></i> Salvar Dados</button>
+        <button form="add-user" type="submit" class="btn btn-rounded btn-primary">
+          <i class="glyphicon glyphicon-ok"></i> Salvar Dados
+        </button>
       </span>
-
     </Modal>
   </span>
 </template>
@@ -145,26 +165,16 @@ export default {
 
       this.status = "Enviando...";
 
-      const api = `${this.$urlApi}/admin/users`;
-      Vue.axios
-        .post(
-          api,
-          {
-            name: this.user.name,
-            email: this.user.email,
-            active: this.user.active,
-            password: this.user.password,
-            password_confirmation: this.user.password,
-            roles: this.user.roles,
-            action: "create-user"
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + this.$store.getters.getToken,
-              "User-ID": this.$store.getters.getUserId
-            }
-          }
-        )
+      service
+        .post("/admin/users", {
+          name: this.user.name,
+          email: this.user.email,
+          active: this.user.active,
+          password: this.user.password,
+          password_confirmation: this.user.password,
+          roles: this.user.roles,
+          action: "create-user"
+        })
         .then(res => {
           this.error = false;
           this.users = res.data;

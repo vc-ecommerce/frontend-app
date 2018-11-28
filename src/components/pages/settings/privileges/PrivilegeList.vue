@@ -49,18 +49,17 @@
   </div>
 </template>
 <script>
-
 import Table from "@/components/layouts/Table";
 import Breadcrumb from "@/components/layouts/Breadcrumb";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
-import { isAclToPage } from '@/utils/authorizations-helpers';
+import { isAclToPage } from "@/utils/authorizations-helpers";
 
 export default {
   name: "PrivilegeList",
   components: {
     Table,
-    Breadcrumb,
+    Breadcrumb
   },
   props: [],
   data() {
@@ -77,8 +76,9 @@ export default {
   },
   methods: {
     getPrivileges() {
-      const promise = service.get('/admin/privileges')
-      promise.then(res => {
+      service
+        .get("/admin/privileges")
+        .then(res => {
           this.privileges = res.data;
           this.total = res.data.total;
         })

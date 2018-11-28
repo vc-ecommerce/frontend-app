@@ -1,9 +1,13 @@
 <template>
-
-  <button  v-if="isUserLogged" type="button" @click.prevent="remove(dataItem)" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin-left:-1px">
+  <button
+    v-if="isUserLogged"
+    type="button"
+    @click.prevent="remove(dataItem)"
+    class="tabledit-delete-button btn btn-sm btn-danger"
+    style="float: none; margin-left:-1px"
+  >
     <span class="glyphicon glyphicon-trash"></span>
   </button>
-
 </template>
 <script>
 import { HttpServices as service } from "@/services/http-services";
@@ -23,32 +27,23 @@ export default {
       if (this.dataItem._id === this.$store.getters.getUserId) {
         return false;
       }
-      return true
+      return true;
     }
   },
   methods: {
     send(user) {
-      const api = `${this.$urlApi}/admin/users/${user._id}`;
-
-      return Vue.axios
-        .delete(api, {
-          headers: {
-            Authorization: "Bearer " + this.$store.getters.getToken,
-            "User-ID": this.$store.getters.getUserId
-          }
-        })
-        .then(res => {
-          if (Boolean(res.data) === true) {
-            return true;
-          }
-          return false;
-        })
-        .catch(error => {
-          this.$eventHub.$emit("eventError", { data: error.res });
-          return false;
-        });
+      return new Promise((resolve, reject) => {
+        service
+          .delete(`/admin/users/${user._id}`)
+          .then(res => {
+            if (Boolean(res.data) === true) {
+              resolve(true);
+            }
+            reject(false);
+          })
+          .catch(console.log);
+      });
     },
-
     remove(user) {
       const vm = this;
       swal(
@@ -66,9 +61,8 @@ export default {
 
         function(isConfirm) {
           if (isConfirm) {
-            let result = vm.send(user);
-            result.then(function(value) {
-              if (value == true) {
+            vm.send(user)
+              .then(res => {
                 let index = vm.dataUsers.data.indexOf(user);
                 vm.dataUsers.data.splice(index, 1);
 
@@ -81,15 +75,15 @@ export default {
                   type: "success",
                   confirmButtonClass: "btn-success"
                 });
-              } else {
+              })
+              .catch(error => {
                 swal({
                   title: "Erro",
                   text: "Houve um erro na socilitação do pedido.",
                   type: "error",
                   confirmButtonClass: "btn-danger"
                 });
-              }
-            });
+              });
           } else {
             swal({
               title: "Cancelado",

@@ -122,15 +122,12 @@ export default {
 
       this.btnDisabled = true;
 
-      const uri = `/admin/users/${this.$store.getters.getUserId}`;
-
-      let promise = service.put(uri, {
-        name: this.user.name,
-        password: this.password,
-        password_confirmation: this.password
-      });
-
-      promise
+      service
+        .put(`/admin/users/${this.$store.getters.getUserId}`, {
+          name: this.user.name,
+          password: this.password,
+          password_confirmation: this.password
+        })
         .then(handleStatus)
         .then(res => {
           let stateUser = this.$store.getters.getUser;
