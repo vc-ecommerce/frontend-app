@@ -1,5 +1,11 @@
 <template>
-  <button v-if="isUserLogged" type="button" @click.prevent="update(dataItem)" class="tabledit-delete-button btn btn-sm" style="float: none; margin-right:-1px">
+  <button
+    v-if="isUserLogged"
+    type="button"
+    @click.prevent="update(dataItem)"
+    class="tabledit-delete-button btn btn-sm"
+    style="float: none; margin-right:-1px"
+  >
     <span v-if="dataItem.active" class="glyphicon glyphicon-eye-open"></span>
     <span v-else class="glyphicon glyphicon-eye-close"></span>
   </button>
@@ -19,39 +25,28 @@ export default {
       if (this.dataItem._id === this.$store.getters.getUserId) {
         return false;
       }
-      return true
+      return true;
     }
   },
   methods: {
     send(user) {
-      let status = !Boolean(user.active);
-      let result = false;
-
-      const api = `${this.$urlApi}/admin/users/${user._id}`;
-
-      return Vue.axios
-        .put(
-          api,
-          {
-            active: status,
-            action: "edit-status"
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + this.$store.getters.getToken,
-              "User-ID": this.$store.getters.getUserId
-            }
-          }
-        )
-        .then(res => {
-          if (Boolean(res.data) === true) {
-            return true;
-          }
-          return false;
-        })
-        .catch(error => {
-          return false;
+      return new Promise((resolve, reject) => {
+        const promise = service.put(`/admin/users/${user._id}`, {
+          active: !Boolean(user.active),
+          action: "edit-status"
         });
+
+        promise
+          .then(res => {
+            if (Boolean(res.data) === true) {
+              resolve(true);
+            }
+            reject(false);
+          })
+          .catch(error => {
+            reject(false);
+          });
+      });
     },
 
     update(user) {
@@ -81,15 +76,9 @@ export default {
         function(isConfirm) {
           if (isConfirm) {
             let result = vm.send(user);
-            result.then(function(value) {
-              user.active = !user.active;
-              // Faça algo com o valor aqui dentro.
-              // Se precisar dele em outro lugar, chame uma função
-              // e passe adiante. Não tente atribuir seu valor a uma
-              // variável de fora e acessar lá embaixo, não vai funcionar.
-              // (exceto em certos casos com frameworks reativos)
 
-              if (value == true) {
+            result
+              .then(res => {
                 if (status === true) {
                   titleResp = "Ativado";
                   textResp = "ativado";
@@ -97,22 +86,23 @@ export default {
                   titleResp = "Desativado";
                   textResp = "desativado";
                 }
-
                 swal({
                   title: titleResp,
                   text: `Usuário ${textResp} com sucesso.`,
                   type: "success",
                   confirmButtonClass: "btn-success"
                 });
-              } else {
+
+                user.active = !user.active;
+              })
+              .catch(error => {
                 swal({
                   title: "Erro",
                   text: "Houve um erro na socilitação do pedido.",
                   type: "error",
                   confirmButtonClass: "btn-danger"
                 });
-              }
-            });
+              });
           } else {
             swal({
               title: "Cancelado",
