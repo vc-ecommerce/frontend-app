@@ -135,6 +135,11 @@ export default {
         .catch(error => {
         });
     }
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("totalUser", function(t) {
+      vm.total = t;
+    });
   }
 };
 </script>

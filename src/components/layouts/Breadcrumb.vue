@@ -5,8 +5,8 @@
         <div class="tbl-cell">
           <h3>{{ title }}</h3>
           <ol class="breadcrumb breadcrumb-simple">
-            <li><a href="/">Início</a></li>
-              <slot></slot>
+            <li><router-link :to="{name: 'home'}">Início</router-link></li>
+             <slot></slot>
           </ol>
         </div>
       </div>
