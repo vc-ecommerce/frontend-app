@@ -1,5 +1,5 @@
 <template>
-  <button type="button" @click.prevent="remove(dataItem)" class="tabledit-delete-button btn btn-sm btn-danger" style="float: none; margin-left:-1px">
+  <button type="button" @click.prevent="remove(dataItem)" class="tabledit-delete-button btn btn-sm btn-danger">
     <span class="glyphicon glyphicon-trash"></span>
   </button>
 </template>
@@ -7,9 +7,9 @@
 import { HttpServices as service } from "@/services/http-services";
 
 export default {
-  name: "RemoveRole",
+  name: "RemovePage",
   components: {},
-  props: ["dataRoles", "dataItem"],
+  props: ["dataPages", "dataItem"],
   data() {
     return {
       total: 0,
@@ -17,8 +17,8 @@ export default {
     };
   },
   methods: {
-    send(role) {
-      const api = `${this.$urlApi}/admin/roles/${role._id}`;
+    send(page) {
+      const api = `${this.$urlApi}/admin/pages/${page._id}`;
 
       return Vue.axios
         .delete(api, {
@@ -38,12 +38,12 @@ export default {
         });
     },
 
-    remove(role) {
+    remove(page) {
       const vm = this;
       swal(
         {
-          title: "Deseja realmente excluir?",
-          text: `${role.description}`,
+          title: "Deseja realmente excluir a página?",
+          text: `${page.name}`,
           type: "warning",
           showCancelButton: true,
           confirmButtonClass: "btn-danger",
@@ -55,18 +55,18 @@ export default {
 
         function(isConfirm) {
           if (isConfirm) {
-            let result = vm.send(role);
+            let result = vm.send(page);
             result.then(function(value) {
               if (value == true) {
-                let index = vm.dataRoles.data.indexOf(role);
-                vm.dataRoles.data.splice(index, 1);
+                let index = vm.dataPages.data.indexOf(page);
+                vm.dataPages.data.splice(index, 1);
 
-                vm.dataRoles.total = vm.dataRoles.total - 1;
-                vm.$eventHub.$emit("totalRole", vm.dataRoles.total);
+                vm.dataPages.total = vm.dataPages.total - 1;
+                vm.$eventHub.$emit("totalPage", vm.dataPages.total);
 
                 swal({
                   title: "Removido",
-                  text: "Dados foram removidos com sucesso",
+                  text: "A página foi removida com sucesso",
                   type: "success",
                   confirmButtonClass: "btn-success"
                 });

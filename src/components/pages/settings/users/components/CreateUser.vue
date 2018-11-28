@@ -91,6 +91,7 @@ import Modal from "@/components/modals/Modal";
 import ModalLink from "@/components/modals/ModalLink";
 import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
+import { HttpServices as service } from "@/services/http-services";
 
 export default {
   name: "CreateUser",

@@ -56,7 +56,7 @@
         <div class="row">
           <div class="col-lg-6">
             <fieldset class="form-group">
-              <label class="form-label" for="inputPassword">Usuário ativo?</label>
+              <label class="form-label" for="inputPassword">Status</label>
               <select class="form-control" required v-model="selectedOption">
                 <option disabled value="">Escolha um item</option>
                 <option v-for="option in options" :key="option.id" :value="option.value">{{ option.text }}</option>
@@ -87,9 +87,7 @@
       </form>
 
       <span slot="btn">
-        <button :form="'edit-user-'+ formId" type="submit" class="btn btn-rounded btn-primary">
-          <i class="glyphicon glyphicon-ok"></i> Salvar Alterações
-        </button>
+        <button :form="'edit-user-'+ formId" type="submit" class="btn btn-rounded btn-primary">Salvar Alterações</button>
       </span>
 
     </Modal>
@@ -190,7 +188,7 @@ export default {
             name: data.name,
             email: data.email,
             active: data.active,
-            action: "edit-user",
+            admin: "edit-user",
             password: this.password,
             password_confirmation: this.password,
             roles: data.roles
@@ -207,7 +205,7 @@ export default {
           this.error = false;
           this.users = res.data;
           this.total = res.data.total;
-          this.status = "Usuário alterado com sucesso!";
+          this.status = "Dados do usuário alterados com sucesso.";
         })
         .catch(error => {
           this.status = false;

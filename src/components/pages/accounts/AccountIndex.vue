@@ -74,11 +74,11 @@
   </div>
 </template>
 <script>
-import {toolHelpers as tool} from "@/utils/tool-helpers";
-import {notifyHelpers as notify} from "@/utils/notify-helpers";
-import {handleStatus} from "@/utils/promise-helpers";
-import {errorWithNotify} from "@/utils/array-helpers";
-import {HttpServices as service} from "@/services/http-services";
+import { toolHelpers as tool } from "@/utils/tool-helpers";
+import { notifyHelpers as notify } from "@/utils/notify-helpers";
+import { handleStatus } from "@/utils/promise-helpers";
+import { errorWithNotify } from "@/utils/array-helpers";
+import { HttpServices as service } from "@/services/http-services";
 import Alert from "@/components/layouts/Alert";
 import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 import Breadcrumb from "@/components/layouts/Breadcrumb";
@@ -88,7 +88,7 @@ export default {
   components: {
     Alert,
     ButtonSubmit,
-    Breadcrumb,
+    Breadcrumb
   },
   props: [],
   data() {
@@ -97,8 +97,8 @@ export default {
       user: this.$store.getters.getUser,
       password: "",
       options: [
-        {text: "Ativo", value: true},
-        {text: "Desativado", value: false}
+        { text: "Ativo", value: true },
+        { text: "Desativado", value: false }
       ],
       passwordInvalid: false,
       btnDisabled: false

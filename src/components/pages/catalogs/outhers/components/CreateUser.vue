@@ -1,14 +1,13 @@
 <template>
   <span>
-    <ModalLink
-      :idModalLink="$store.getters.getItem ? $store.getters.getItem._id : ''"
-      showTypeClassName="tabledit-edit-button btn btn-sm btn-default"
-      classIcon="glyphicon glyphicon-pencil"
-      :dataItem="dataItem" />
 
-    <Modal
-      :idModal="$store.getters.getItem ? $store.getters.getItem._id : ''"
-      titleModal="Editar dados de Usuário"
+    <ModalLink
+      idModalLink="create-user"
+      titleLink="Criar"
+      classIcon="glyphicon glyphicon-plus" />
+
+    <Modal idModal="create-user"
+      titleModal="Criar novo usuário"
       sizeModal="lg">
 
       <div v-if="status && error === false" class="row">
@@ -33,31 +32,27 @@
         </Alert>
       </div>
 
-      <span :class="formId = generateId"></span>
-
-      <form :id="'edit-user-'+ formId" @submit.prevent="submitForm">
+      <form id="add-user" @submit.prevent="submitForm">
 
         <div class="row">
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label semibold" for="inputName">Nome</label>
-              <input v-if="$store.getters.getItem" type="text" required class="form-control" v-model="$store.getters.getItem.name" placeholder="Nome">
+              <input type="text" required class="form-control" v-model="user.name" placeholder="Nome">
             </fieldset>
           </div>
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label" for="inputEmail">Email</label>
-              <input v-if="$store.getters.getItem" type="email" required class="form-control" placeholder="E-mail" v-model="$store.getters.getItem.email">
+              <input type="email" required class="form-control" placeholder="E-mail" v-model="user.email">
             </fieldset>
           </div>
         </div>
-
-        <!--.row-->
         <div class="row">
           <div class="col-lg-6">
             <fieldset class="form-group">
-              <label class="form-label" for="inputPassword">Usuário ativo?</label>
-              <select class="form-control" required v-model="selectedOption">
+              <label class="form-label" for="inputPassword">Status</label>
+              <select required class="form-control" v-model="user.active">
                 <option disabled value="">Escolha um item</option>
                 <option v-for="option in options" :key="option.id" :value="option.value">{{ option.text }}</option>
               </select>
@@ -65,60 +60,59 @@
           </div>
           <div class="col-lg-6">
             <fieldset class="form-group">
-              <label class="form-label" for="inputPassword">Senha</label>
-              <input type="password" class="form-control" minlength="6" v-model="password" placeholder="Senha">
+              <label class="form-label" for="hide-show-password">Senha</label>
+              <input type="password" id="hide-show-password" required class="form-control" minlength="6" v-model="user.password" placeholder="Senha">
             </fieldset>
           </div>
         </div>
-
-        <!--.row-->
         <div class="row" style="margin:10px 0 10px 0">
           <label class="form-label semibold">Departamentos do usuário [Permissões]</label>
         </div>
 
         <div class="row">
-          <div class="checkbox-toggle" v-for="(role, index) in dataRoles" :key="role.id" style="margin:20px">
+          <div class="checkbox-toggle" v-for="(role, index) in dataRoles" :key="role.id" style="margin-left:20px">
             <span :class="index = index + generateId"></span>
-            <input type="checkbox" v-model="roleUser" :id="'check-toggle-'+ index" :value="role">
+            <input type="checkbox" v-model="user.roles" :id="'check-toggle-'+ index" :value="role">
             <label :for="'check-toggle-'+ index">{{role.description}}</label>
           </div>
         </div>
-
       </form>
 
       <span slot="btn">
-        <button :form="'edit-user-'+ formId" type="submit" class="btn btn-rounded btn-primary">
-          <i class="glyphicon glyphicon-ok"></i> Salvar Alterações
-        </button>
+        <button form="add-user" type="submit" class="btn btn-rounded btn-primary">Salvar Dados</button>
       </span>
 
     </Modal>
-
   </span>
 </template>
 <script>
 import Table from "@/components/layouts/Table";
-import ModalLink from "@/components/modals/ModalLink";
 import Modal from "@/components/modals/Modal";
+import ModalLink from "@/components/modals/ModalLink";
 import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
 
 export default {
-  name: "EditUser",
+  name: "CreateUser",
   components: {
     Table,
     Modal,
     ModalLink,
     Alert
   },
-  props: ["dataItem", "dataRoles"],
+  props: ["dataRoles"],
   data() {
     return {
-      formId: "",
       status: false,
       error: false,
-      password: "",
+      user: {
+        name: "",
+        email: "",
+        password: "",
+        active: "",
+        roles: []
+      },
       options: [
         { text: "Ativo", value: true },
         { text: "Desativado", value: false }
@@ -129,47 +123,16 @@ export default {
   computed: {
     generateId() {
       return Math.floor(Math.random() * 1000000 + 1);
-    },
-    roleUser: {
-      get() {
-        return tool.cleanRole(
-          this.$store.getters.getItem ? this.$store.getters.getItem.roles : []
-        );
-      },
-      set(value) {
-        let item = this.$store.getters.getItem;
-        item.roles = value;
-        this.$store.commit("setItem", item);
-      }
-    },
-    selectedOption: {
-      get() {
-        return Boolean(
-          this.$store.getters.getItem
-            ? this.$store.getters.getItem.active
-            : false
-        );
-      },
-      set(value) {
-        let item = this.$store.getters.getItem;
-        item.active = value;
-        this.$store.commit("setItem", item);
-      }
     }
   },
   methods: {
     cleanData(data) {
       return tool.cleanDataApi(data);
     },
+
     submitForm() {
-      if (!this.$store.getters.getItem) {
-        return;
-      }
-
-      let data = this.$store.getters.getItem;
-
-      if (this.password !== "") {
-        if (tool.forcePassword(this.password) < 50) {
+      if (this.user.password !== "") {
+        if (tool.forcePassword(this.user.password) < 50) {
           this.passwordInvalid = true;
 
           setTimeout(() => {
@@ -182,18 +145,18 @@ export default {
 
       this.status = "Enviando...";
 
-      const api = `${this.$urlApi}/admin/users/${data._id}`;
+      const api = `${this.$urlApi}/admin/users`;
       Vue.axios
-        .put(
+        .post(
           api,
           {
-            name: data.name,
-            email: data.email,
-            active: data.active,
-            action: "edit-user",
-            password: this.password,
-            password_confirmation: this.password,
-            roles: data.roles
+            name: this.user.name,
+            email: this.user.email,
+            active: this.user.active,
+            password: this.user.password,
+            password_confirmation: this.user.password,
+            roles: this.user.roles,
+            admin: "create-user"
           },
           {
             headers: {
@@ -203,11 +166,12 @@ export default {
           }
         )
         .then(res => {
-          this.password = "";
           this.error = false;
           this.users = res.data;
           this.total = res.data.total;
-          this.status = "Usuário alterado com sucesso!";
+          this.status = "Usuário criado com sucesso!";
+
+          this.$emit("reload");
         })
         .catch(error => {
           this.status = false;

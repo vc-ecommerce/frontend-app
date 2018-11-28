@@ -41,11 +41,8 @@
                 <td style="white-space: nowrap; width: 1%;">
                   <div class="tabledit-toolbar btn-toolbar" style="text-align: left;">
                     <div class="btn-group btn-group-sm" style="float: none;">
-
                       <EditRole v-if="!role.default" :dataPrivilegies="privileges" :dataRoles="roles" :dataItem="role" />
-
                       <RemoveRole v-if="!role.default" :dataRoles="roles" :dataItem="role"/>
-
                     </div>
 
                   </div>
@@ -66,6 +63,7 @@ import EditRole from "./components/EditRole";
 import RemoveRole from "./components/RemoveRole";
 import Table from "@/components/layouts/Table";
 import { isAclToPage } from '@/utils/authorizations-helpers';
+import { HttpServices as service } from "@/services/http-services";
 
 export default {
   name: "UserIndex",

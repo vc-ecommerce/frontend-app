@@ -22,7 +22,7 @@
                 <th class="tabledit-toolbar-column">Editar</th>
               </tr>
             </template>
-              <template slot="tbody">
+            <template slot="tbody">
               <tr v-for="(user, index) in users.data" :key="index">
                 <td class="tabledit-view-mode">
                   {{ user.name }}
@@ -49,7 +49,7 @@
       </div>
     </section>
     <section>
-      <Pagination v-if="total>15" :pagination="users"
+      <Pagination :pagination="users"
         @paginate="getUsers()"
         :offset="4" />
     </section>
@@ -63,11 +63,10 @@ import RemoveUser from "./components/RemoveUser";
 import Table from "@/components/layouts/Table";
 import Pagination from "@/components/paginations/Pagination";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
-import { isAclToPage } from '@/utils/authorizations-helpers';
 import { HttpServices as service } from "@/services/http-services";
 
 export default {
-  name: "UserIndex",
+  name: "AttributeIndex",
   components: {
     CreateUser,
     EditUser,
@@ -90,9 +89,6 @@ export default {
       offset: 4,
       roles: []
     };
-  },
-  beforeCreate() {
-    isAclToPage(this.$store.getters.getUserRoles, "ADMIN");
   },
   mounted() {
     this.getUsers();
@@ -136,11 +132,6 @@ export default {
         .catch(error => {
         });
     }
-  },
-  beforeDestroy() {
-    this.$eventHub.$off("totalUser", function(t) {
-      vm.total = t;
-    });
   }
 };
 </script>

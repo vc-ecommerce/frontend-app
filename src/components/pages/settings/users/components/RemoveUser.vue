@@ -6,6 +6,8 @@
 
 </template>
 <script>
+import { HttpServices as service } from "@/services/http-services";
+
 export default {
   name: "RemoveUser",
   components: {},

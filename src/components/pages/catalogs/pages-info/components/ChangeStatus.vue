@@ -1,5 +1,5 @@
 <template>
-  <button v-if="isUserLogged" type="button" @click.prevent="update(dataItem)" class="tabledit-delete-button btn btn-sm" style="float: none; margin-right:-1px">
+  <button type="button" @click.prevent="update(dataItem)" class="tabledit-delete-button btn btn-sm" style="float: none;">
     <span v-if="dataItem.active" class="glyphicon glyphicon-eye-open"></span>
     <span v-else class="glyphicon glyphicon-eye-close"></span>
   </button>
@@ -8,33 +8,25 @@
 import { HttpServices as service } from "@/services/http-services";
 
 export default {
-  name: "ChangeStatusUser",
+  name: "ChangeStatus",
   components: {},
   props: ["dataItem"],
   data() {
     return {};
   },
-  computed: {
-    isUserLogged() {
-      if (this.dataItem._id === this.$store.getters.getUserId) {
-        return false;
-      }
-      return true
-    }
-  },
   methods: {
-    send(user) {
-      let status = !Boolean(user.active);
+    send(page) {
+      let status = !Boolean(page.active);
       let result = false;
 
-      const api = `${this.$urlApi}/admin/users/${user._id}`;
+      const api = `${this.$urlApi}/admin/pages/${page._id}`;
 
       return Vue.axios
         .put(
           api,
           {
             active: status,
-            action: "edit-status"
+            action: 'edit-status'
           },
           {
             headers: {
@@ -54,11 +46,11 @@ export default {
         });
     },
 
-    update(user) {
+    update(page) {
       let status, titleQuestion, titleResp, textResp;
       const vm = this;
 
-      status = !Boolean(user.active);
+      status = !Boolean(page.active);
 
       if (status === true) {
         titleQuestion = "ativar";
@@ -68,8 +60,8 @@ export default {
 
       swal(
         {
-          title: `Deseja realmente ${titleQuestion} o usuário?`,
-          text: user.name,
+          title: `Deseja realmente ${titleQuestion} a página?`,
+          text: page.name,
           type: "warning",
           showCancelButton: true,
           confirmButtonClass: "btn-danger",
@@ -80,9 +72,9 @@ export default {
         },
         function(isConfirm) {
           if (isConfirm) {
-            let result = vm.send(user);
+            let result = vm.send(page);
             result.then(function(value) {
-              user.active = !user.active;
+              page.active = !page.active;
               // Faça algo com o valor aqui dentro.
               // Se precisar dele em outro lugar, chame uma função
               // e passe adiante. Não tente atribuir seu valor a uma
@@ -100,7 +92,7 @@ export default {
 
                 swal({
                   title: titleResp,
-                  text: `Usuário ${textResp} com sucesso.`,
+                  text: `Página ${textResp} com sucesso.`,
                   type: "success",
                   confirmButtonClass: "btn-success"
                 });
