@@ -2,8 +2,8 @@ import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import store from '@/stores';
-import {urlApi} from '@/configs';
-import {isObject} from "@/utils/array-helpers";
+import { urlApi } from '@/configs';
+import { validateHelpers as validate } from "@/utils/validate-helpers";
 
 Vue.use(VueAxios, axios);
 
@@ -68,7 +68,7 @@ export class HttpServices {
     if (!data)
       throw new Error(text);
 
-    if (!isObject(data))
+    if (!validate.isObject(data))
       throw new Error(text);
 
   }

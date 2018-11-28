@@ -54,7 +54,7 @@ import Table from "@/components/layouts/Table";
 import Breadcrumb from "@/components/layouts/Breadcrumb";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
-import { rolesAuthorizedToPage } from '@/utils/authorizations-helpers';
+import { isAclToPage } from '@/utils/authorizations-helpers';
 
 export default {
   name: "PrivilegeIndex",
@@ -70,7 +70,7 @@ export default {
     };
   },
   beforeCreate() {
-    rolesAuthorizedToPage(this.$store.getters.getUserRoles, "ADMIN");
+    isAclToPage("ADMIN");
   },
   mounted() {
     this.getPrivileges();

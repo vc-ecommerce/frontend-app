@@ -65,7 +65,7 @@ import CreateRole from "./components/CreateRole";
 import EditRole from "./components/EditRole";
 import RemoveRole from "./components/RemoveRole";
 import Table from "@/components/layouts/Table";
-import { rolesAuthorizedToPage } from '@/utils/authorizations-helpers';
+import { isAclToPage } from '@/utils/authorizations-helpers';
 
 export default {
   name: "UserIndex",
@@ -91,7 +91,7 @@ export default {
     };
   },
   beforeCreate() {
-    rolesAuthorizedToPage(this.$store.getters.getUserRoles, "ADMIN");
+    isAclToPage(this.$store.getters.getUserRoles, "ADMIN");
   },
   mounted() {
     this.getRoles();

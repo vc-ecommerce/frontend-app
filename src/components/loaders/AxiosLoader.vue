@@ -53,8 +53,8 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 70px;
-  height: 70px;
+  width: 64px;
+  height: 64px;
   /* border: 1px solid #34495e; */
   background: #fff;
   border-radius: 100%;

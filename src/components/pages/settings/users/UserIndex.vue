@@ -63,7 +63,7 @@ import RemoveUser from "./components/RemoveUser";
 import Table from "@/components/layouts/Table";
 import Pagination from "@/components/paginations/Pagination";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
-import { rolesAuthorizedToPage } from '@/utils/authorizations-helpers';
+import { isAclToPage } from '@/utils/authorizations-helpers';
 
 export default {
   name: "UserIndex",
@@ -91,7 +91,7 @@ export default {
     };
   },
   beforeCreate() {
-    rolesAuthorizedToPage(this.$store.getters.getUserRoles, "ADMIN");
+    isAclToPage(this.$store.getters.getUserRoles, "ADMIN");
   },
   mounted() {
     this.getUsers();
@@ -135,6 +135,11 @@ export default {
         .catch(error => {
         });
     }
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("totalUser", function(t) {
+      vm.total = t;
+    });
   }
 };
 </script>

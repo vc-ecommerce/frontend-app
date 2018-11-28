@@ -2,10 +2,6 @@
   <Panel title="Contatos Recentes">
     <div class="contact-row-list">
 
-       <p v-for="notification in notifications" v-bind:key="notification.id">
-      {{notification}}
-    </p>
-    <button @click="addHey">Add Hey!</button>
 
       <Article className="contact-row">
 
@@ -13,7 +9,7 @@
           <div class="tbl-row">
             <div class="tbl-cell tbl-cell-photo">
               <a href="#">
-                <img src="img/photo-64-2.jpg" alt="">
+                <img src="@/assets/img/photo-64-2.jpg" alt="">
               </a>
             </div>
             <div class="tbl-cell">
@@ -35,7 +31,7 @@
           <div class="tbl-row">
             <div class="tbl-cell tbl-cell-photo">
               <a href="#">
-                <img src="img/photo-64-2.jpg" alt="">
+                <img src="@/assets/img/photo-64-2.jpg" alt="">
               </a>
             </div>
             <div class="tbl-cell">
@@ -51,7 +47,7 @@
           <div class="tbl-row">
             <div class="tbl-cell tbl-cell-photo">
               <a href="#">
-                <img src="img/photo-64-1.jpg" alt="">
+                <img src="@/assets/img/photo-64-1.jpg" alt="">
               </a>
             </div>
             <div class="tbl-cell">
@@ -67,7 +63,7 @@
           <div class="tbl-row">
             <div class="tbl-cell tbl-cell-photo">
               <a href="#">
-                <img src="img/photo-64-3.jpg" alt="">
+                <img src="@/assets/img/photo-64-3.jpg" alt="">
               </a>
             </div>
             <div class="tbl-cell">
@@ -83,7 +79,7 @@
           <div class="tbl-row">
             <div class="tbl-cell tbl-cell-photo">
               <a href="#">
-                <img src="img/photo-64-4.jpg" alt="">
+                <img src="@/assets/img/photo-64-4.jpg" alt="">
               </a>
             </div>
             <div class="tbl-cell">
@@ -99,7 +95,7 @@
           <div class="tbl-row">
             <div class="tbl-cell tbl-cell-photo">
               <a href="#">
-                <img src="img/photo-64-2.jpg" alt="">
+                <img src="@/assets/img/photo-64-2.jpg" alt="">
               </a>
             </div>
             <div class="tbl-cell">
@@ -115,7 +111,7 @@
           <div class="tbl-row">
             <div class="tbl-cell tbl-cell-photo">
               <a href="#">
-                <img src="img/photo-64-1.jpg" alt="">
+                <img src="@/assets/img/photo-64-1.jpg" alt="">
               </a>
             </div>
             <div class="tbl-cell">
@@ -131,7 +127,7 @@
           <div class="tbl-row">
             <div class="tbl-cell tbl-cell-photo">
               <a href="#">
-                <img src="img/photo-64-3.jpg" alt="">
+                <img src="@/assets/img/photo-64-3.jpg" alt="">
               </a>
             </div>
             <div class="tbl-cell">
@@ -147,7 +143,7 @@
           <div class="tbl-row">
             <div class="tbl-cell tbl-cell-photo">
               <a href="#">
-                <img src="img/photo-64-4.jpg" alt="">
+                <img src="@/assets/img/photo-64-4.jpg" alt="">
               </a>
             </div>
             <div class="tbl-cell">

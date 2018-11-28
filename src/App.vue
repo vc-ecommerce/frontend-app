@@ -28,7 +28,7 @@
 <script>
 import AxiosLoader from "@/components/loaders/AxiosLoader";
 import { validateHelpers as validate } from "@/utils/validate-helpers";
-import { rolesAuthorizedPanelAdmin } from '@/utils/authorizations-helpers'
+import { isAclDashboardAdmin } from "@/utils/authorizations-helpers";
 import { domHelpers as dom } from "@/utils/dom-helpers";
 import SiteHeader from "@/components/layouts/header/SiteHeader";
 import SidebarMenuLeft from "@/components/layouts/sidebar/SidebarMenuLeft";
@@ -84,7 +84,9 @@ export default {
   mounted() {
     this.$eventHub.$on("eventLogout", obj => this.logout());
 
-    let user = this.$store.getters.getUser ? this.$store.getters.getUser : false;
+    let user = this.$store.getters.getUser
+      ? this.$store.getters.getUser
+      : false;
 
     if (this.isPublic) {
       if (user) {
@@ -93,16 +95,21 @@ export default {
     }
 
     if (!this.isPublic) {
-
       if (!user) {
         this.cleanDataStorage();
         localStorage.setItem("pathnameReferer", window.location.pathname);
         return window.location.replace("/login");
       }
 
-      rolesAuthorizedPanelAdmin(this.$store.getters.getUserRoles,
-        "ADMIN", "STAFF_AUDITOR", "STAFF_FINANCE", "STAFF_COMMERCIAL",
-        "STAFF_SUPPORT", "STAFF_SALE", "STAFF_EDITOR", "STAFF_EXPEDITION"
+      isAclDashboardAdmin(
+        "ADMIN",
+        "STAFF_AUDITOR",
+        "STAFF_FINANCE",
+        "STAFF_COMMERCIAL",
+        "STAFF_SUPPORT",
+        "STAFF_SALE",
+        "STAFF_EDITOR",
+        "STAFF_EXPEDITION"
       );
     }
 
@@ -117,7 +124,12 @@ export default {
 
     this.showHtml = true;
     checkInternetConnected();
-
+  },
+  beforeDestroy() {
+    this.$eventHub.$off(
+      "eventDocumentTitle",
+      obj => (document.title = obj.data)
+    );
   }
 };
 </script>
