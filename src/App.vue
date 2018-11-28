@@ -28,7 +28,7 @@
 <script>
 import AxiosLoader from "@/components/loaders/AxiosLoader";
 import { validateHelpers as validate } from "@/utils/validate-helpers";
-import { rolesAuthorizedPanelAdmin } from '@/utils/authorizations-helpers'
+import { isAclDashboardAdmin } from '@/utils/authorizations-helpers'
 import { domHelpers as dom } from "@/utils/dom-helpers";
 import SiteHeader from "@/components/layouts/header/SiteHeader";
 import SidebarMenuLeft from "@/components/layouts/sidebar/SidebarMenuLeft";
@@ -100,7 +100,7 @@ export default {
         return window.location.replace("/login");
       }
 
-      rolesAuthorizedPanelAdmin(this.$store.getters.getUserRoles,
+      isAclDashboardAdmin(
         "ADMIN", "STAFF_AUDITOR", "STAFF_FINANCE", "STAFF_COMMERCIAL",
         "STAFF_SUPPORT", "STAFF_SALE", "STAFF_EDITOR", "STAFF_EXPEDITION"
       );

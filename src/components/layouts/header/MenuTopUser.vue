@@ -5,7 +5,7 @@
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dd-user-menu">
 
-      <router-link v-if="user" :to="{ name: 'user.account'}" class="dropdown-item">
+      <router-link v-if="user" :to="{ name: 'account.index'}" class="dropdown-item">
         <span class="font-icon glyphicon glyphicon-user"></span>
         {{ user.name || ''}}
       </router-link>

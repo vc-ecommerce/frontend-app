@@ -5,7 +5,7 @@ import router from './pages/attributes/router'
 
 import AttributeIndex from './pages/attributes/AttributeIndex'
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs'
-import { rolesAuthorizedToPage } from '@/utils/authorizations-helpers';
+import { isAclToPage } from '@/utils/authorizations-helpers';
 
 new Vue({
   el: '#content',
@@ -16,9 +16,9 @@ new Vue({
     AttributeIndex
   },
   beforeCreate() {
-    rolesAuthorizedToPage(this.$store.getters.getUserRoles, [
+    isAclToPage(
       "ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR"
-    ]);
+    );
   }
 
 });

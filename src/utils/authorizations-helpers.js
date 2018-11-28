@@ -1,12 +1,9 @@
+import store from '@/stores';
 import { validateHelpers as validate } from '@/utils/validate-helpers'
 
-const countTotalRoles = (roles, rolesAuthorized) => {
+const aclUser = store.getters.getUserRoles ? store.getters.getUserRoles : [];
 
-  if (!roles)
-    throw new Error('Informe o parâmetro roles, não pode ser vazio.')
-
-  if (!validate.isArray(roles))
-    throw new Error('Informe o parâmetro roles, no formato Array')
+const countTotalRoles = (rolesAuthorized) => {
 
   if (!rolesAuthorized)
     throw new Error('Informe o parâmetro rolesAuthorized, não pode ser vazio.')
@@ -15,33 +12,34 @@ const countTotalRoles = (roles, rolesAuthorized) => {
     rolesAuthorized = rolesAuthorized.reduce(item => item);
   }
 
-  let count = 0;
+  let total = aclUser.filter(role => {
+    if (role.name === rolesAuthorized) {
+      return true
+    }
+    return false;
+  });
 
-  if (roles) {
-    roles.forEach(function (role) {
-      if (rolesAuthorized.indexOf(role.name) > -1) {
-        count++;
-      }
-    });
-  }
-  return count;
+  return total.length > 0 ? true : false;
+
 }
 
-export const rolesAuthorizedPanelAdmin = (roles, ...rolesAuthorized) => {
-  if (countTotalRoles(roles, rolesAuthorized) <= 0) {
+export const isAclDashboardAdmin = (...rolesAuthorized) => {
+  if (!countTotalRoles(rolesAuthorized)) {
     sessionStorage.clear();
     return window.location.replace("/login");
   }
+
+  return true;
 }
 
-export const rolesAuthorizedToPage = (roles, ...rolesAuthorized) => {
-  if (countTotalRoles(roles, rolesAuthorized) <= 0) {
+export const isAclToPage = (...rolesAuthorized) => {
+  if (!countTotalRoles(rolesAuthorized)) {
     return window.location.replace("/");
   }
+
+  return true;
 }
 
-export const filterLinksUserToRoles = (roles, ...rolesAuthorized) => {
-  if (countTotalRoles(roles, rolesAuthorized) <= 0)
-    return false;
-  return true;
+export const isAclToLink = (...rolesAuthorized) => {
+  return countTotalRoles(rolesAuthorized);
 }
