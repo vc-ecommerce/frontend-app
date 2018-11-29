@@ -8,7 +8,7 @@
             <h3 v-else>{{ total }} Usuários</h3>
           </div>
           <div class="tbl-cell tbl-cell-action-bordered">
-            <!--<CreateUser :dataRoles="roles" @reload="getUsers()"/>-->
+            <CreateUser :dataRoles="roles" @reload="getUsers()"/>
           </div>
         </div>
       </header>
@@ -41,12 +41,7 @@
                   <div class="tabledit-toolbar btn-toolbar" style="text-align: left;">
                     <div class="btn-group btn-group-sm" style="float: none;">
                       <ChangeStatusUser :dataItem="user"/>
-                      <EditUser :dataItem="user" :dataRoles="roles" />
-
-
-
-
-
+                      <EditUser :dataItem="user" :dataRoles="roles"/>
                       <RemoveUser :dataUsers="users" :dataItem="user"/>
                     </div>
                   </div>
@@ -60,10 +55,6 @@
     <section>
       <Pagination v-if="total>15" :pagination="users" @paginate="getUsers()" :offset="4"/>
     </section>
-
-
-
-
   </div>
 </template>
 <script>
@@ -76,12 +67,10 @@ import Pagination from "@/components/paginations/Pagination";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { isAclToPage } from "@/utils/authorizations-helpers";
 import { HttpServices as service } from "@/services/http-services";
-import Modal from "@/components/modals/Modal";
 
 export default {
   name: "UserList",
   components: {
-    Modal,
     CreateUser,
     EditUser,
     ChangeStatusUser,
@@ -101,26 +90,11 @@ export default {
         current_page: 1
       },
       offset: 4,
-      roles: [],
-      showModal: false
+      roles: []
     };
   },
   beforeCreate() {
     isAclToPage("ADMIN");
-  },
-  watch: {
-    showModal: function(){
-      if(this.showModal == false) {}
-      // do something
-    },
-  },
-  mounted() {
-    this.getUsers();
-    this.getRoles();
-    const vm = this;
-    this.$eventHub.$on("totalUser", function(t) {
-      vm.total = t;
-    });
   },
   methods: {
     getRoles() {
@@ -131,6 +105,7 @@ export default {
         })
         .catch(console.log);
     },
+
     getUsers() {
       service
         .get(`/admin/users?page=${this.users.current_page}`)
@@ -139,12 +114,20 @@ export default {
           this.total = res.data.total;
         })
         .catch(console.log);
+    },
+
+    handler() {
+      this.getRoles();
+      this.getUsers();
     }
   },
+  mounted() {
+    this.handler();
+    this.$eventHub.$on("reloadHandler", obj => this.handler());
+    this.$eventHub.$on("totalUser", value => (this.total = value));
+  },
   beforeDestroy() {
-    this.$eventHub.$off("totalUser", function(t) {
-      vm.total = t;
-    });
+    this.$eventHub.$off("totalUser", value => (this.total = value));
   }
 };
 </script>

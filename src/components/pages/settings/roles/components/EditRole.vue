@@ -1,14 +1,12 @@
 <template>
   <span>
 
-   <ModalLink
-      :idModalLink="$store.getters.getItem ? $store.getters.getItem._id : ''"
-      showTypeClassName="tabledit-edit-button btn btn-sm btn-default"
-      classIcon="glyphicon glyphicon-pencil"
-      :dataItem="dataItem" />
+    <ModalButton
+    btnClass="tabledit-edit-button btn btn-sm btn-default"
+    iconClass="glyphicon glyphicon-pencil"
+    :dataItem="dataItem" />
 
-
-    <Modal :idModal="$store.getters.getItem ? $store.getters.getItem._id : ''"
+    <ModalLarge :idModal="$store.getters.getItem ? $store.getters.getItem._id : ''"
       titleModal="Editar função"
       sizeModal="lg">
 
@@ -63,13 +61,13 @@
         <button form="edit-role" type="submit" class="btn btn-rounded btn-primary"><i class="glyphicon glyphicon-ok"></i> Salvar Alterações</button>
       </span>
 
-    </Modal>
+    </ModalLarge>
   </span>
 </template>
 <script>
 import Table from "@/components/layouts/Table";
-import Modal from "@/components/modals/Modal";
-import ModalLink from "@/components/modals/ModalLink";
+import ModalLarge from "@/components/modals/ModalLarge";
+import ModalButton from "@/components/modals/ModalButton";
 import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
@@ -79,8 +77,8 @@ export default {
   name: "EditRole",
   components: {
     Table,
-    Modal,
-    ModalLink,
+    ModalLarge,
+    ModalButton,
     Alert
   },
   props: ["dataPrivilegies", "dataItem"],
@@ -99,7 +97,7 @@ export default {
   computed: {
 
     random: () => tool.strRandom(),
-    
+
     privilegeRole: {
       get() {
         return this.$store.getters.getItem

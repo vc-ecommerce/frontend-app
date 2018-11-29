@@ -1,13 +1,18 @@
 <template>
   <span>
+    <span :class="randId = random"></span>
 
-    <ModalButton :dataItem="dataItem"/>
+    <ModalButton
+      btnClass="tabledit-edit-button btn btn-sm btn-default"
+      iconClass="glyphicon glyphicon-pencil"
+      :targetClass="`.edit-modal-lg-${randId}`"
+      :dataItem="dataItem"
+    />
 
-    <Modal v-if="showModal" title="Editar dados">
+    <ModalLarge v-if="showModal" modalTitle="Editar dados" :targetClass="`edit-modal-lg-${randId}`">
+      <AlertDivs :status="status" :error="error" :passwordInvalid="passwordInvalid"/>
 
-      <span :class="formId = random"></span>
-
-      <form :id="'edit-'+ formId" @submit.prevent="submitForm">
+      <form :id="`edit-${randId}`" @submit.prevent="submitForm">
         <div class="row">
           <div class="col-lg-6">
             <fieldset class="form-group">
@@ -78,7 +83,7 @@
             :key="role.id"
             style="margin:20px"
           >
-            <span :class="index = index + Math.floor(Math.random() * 1000000 + 1)"></span>
+            <span :class="index = index + random"></span>
             <input type="checkbox" v-model="roleUser" :id="'check-toggle-'+ index" :value="role">
             <label :for="'check-toggle-'+ index">{{role.description}}</label>
           </div>
@@ -86,50 +91,46 @@
       </form>
 
       <span slot="btn">
-      <button :form="'edit-'+ formId" type="submit" class="btn btn-rounded btn-primary">
-        <i class="glyphicon glyphicon-ok"></i> Salvar Alterações
-      </button>
-    </span>
-    </Modal>
+        <button :form="`edit-${randId}`" type="submit" class="btn btn-rounded btn-primary">
+          <i class="glyphicon glyphicon-ok"></i> Salvar Alterações
+        </button>
+      </span>
+    </ModalLarge>
   </span>
 </template>
 <script>
 import Table from "@/components/layouts/Table";
 import ModalButton from "@/components/modals/ModalButton";
-import Modal from "@/components/modals/Modal";
-import Alert from "@/components/layouts/Alert";
+import ModalLarge from "@/components/modals/ModalLarge";
+import AlertDivs from "./AlertDivs";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
-import { optionsTrueOrFalse, errorWithNotify } from "@/utils/array-helpers";
-import { notifyHelpers as notify } from "@/utils/notify-helpers";
 
 export default {
   name: "EditUser",
   components: {
     Table,
-    Modal,
+    ModalLarge,
     ModalButton,
-    Alert
+    AlertDivs
   },
   props: ["dataItem", "dataRoles"],
   data() {
     return {
-      formId: "",
-      status: false,
-      error: false,
       password: "",
       options: [
         { text: "Ativo", value: true },
         { text: "Desativado", value: false }
       ],
+      randId: "",
+      status: false,
+      error: false,
       passwordInvalid: false,
-      showModal: false
+      showModal: false,
+      timestamp: 8000
     };
   },
   computed: {
-    generateId() {
-      return Math.floor(Math.random() * 1000000 + 1);
-    },
     random: () => tool.strRandom(),
     roleUser: {
       get() {
@@ -158,17 +159,7 @@ export default {
       }
     }
   },
-  mounted() {
-    const vm = this;
-    this.$eventHub.$on("showModal", obj => {
-      vm.showModal = obj;
-      vm.$store.commit("setItem", vm.dataItem);
-    });
-  },
   methods: {
-    cleanData(data) {
-      return tool.cleanDataApi(data);
-    },
     submitForm() {
       if (!this.$store.getters.getItem) {
         return;
@@ -182,7 +173,7 @@ export default {
 
           setTimeout(() => {
             this.passwordInvalid = false;
-          }, 5000);
+          }, this.timestamp);
 
           return;
         }
@@ -190,7 +181,7 @@ export default {
 
       this.status = "Enviando...";
 
-      serice
+      service
         .put(`/admin/users/${data._id}`, {
           name: data.name,
           email: data.email,
@@ -202,20 +193,30 @@ export default {
         })
         .then(res => {
           this.password = "";
-          this.error = false;
           this.users = res.data;
           this.total = res.data.total;
           this.status = "Usuário alterado com sucesso!";
+
+          setTimeout(() => {
+            this.status = false;
+            this.showModal
+          }, this.timestamp);
         })
         .catch(error => {
-          this.status = false;
           this.error = JSON.parse(error.response.data.error);
 
           setTimeout(() => {
+            this.status = false;
             this.error = false;
-          }, 5000);
+          }, this.timestamp);
         });
     }
+  },
+  mounted() {
+    this.$eventHub.$on("showModal", obj => (this.showModal = obj));
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("showModal", obj => (this.showModal = obj));
   }
 };
 </script>

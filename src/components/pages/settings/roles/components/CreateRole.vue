@@ -1,12 +1,13 @@
 <template>
   <span>
 
-    <ModalLink
-      idModalLink="create-role"
-      titleLink="Criar"
-      classIcon="glyphicon glyphicon-plus" :dataItem="dataPrivilegies" />
+    <ModalButton
+    btnClass="btn btn-inline"
+    iconClass="glyphicon glyphicon-plus"
+    btnTitle="Criar"
+    dataItem="dataPrivilegies" />
 
-    <Modal idModal="create-role"
+    <ModalLarge idModal="create-role"
       titleModal="Criar nova função"
       sizeModal="lg">
 
@@ -61,13 +62,13 @@
         <button form="add-role" type="submit" class="btn btn-rounded btn-primary"><i class="glyphicon glyphicon-ok"></i> Salvar Dados</button>
       </span>
 
-    </Modal>
+    </ModalLarge>
   </span>
 </template>
 <script>
 import Table from "@/components/layouts/Table";
-import Modal from "@/components/modals/Modal";
-import ModalLink from "@/components/modals/ModalLink";
+import ModalLarge from "@/components/modals/ModalLarge";
+import ModalButton from "@/components/modals/ModalButton";
 import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
@@ -77,8 +78,8 @@ export default {
   name: "CreateRole",
   components: {
     Table,
-    Modal,
-    ModalLink,
+    ModalLarge,
+    ModalButton,
     Alert
   },
   props: ["dataPrivilegies"],

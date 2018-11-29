@@ -1,24 +1,37 @@
 <template>
-  <button @click.prevent="handler()"
-    class="tabledit-edit-button btn btn-sm btn-default"
+  <button
+    @click.prevent="handler()"
+    :class="btnClass"
     data-toggle="modal"
-    data-target=".bd-example-modal-lg">
-    <i class="glyphicon glyphicon-pencil"></i>
+    :data-target="targetClass"
+  >
+    <i :class="iconClass"></i> <span v-if="btnTitle">{{ btnTitle }}</span>
   </button>
 </template>
 
 <script>
 export default {
   name: "ModalButton",
-  props: ['dataItem'],
+  props: {
+    dataItem: {},
+    btnClass: {
+      default: "btn btn-inline"
+    },
+    iconClass: {
+      default: "glyphicon glyphicon-plus"
+    },
+    btnTitle: {},
+    targetClass: {
+      default: ".create-modal-lg"
+    }
+  },
   methods: {
-
     showModal() {
-      this.$eventHub.$emit('showModal', true);
+      this.$eventHub.$emit("showModal", true);
     },
 
     setItem() {
-      if(this.dataItem) {
+      if (this.dataItem) {
         this.$store.commit("setItem", this.dataItem);
       }
     },
@@ -27,8 +40,6 @@ export default {
       this.showModal();
       this.setItem();
     }
-
   }
-
-}
+};
 </script>

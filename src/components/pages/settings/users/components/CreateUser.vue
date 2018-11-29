@@ -1,13 +1,9 @@
 <template>
   <span>
-    <ModalLink idModalLink="create-user" titleLink="Criar" classIcon="glyphicon glyphicon-plus"/>
+    <ModalButton btnClass="btn btn-inline" iconClass="glyphicon glyphicon-plus" btnTitle="Criar"/>
 
-    <Modal idModal="create-user" titleModal="Criar novo usuário" sizeModal="lg">
-      <div v-if="passwordInvalid" class="row">
-        <Alert class="alert alert-danger alert-fill alert-close alert-dismissible fade show">
-          <strong>Atenção:</strong> Senha administrativa fraca, tente outra mais forte.
-        </Alert>
-      </div>
+    <ModalLarge v-if="showModal" modalTitle="Criar novo usuário">
+      <AlertDivs :status="status" :error="error" :passwordInvalid="passwordInvalid"/>
 
       <form id="add-user" @submit.prevent="submitForm">
         <div class="row">
@@ -88,26 +84,26 @@
           <i class="glyphicon glyphicon-ok"></i> Salvar Dados
         </button>
       </span>
-    </Modal>
+    </ModalLarge>
   </span>
 </template>
 <script>
 import Table from "@/components/layouts/Table";
-import Modal from "@/components/modals/Modal";
-import ModalLink from "@/components/modals/ModalLink";
+import ModalButton from "@/components/modals/ModalButton";
+import ModalLarge from "@/components/modals/ModalLarge";
 import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
-import { optionsTrueOrFalse, errorWithNotify } from "@/utils/array-helpers";
-import { notifyHelpers as notify } from "@/utils/notify-helpers";
+import AlertDivs from "./AlertDivs";
 
 export default {
   name: "CreateUser",
   components: {
     Table,
-    Modal,
-    ModalLink,
-    Alert
+    ModalButton,
+    ModalLarge,
+    Alert,
+    AlertDivs
   },
   props: ["dataRoles"],
   data() {
@@ -119,14 +115,18 @@ export default {
         active: "",
         roles: []
       },
-      passwordInvalid: false,
       options: [
         { text: "Ativo", value: true },
         { text: "Desativado", value: false }
-      ]
+      ],
+      status: false,
+      error: false,
+      passwordInvalid: false,
+      showModal: false,
+      timestamp: 8000
     };
   },
-  computed: {    
+  computed: {
     random: () => tool.strRandom()
   },
   methods: {
@@ -140,11 +140,13 @@ export default {
 
           setTimeout(() => {
             this.passwordInvalid = false;
-          }, 5000);
+          }, this.timestamp);
 
           return;
         }
       }
+
+      this.status = "Enviando...";
 
       service
         .post("/admin/users", {
@@ -159,19 +161,30 @@ export default {
         .then(res => {
           this.users = res.data;
           this.total = res.data.total;
-          notify.success("Sucesso!", "Dados cadastrados com sucesso.");
-          this.$emit("reload");
+          this.status = "Dados cadastrados com sucesso.";
+
+          setTimeout(() => {
+            this.user = [];
+            this.status = false;
+          }, this.timestamp);
         })
         .catch(error => {
-          if ("data" in error.response) {
-            errorWithNotify(error.response.data.error);
-          }
+          this.error = JSON.parse(error.response.data.error);
+
+          setTimeout(() => {
+            this.status = false;
+            this.error = false;
+          }, this.timestamp);
+
           console.log(error.response);
         });
     }
   },
   mounted() {
-    console.log();
+    this.$eventHub.$on("showModal", obj => (this.showModal = obj));
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("showModal", obj => (this.showModal = obj));
   }
 };
 </script>
