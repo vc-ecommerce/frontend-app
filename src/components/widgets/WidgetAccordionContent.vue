@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     randonCode() {
-      return tool.strRandon()
+      return tool.strRandom()
     }
   }
 };

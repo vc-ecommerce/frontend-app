@@ -51,7 +51,7 @@
 
         <div class="row">
           <div class="checkbox-toggle" v-for="(privilege, index) in dataPrivilegies" :key="index" style="margin-left:20px">
-            <span :class="index = index + generateId"></span>
+            <span :class="index = index + random"></span>
             <input type="checkbox" v-model="privilegeRole" :id="'check-toggle-'+ index" :value="privilege">
             <label :for="'check-toggle-'+ index">{{ privilege.description }}</label>
           </div>
@@ -73,6 +73,7 @@ import ModalLink from "@/components/modals/ModalLink";
 import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
+import { optionsTrueOrFalse } from '@/utils/array-helpers';
 
 export default {
   name: "EditRole",
@@ -92,17 +93,13 @@ export default {
         description: "",
         privileges: []
       },
-      options: [
-        { text: "Ativo", value: true },
-        { text: "Desativado", value: false }
-      ]
+      options: optionsTrueOrFalse
     };
   },
   computed: {
-    generateId() {
-      return Math.floor(Math.random() * 1000000 + 1);
-    },
 
+    random: () => tool.strRandom(),
+    
     privilegeRole: {
       get() {
         return this.$store.getters.getItem

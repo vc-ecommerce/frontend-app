@@ -96,10 +96,6 @@ export default {
       ok: false,
       user: this.$store.getters.getUser,
       password: "",
-      options: [
-        { text: "Ativo", value: true },
-        { text: "Desativado", value: false }
-      ],
       passwordInvalid: false,
       btnDisabled: false
     };

@@ -12,27 +12,13 @@
       titleModal="Editar dados de Usuário"
       sizeModal="lg"
     >
-      <div v-if="status && error === false" class="row">
-        <Alert
-          class="alert alert-success alert-fill alert-close alert-dismissible fade show"
-        >{{ status }}</Alert>
-      </div>
-
       <div v-if="passwordInvalid" class="row">
         <Alert class="alert alert-danger alert-fill alert-close alert-dismissible fade show">
           <strong>Atenção:</strong> Senha administrativa fraca, tente outra mais forte.
         </Alert>
       </div>
 
-      <div v-if="error && status === false" class="row">
-        <Alert class="alert alert-danger alert-fill alert-close alert-dismissible fade show">
-          <dl>
-            <dt v-for="err in error" :key="err.id">{{ cleanData( err ) }}</dt>
-          </dl>
-        </Alert>
-      </div>
-
-      <span :class="formId = generateId"></span>
+      <span :class="formId = random"></span>
 
       <form :id="'edit-user-'+ formId" @submit.prevent="submitForm">
         <div class="row">
@@ -105,7 +91,7 @@
             :key="role.id"
             style="margin:20px"
           >
-            <span :class="index = index + generateId"></span>
+            <span :class="index = index + random"></span>
             <input type="checkbox" v-model="roleUser" :id="'check-toggle-'+ index" :value="role">
             <label :for="'check-toggle-'+ index">{{role.description}}</label>
           </div>
@@ -127,6 +113,8 @@ import Modal from "@/components/modals/Modal";
 import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
+import { optionsTrueOrFalse, errorWithNotify } from "@/utils/array-helpers";
+import { notifyHelpers as notify } from "@/utils/notify-helpers";
 
 export default {
   name: "EditUser",
@@ -140,20 +128,16 @@ export default {
   data() {
     return {
       formId: "",
-      status: false,
-      error: false,
       password: "",
+      passwordInvalid: false,
       options: [
         { text: "Ativo", value: true },
         { text: "Desativado", value: false }
-      ],
-      passwordInvalid: false
+      ]
     };
   },
   computed: {
-    generateId() {
-      return Math.floor(Math.random() * 1000000 + 1);
-    },
+    random: () => Math.floor(Math.random() * 1000000 + 1),
     roleUser: {
       get() {
         return tool.cleanRole(
@@ -204,8 +188,6 @@ export default {
         }
       }
 
-      this.status = "Enviando...";
-
       service
         .put(`/admin/users/${data._id}`, {
           name: data.name,
@@ -218,18 +200,15 @@ export default {
         })
         .then(res => {
           this.password = "";
-          this.error = false;
           this.users = res.data;
           this.total = res.data.total;
-          this.status = "Usuário alterado com sucesso!";
+          notify.success("Sucesso!", "Usuário alterado com sucesso.");
         })
         .catch(error => {
-          this.status = false;
-          this.error = JSON.parse(error.response.data.error);
-
-          setTimeout(() => {
-            this.error = false;
-          }, 5000);
+          if ("data" in error.response) {
+            errorWithNotify(error.response.data.error);
+          }
+          console.log(error.response);
         });
     }
   }

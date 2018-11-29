@@ -3,23 +3,9 @@
     <ModalLink idModalLink="create-user" titleLink="Criar" classIcon="glyphicon glyphicon-plus"/>
 
     <Modal idModal="create-user" titleModal="Criar novo usuário" sizeModal="lg">
-      <div v-if="status && error === false" class="row">
-        <Alert
-          class="alert alert-success alert-fill alert-close alert-dismissible fade show"
-        >{{ status }}</Alert>
-      </div>
-
       <div v-if="passwordInvalid" class="row">
         <Alert class="alert alert-danger alert-fill alert-close alert-dismissible fade show">
           <strong>Atenção:</strong> Senha administrativa fraca, tente outra mais forte.
-        </Alert>
-      </div>
-
-      <div v-if="error && status === false" class="row">
-        <Alert class="alert alert-danger alert-fill alert-close alert-dismissible fade show">
-          <dl>
-            <dt v-for="err in error" :key="err.id">{{ cleanData( err ) }}</dt>
-          </dl>
         </Alert>
       </div>
 
@@ -90,7 +76,7 @@
             :key="role.id"
             style="margin-left:20px"
           >
-            <span :class="index = index + generateId"></span>
+            <span :class="index = index + random"></span>
             <input type="checkbox" v-model="user.roles" :id="'check-toggle-'+ index" :value="role">
             <label :for="'check-toggle-'+ index">{{role.description}}</label>
           </div>
@@ -112,6 +98,8 @@ import ModalLink from "@/components/modals/ModalLink";
 import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
+import { optionsTrueOrFalse, errorWithNotify } from "@/utils/array-helpers";
+import { notifyHelpers as notify } from "@/utils/notify-helpers";
 
 export default {
   name: "CreateUser",
@@ -124,8 +112,6 @@ export default {
   props: ["dataRoles"],
   data() {
     return {
-      status: false,
-      error: false,
       user: {
         name: "",
         email: "",
@@ -133,23 +119,20 @@ export default {
         active: "",
         roles: []
       },
+      passwordInvalid: false,
       options: [
         { text: "Ativo", value: true },
         { text: "Desativado", value: false }
-      ],
-      passwordInvalid: false
+      ]
     };
   },
-  computed: {
-    generateId() {
-      return Math.floor(Math.random() * 1000000 + 1);
-    }
+  computed: {    
+    random: () => tool.strRandom()
   },
   methods: {
     cleanData(data) {
       return tool.cleanDataApi(data);
     },
-
     submitForm() {
       if (this.user.password !== "") {
         if (tool.forcePassword(this.user.password) < 50) {
@@ -163,8 +146,6 @@ export default {
         }
       }
 
-      this.status = "Enviando...";
-
       service
         .post("/admin/users", {
           name: this.user.name,
@@ -176,22 +157,21 @@ export default {
           action: "create-user"
         })
         .then(res => {
-          this.error = false;
           this.users = res.data;
           this.total = res.data.total;
-          this.status = "Dados cadastrados com sucesso.";
-
+          notify.success("Sucesso!", "Dados cadastrados com sucesso.");
           this.$emit("reload");
         })
         .catch(error => {
-          this.status = false;
-          this.error = JSON.parse(error.response.data.error);
-
-          setTimeout(() => {
-            this.error = false;
-          }, 5000);
+          if ("data" in error.response) {
+            errorWithNotify(error.response.data.error);
+          }
+          console.log(error.response);
         });
     }
+  },
+  mounted() {
+    console.log();
   }
 };
 </script>
