@@ -1,45 +1,46 @@
 <template>
-  <span>
-    <a v-if="showType =='href'" v-on:click="fillDataStore()" href="javascript:void(0)" :class="showTypeClassName"
-      data-toggle="modal" :data-target="!sizeModal ? '#'+idModalLink : '.bd-example-modal-'+ sizeModal">
-      <i :class="classIcon"></i> {{ titleLink || '' }}
-    </a>
-    <button v-else v-on:click="fillDataStore()" type="button" :class="showTypeClassName"
-      data-toggle="modal" :data-target="!sizeModal ? '#'+idModalLink : '.bd-example-modal-'+ sizeModal">
-      <i :class="classIcon"></i> {{ titleLink || '' }}
-    </button>
-  </span>
+
+<button v-on:click="fillDataStore()"  type="button"
+    class="tabledit-edit-button btn btn-sm btn-default"> <i class="glyphicon glyphicon-pencil"></i>
+
+</button>
+
+
 </template>
 
 <script>
 export default {
   name: "ModalLink",
   props: {
-    showType: {
-      type: String,
-      default: "button"
-    },
-    showTypeClassName: {
-      default: "btn btn-inline"
-    },
-    sizeModal: {
-      type: String,
-      default: ""
-    },
+    // showType: {
+    //   type: String,
+    //   default: "button"
+    // },
+    // showTypeClassName: {
+    //   default: "btn btn-inline"
+    // },
+    // sizeModal: {
+    //   type: String,
+    //   default: ""
+    // },
     idModalLink: {
-      type: String,
       default: "myModal"
     },
-    classIcon: {
-      type: String,
-      required: true
-    },
-    titleLink: {
-      type: String,
-      required: false
-    },
+    // classIcon: {
+    //   type: String,
+    //   required: true
+    // },
+    // titleLink: {
+    //   type: String,
+    //   required: false
+    // },
     dataItem: {
       require: false
+    }
+  },
+  data() {
+    return {
+      showModal: false
     }
   },
   methods: {
