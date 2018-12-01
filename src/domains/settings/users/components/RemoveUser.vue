@@ -67,7 +67,7 @@ export default {
                 vm.dataUsers.data.splice(index, 1);
 
                 vm.dataUsers.total = vm.dataUsers.total - 1;
-                vm.$eventHub.$emit("totalUser", vm.dataUsers.total);
+                vm.$eventHub.$emit("totalUsers", vm.dataUsers.total);
 
                 swal({
                   title: "Removido",

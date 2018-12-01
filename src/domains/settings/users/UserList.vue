@@ -138,10 +138,11 @@ export default {
   mounted() {
     this.handler();
     this.$eventHub.$on("reloadHandler", obj => this.handler());
-    this.$eventHub.$on("totalUser", value => (this.total = value));
+    this.$eventHub.$on("totalUsers", value => (this.total = value));
   },
   beforeDestroy() {
-    this.$eventHub.$off("totalUser", value => (this.total = value));
+    this.$eventHub.$off("reloadHandler", obj => this.handler());
+    this.$eventHub.$off("totalUsers", value => (this.total = value));
   }
 };
 </script>

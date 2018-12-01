@@ -1,5 +1,16 @@
 <template>
   <div>
+    <section>
+      <Breadcrumb title="Funções [Roles]">
+        <li>
+          <a href="javascript::void(0)">Configurações</a>
+        </li>
+        <li>
+          <router-link :to="{ name: 'settings.users.list'}">Funções [Roles]</router-link>
+        </li>
+        <li class="active">Listar</li>
+      </Breadcrumb>
+    </section>
     <section class="box-typical">
       <header class="box-typical-header">
         <div class="tbl-row">
@@ -64,6 +75,7 @@
   </div>
 </template>
 <script>
+import Breadcrumb from "@/components/layouts/Breadcrumb";
 import CreateRole from "./components/CreateRole";
 import EditRole from "./components/EditRole";
 import RemoveRole from "./components/RemoveRole";
@@ -74,6 +86,7 @@ import { HttpServices as service } from "@/services/http-services";
 export default {
   name: "RoleList",
   components: {
+    Breadcrumb,
     CreateRole,
     EditRole,
     RemoveRole,
@@ -97,44 +110,39 @@ export default {
   beforeCreate() {
     isAclToPage("ADMIN");
   },
-  mounted() {
-    this.getRoles();
-    this.getPrivileges();
-    const vm = this;
-    this.$eventHub.$on("totalUser", function(t) {
-      vm.total = t;
-    });
-  },
   methods: {
     getRoles() {
-      const api = `${this.$urlApi}/admin/roles?page=${this.roles.current_page}`;
-      Vue.axios
-        .get(api, {
-          headers: {
-            Authorization: "Bearer " + this.$store.getters.getToken,
-            "User-ID": this.$store.getters.getUserId
-          }
-        })
+      service
+        .get(`/admin/roles?page=${this.roles.current_page}`)
         .then(res => {
           this.roles = res.data;
           this.total = res.data.total;
         })
-        .catch(error => {});
+        .catch(console.log);
     },
+
     getPrivileges() {
-      const api = `${this.$urlApi}/admin/privileges`;
-      Vue.axios
-        .get(api, {
-          headers: {
-            Authorization: "Bearer " + this.$store.getters.getToken,
-            "User-ID": this.$store.getters.getUserId
-          }
-        })
+      service
+        .get("/admin/privileges")
         .then(res => {
           this.privileges = res.data.data;
         })
-        .catch(error => {});
+        .catch(console.log);
+    },
+
+    handler() {
+      this.getRoles();
+      this.getPrivileges();
     }
+  },
+  mounted() {
+    this.handler();
+    this.$eventHub.$on("reloadHandler", obj => this.handler());
+    this.$eventHub.$on("totalRoles", value => (this.total = value));
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("reloadHandler", obj => this.handler());
+    this.$eventHub.$off("totalRoles", value => (this.total = value));
   }
 };
 </script>
