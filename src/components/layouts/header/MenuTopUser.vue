@@ -22,7 +22,7 @@
       -->
       <div class="dropdown-divider"></div>
 
-      <a href="javascript:void(0)"  @click="$eventHub.$emit('eventLogout', true)" class="dropdown-item">
+      <a href="javascript:void(0)"  @click="logout()" class="dropdown-item">
         <span class="font-icon glyphicon glyphicon-log-out"></span>
         Sair
       </a>
@@ -36,6 +36,30 @@ export default {
   data() {
     return {
       user: this.$store.getters.getUser
+    }
+  },
+  methods: {
+
+    logout() {
+
+      return swal(
+        {
+          title: "Logout!",
+          text: "Deseja realemente sair do sistema?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "Sim",
+          cancelButtonText: "Não",
+          closeOnConfirm: false
+        },
+        function() {
+          sessionStorage.clear();
+          localStorage.clear();
+          sessionStorage.setItem("desconected", true);
+          return window.location.replace("/login");
+        }
+      );
     }
   }
 }

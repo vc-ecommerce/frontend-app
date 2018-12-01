@@ -1,6 +1,6 @@
 <template>
   <div :class="defineCol">
-    <div :class="className" role="alert">
+    <div :class="alertClass" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       </button>
       <slot></slot>
@@ -16,7 +16,7 @@ export default {
       type: Number,
       default: 12
     },
-    className: {
+    alertClass: {
       type: String,
       required: true
     },

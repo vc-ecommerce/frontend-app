@@ -55,35 +55,7 @@ export default {
       this.isPublic = true;
     }
   },
-  methods: {
-    cleanDataStorage() {
-      sessionStorage.clear();
-      localStorage.clear();
-    },
-    logout() {
-      const vm = this;
-      return swal(
-        {
-          title: "Logout!",
-          text: "Deseja realemente sair do sistema?",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "Sim",
-          cancelButtonText: "Não",
-          closeOnConfirm: false
-        },
-        function() {
-          vm.cleanDataStorage();
-          sessionStorage.setItem("desconected", true);
-          return window.location.replace("/login");
-        }
-      );
-    }
-  },
   mounted() {
-    this.$eventHub.$on("eventLogout", obj => this.logout());
-
     let user = this.$store.getters.getUser
       ? this.$store.getters.getUser
       : false;
@@ -96,7 +68,8 @@ export default {
 
     if (!this.isPublic) {
       if (!user) {
-        this.cleanDataStorage();
+        sessionStorage.clear();
+        localStorage.clear();
         localStorage.setItem("pathnameReferer", window.location.pathname);
         return window.location.replace("/login");
       }

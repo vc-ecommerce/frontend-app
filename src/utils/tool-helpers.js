@@ -79,21 +79,21 @@ export const toolHelpers = {
       .replace(/-/g, separator);
   },
 
-  strRandon: () => Math.floor(Math.random() * 1000000 + 1),
+  strRandom: () => Math.floor(Math.random() * 1000000 + 1),
 
   swalErrorApi: (error) => {
 
     if (error.response.status === 401) {
 
       return swal({
-          title: "Autenticação!",
-          text: "Para acessar este recurso você precisa estar autenticado! Você será redirecionado!",
-          type: "warning",
-          showCancelButton: false,
-          confirmButtonClass: "btn-error",
-          confirmButtonText: "OK!",
-          closeOnConfirm: false
-        },
+        title: "Autenticação!",
+        text: "Para acessar este recurso você precisa estar autenticado! Você será redirecionado!",
+        type: "warning",
+        showCancelButton: false,
+        confirmButtonClass: "btn-error",
+        confirmButtonText: "OK!",
+        closeOnConfirm: false
+      },
         function () {
           sessionStorage.clear();
           window.location.replace("/login");
@@ -103,15 +103,15 @@ export const toolHelpers = {
   },
 
   dateToText(date) {
-      return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
   },
 
   textToDate(text) {
 
-      if(!/\d{2}\/\d{2}\/\d{4}/.test(text))
-          throw new Error('Deve estar no formato dd/mm/aaaa');
+    if (!/\d{2}\/\d{2}\/\d{4}/.test(text))
+      throw new Error('Deve estar no formato dd/mm/aaaa');
 
-      return new Date(...text.split('/').reverse().map((item, indice) => item - indice % 2));
+    return new Date(...text.split('/').reverse().map((item, indice) => item - indice % 2));
   }
 
 }
