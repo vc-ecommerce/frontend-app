@@ -1,4 +1,4 @@
-import ResetPassword from '@/components/domains/auth/ResetPassword';
+import ResetPassword from '@/domains/auth/ResetPassword';
 
 export const reset = [
   {

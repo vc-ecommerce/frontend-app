@@ -1,4 +1,4 @@
-import RoleList from '@/components/domains/settings/roles/RoleList';
+import RoleList from '@/domains/settings/roles/RoleList';
 
 export const role = [
   {
