@@ -1,6 +1,6 @@
-import AttributeList from '@/components/pages/catalogs/attributes/AttributeList'
-import AttributeCreate from '@/components/pages/catalogs/attributes/AttributeCreate'
-//import AttributeEdit from '@/components/pages/catalogs/attributes/AttributeEdit'
+import AttributeList from '@/components/domains/catalogs/attributes/AttributeList'
+import AttributeCreate from '@/components/domains/catalogs/attributes/AttributeCreate'
+//import AttributeEdit from '@/components/domains/catalogs/attributes/AttributeEdit'
 
 export const attributes = [
   {

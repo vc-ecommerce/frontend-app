@@ -1,4 +1,4 @@
-import ForgotPassword from '@/components/pages/auth/ForgotPassword';
+import ForgotPassword from '@/components/domains/auth/ForgotPassword';
 
 export const forgot = [
   {

@@ -1,4 +1,4 @@
-import PrivilegeList from '@/components/pages/settings/privileges/PrivilegeList';
+import PrivilegeList from '@/components/domains/settings/privileges/PrivilegeList';
 
 export const privilege = [
   {

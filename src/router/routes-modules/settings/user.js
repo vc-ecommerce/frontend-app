@@ -1,4 +1,4 @@
-import UserList from '@/components/pages/settings/users/UserList';
+import UserList from '@/components/domains/settings/users/UserList';
 
 export const user = [
   {

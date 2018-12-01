@@ -1,4 +1,4 @@
-import AccountIndex from '@/components/pages/accounts/AccountIndex';
+import AccountIndex from '@/components/domains/accounts/AccountIndex';
 
 export const index = [
   {
