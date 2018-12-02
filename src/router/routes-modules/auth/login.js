@@ -1,4 +1,4 @@
-import Login from '@/components/domains/auth/Login';
+import Login from '@/domains/auth/Login';
 
 export const login = [
   {

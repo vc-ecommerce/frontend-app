@@ -1,6 +1,5 @@
 <template>
   <button
-    v-if="isUserLogged"
     type="button"
     @click.prevent="remove(dataItem)"
     class="tabledit-delete-button btn btn-sm btn-danger"
@@ -13,43 +12,22 @@
 import { HttpServices as service } from "@/services/http-services";
 
 export default {
-  name: "RemoveUser",
+  name: "RemoveRole",
   components: {},
-  props: ["dataUsers", "dataItem"],
+  props: ["dataRoles", "dataItem"],
   data() {
     return {
       total: 0,
       active: true
     };
   },
-  computed: {
-    isUserLogged() {
-      if (this.dataItem._id === this.$store.getters.getUserId) {
-        return false;
-      }
-      return true;
-    }
-  },
   methods: {
-    send(user) {
-      return new Promise((resolve, reject) => {
-        service
-          .delete(`/admin/users/${user._id}`)
-          .then(res => {
-            if (Boolean(res.data) === true) {
-              resolve(true);
-            }
-            reject(false);
-          })
-          .catch(console.log);
-      });
-    },
-    remove(user) {
+    remove(role) {
       const vm = this;
       swal(
         {
           title: "Deseja realmente excluir?",
-          text: `${user.name}`,
+          text: `${role.description}`,
           type: "warning",
           showCancelButton: true,
           confirmButtonClass: "btn-danger",
@@ -61,13 +39,13 @@ export default {
 
         function(isConfirm) {
           if (isConfirm) {
-            vm.send(user)
+            vm.send(role)
               .then(res => {
-                let index = vm.dataUsers.data.indexOf(user);
-                vm.dataUsers.data.splice(index, 1);
+                let index = vm.dataRoles.data.indexOf(role);
+                vm.dataRoles.data.splice(index, 1);
 
-                vm.dataUsers.total = vm.dataUsers.total - 1;
-                vm.$eventHub.$emit("totalUser", vm.dataUsers.total);
+                vm.dataRoles.total = vm.dataRoles.total - 1;
+                vm.$eventHub.$emit("totalRoles", vm.dataRoles.total);
 
                 swal({
                   title: "Removido",
@@ -94,6 +72,21 @@ export default {
           }
         }
       );
+    },
+
+    send(role) {
+      return new Promise((resolve, reject) => {
+        service;
+        service
+          .delete(`/admin/roles/${role._id}`)
+          .then(res => {
+            if (Boolean(res.data) === true) {
+              resolve(true);
+            }
+            reject(false);
+          })
+          .catch(console.log);
+      });
     }
   }
 };

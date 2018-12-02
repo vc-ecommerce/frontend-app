@@ -1,6 +1,6 @@
 <template>
   <div :class="defineCol">
-    <div :class="alertClass" role="alert">
+    <div :class="alertClass" role="alert" class="text-left">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       </button>
       <slot></slot>

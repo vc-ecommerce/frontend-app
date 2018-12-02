@@ -119,7 +119,6 @@ export default {
           }, 1000);
         })
         .catch(error => {
-          this.btnDisabled = false;
           this.password = "";
 
           if ("data" in error.response) {
@@ -136,6 +135,7 @@ export default {
 
           console.log(error.response);
         });
+      this.btnDisabled = false;
     }
   },
   mounted() {

@@ -1,28 +1,20 @@
 <template>
   <span>
-    <span :class="randId = random"></span>
+    <ModalButton btnClass="btn btn-inline" iconClass="glyphicon glyphicon-plus" btnTitle="Criar"/>
 
-    <ModalButton
-      btnClass="tabledit-edit-button btn btn-sm btn-default"
-      iconClass="glyphicon glyphicon-pencil"
-      :targetClass="`.edit-modal-lg-${randId}`"
-      :dataItem="dataItem"
-    />
-
-    <ModalLarge v-if="showModal" modalTitle="Editar dados" :targetClass="`edit-modal-lg-${randId}`">
+    <ModalLarge v-if="showModal" modalTitle="Criar novo usuário">
       <AlertDivs :status="status" :error="error" :passwordInvalid="passwordInvalid"/>
 
-      <form :id="`edit-${randId}`" @submit.prevent="submitForm">
+      <form id="add-user" @submit.prevent="submitForm">
         <div class="row">
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label semibold" for="inputName">Nome</label>
               <input
-                v-if="$store.getters.getItem"
                 type="text"
                 required
                 class="form-control"
-                v-model="$store.getters.getItem.name"
+                v-model="user.name"
                 placeholder="Nome"
               >
             </fieldset>
@@ -31,23 +23,20 @@
             <fieldset class="form-group">
               <label class="form-label" for="inputEmail">Email</label>
               <input
-                v-if="$store.getters.getItem"
                 type="email"
                 required
                 class="form-control"
                 placeholder="E-mail"
-                v-model="$store.getters.getItem.email"
+                v-model="user.email"
               >
             </fieldset>
           </div>
         </div>
-
-        <!--.row-->
         <div class="row">
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label" for="inputPassword">Usuário ativo?</label>
-              <select class="form-control" required v-model="selectedOption">
+              <select required class="form-control" v-model="user.active">
                 <option disabled value>Escolha um item</option>
                 <option
                   v-for="option in options"
@@ -59,19 +48,19 @@
           </div>
           <div class="col-lg-6">
             <fieldset class="form-group">
-              <label class="form-label" for="inputPassword">Senha</label>
+              <label class="form-label" for="hide-show-password">Senha</label>
               <input
                 type="password"
+                id="hide-show-password"
+                required
                 class="form-control"
                 minlength="6"
-                v-model="password"
+                v-model="user.password"
                 placeholder="Senha"
               >
             </fieldset>
           </div>
         </div>
-
-        <!--.row-->
         <div class="row" style="margin:10px 0 10px 0">
           <label class="form-label semibold">Departamentos do usuário [Permissões]</label>
         </div>
@@ -81,19 +70,23 @@
             class="checkbox-toggle"
             v-for="(role, index) in dataRoles"
             :key="role.id"
-            style="margin:20px"
+            style="margin-left:20px"
           >
             <span :class="index = index + random"></span>
-            <input type="checkbox" v-model="roleUser" :id="'check-toggle-'+ index" :value="role">
+            <input type="checkbox" v-model="user.roles" :id="'check-toggle-'+ index" :value="role">
             <label :for="'check-toggle-'+ index">{{role.description}}</label>
           </div>
         </div>
       </form>
 
       <span slot="btn">
-        <button :form="`edit-${randId}`" type="submit" class="btn btn-rounded btn-primary">
-          <i class="glyphicon glyphicon-ok"></i> Salvar Alterações
-        </button>
+        <ButtonSubmitModal
+          form="add-user"
+          bntTitle="Salvar Dados"
+          :ok="ok"
+          :btnDisabled="btnDisabled"
+          bntClass="btn btn-rounded btn-primary"
+        />
       </span>
     </ModalLarge>
   </span>
@@ -102,73 +95,55 @@
 import Table from "@/components/layouts/Table";
 import ModalButton from "@/components/modals/ModalButton";
 import ModalLarge from "@/components/modals/ModalLarge";
-import AlertDivs from "./AlertDivs";
+import ButtonSubmitModal from "@/components/modals/ButtonSubmitModal";
+import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
+import AlertDivs from "./AlertDivs";
 
 export default {
-  name: "EditUser",
+  name: "CreateUser",
   components: {
     Table,
-    ModalLarge,
     ModalButton,
+    ModalLarge,
+    ButtonSubmitModal,
+    Alert,
     AlertDivs
   },
-  props: ["dataItem", "dataRoles"],
+  props: ["dataRoles"],
   data() {
     return {
-      password: "",
+      user: {
+        name: "",
+        email: "",
+        password: "",
+        active: "",
+        roles: []
+      },
       options: [
         { text: "Ativo", value: true },
         { text: "Desativado", value: false }
       ],
-      randId: "",
       status: false,
       error: false,
       passwordInvalid: false,
       showModal: false,
-      timestamp: 8000
+      timestamp: 8000,
+      ok: false,
+      btnDisabled: false
     };
   },
   computed: {
-    random: () => tool.strRandom(),
-    roleUser: {
-      get() {
-        return tool.cleanRole(
-          this.$store.getters.getItem ? this.$store.getters.getItem.roles : []
-        );
-      },
-      set(value) {
-        let item = this.$store.getters.getItem;
-        item.roles = value;
-        this.$store.commit("setItem", item);
-      }
-    },
-    selectedOption: {
-      get() {
-        return Boolean(
-          this.$store.getters.getItem
-            ? this.$store.getters.getItem.active
-            : false
-        );
-      },
-      set(value) {
-        let item = this.$store.getters.getItem;
-        item.active = value;
-        this.$store.commit("setItem", item);
-      }
-    }
+    random: () => tool.strRandom()
   },
   methods: {
+    cleanData(data) {
+      return tool.cleanDataApi(data);
+    },
     submitForm() {
-      if (!this.$store.getters.getItem) {
-        return;
-      }
-
-      let data = this.$store.getters.getItem;
-
-      if (this.password !== "") {
-        if (tool.forcePassword(this.password) < 50) {
+      if (this.user.password !== "") {
+        if (tool.forcePassword(this.user.password) < 50) {
           this.passwordInvalid = true;
 
           setTimeout(() => {
@@ -180,43 +155,59 @@ export default {
       }
 
       this.status = "Enviando...";
+      this.btnDisabled = true;
 
       service
-        .put(`/admin/users/${data._id}`, {
-          name: data.name,
-          email: data.email,
-          active: data.active,
-          action: "edit-user",
-          password: this.password,
-          password_confirmation: this.password,
-          roles: data.roles
+        .post("/admin/users", {
+          name: this.user.name,
+          email: this.user.email,
+          active: this.user.active,
+          password: this.user.password,
+          password_confirmation: this.user.password,
+          roles: this.user.roles,
+          action: "create-user"
         })
         .then(res => {
-          this.password = "";
           this.users = res.data;
           this.total = res.data.total;
-          this.status = "Usuário alterado com sucesso!";
-
-          setTimeout(() => {
-            this.status = false;
-            this.showModal
-          }, this.timestamp);
+          this.status = "Dados cadastrados com sucesso.";
+          this.ok = true;
+          (this.user.name = ""),
+            (this.user.email = ""),
+            (this.user.password = ""),
+            (this.user.active = ""),
+            setTimeout(() => {
+              this.ok = false;
+              this.status = false;
+            }, this.timestamp);
         })
         .catch(error => {
           this.error = JSON.parse(error.response.data.error);
-
+          this.status = false;
           setTimeout(() => {
-            this.status = false;
             this.error = false;
           }, this.timestamp);
+
+          console.log(error.response);
         });
+      this.btnDisabled = false;
     }
   },
   mounted() {
-    this.$eventHub.$on("showModal", obj => (this.showModal = obj));
+    this.$eventHub.$on("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
   },
   beforeDestroy() {
-    this.$eventHub.$off("showModal", obj => (this.showModal = obj));
+    this.$eventHub.$off("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
   }
 };
 </script>

@@ -1,4 +1,4 @@
-import HomeIndex from '@/components/domains/home/HomeIndex';
+import HomeIndex from '@/domains/home/HomeIndex';
 
 export const index = [
   {
