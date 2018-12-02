@@ -9,7 +9,11 @@
       :dataItem="dataItem"
     />
 
-    <ModalLarge v-if="showModal" modalTitle="Editar dados de usuário" :targetClass="`edit-modal-lg-${randId}`">
+    <ModalLarge
+      v-if="showModal"
+      modalTitle="Editar dados de usuário"
+      :targetClass="`edit-modal-lg-${randId}`"
+    >
       <AlertDivs :status="status" :error="error" :passwordInvalid="passwordInvalid"/>
 
       <form :id="`edit-${randId}`" @submit.prevent="submitForm">
@@ -91,9 +95,13 @@
       </form>
 
       <span slot="btn">
-        <button :form="`edit-${randId}`" type="submit" class="btn btn-rounded btn-primary">
-          <i class="glyphicon glyphicon-ok"></i> Salvar Alterações
-        </button>
+        <ButtonSubmitModal
+          :form="`edit-${randId}`"
+          bntTitle="Salvar Alterações"
+          :ok="ok"
+          :btnDisabled="btnDisabled"
+          bntClass="btn btn-rounded btn-primary"
+        />
       </span>
     </ModalLarge>
   </span>
@@ -102,6 +110,7 @@
 import Table from "@/components/layouts/Table";
 import ModalButton from "@/components/modals/ModalButton";
 import ModalLarge from "@/components/modals/ModalLarge";
+import ButtonSubmitModal from "@/components/modals/ButtonSubmitModal";
 import AlertDivs from "./AlertDivs";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
@@ -112,6 +121,7 @@ export default {
     Table,
     ModalLarge,
     ModalButton,
+    ButtonSubmitModal,
     AlertDivs
   },
   props: ["dataItem", "dataRoles"],
@@ -127,7 +137,9 @@ export default {
       error: false,
       passwordInvalid: false,
       showModal: false,
-      timestamp: 8000
+      timestamp: 8000,
+      ok: false,
+      btnDisabled: false
     };
   },
   computed: {
@@ -180,6 +192,7 @@ export default {
       }
 
       this.status = "Enviando...";
+      this.btnDisabled = true;
 
       service
         .put(`/admin/users/${data._id}`, {
@@ -196,26 +209,38 @@ export default {
           this.users = res.data;
           this.total = res.data.total;
           this.status = "Usuário alterado com sucesso!";
+          this.ok = true;
 
           setTimeout(() => {
+            this.ok = false;
             this.status = false;
           }, this.timestamp);
         })
         .catch(error => {
           this.error = JSON.parse(error.response.data.error);
-
+          this.status = false;
           setTimeout(() => {
-            this.status = false;
             this.error = false;
           }, this.timestamp);
         });
+      this.btnDisabled = false;
     }
   },
   mounted() {
-    this.$eventHub.$on("showModal", obj => (this.showModal = obj));
+    this.$eventHub.$on("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
   },
   beforeDestroy() {
-    this.$eventHub.$off("showModal", obj => (this.showModal = obj));
+    this.$eventHub.$off("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
   }
 };
 </script>

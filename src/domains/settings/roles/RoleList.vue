@@ -19,7 +19,7 @@
             <h3 v-else>{{ total }} Funções</h3>
           </div>
           <div class="tbl-cell tbl-cell-action-bordered">
-            <CreateRole :dataPrivilegies="privileges"/>
+            <CreateRole :dataPrivileges="privileges"/>
           </div>
         </div>
       </header>
@@ -58,7 +58,7 @@
                     <div class="btn-group btn-group-sm" style="float: none;">
                       <EditRole
                         v-if="!role.default"
-                        :dataPrivilegies="privileges"
+                        :dataPrivileges="privileges"
                         :dataRoles="roles"
                         :dataItem="role"
                       />

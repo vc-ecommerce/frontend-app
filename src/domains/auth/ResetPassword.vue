@@ -74,12 +74,9 @@ export default {
           });
 
           this.email = "";
-          this.btnDisabled = false;
           this.ok = true;
         })
         .catch(error => {
-          this.btnDisabled = false;
-
           if ("data" in error.response) {
             let errors = error.response.data.error;
 
@@ -92,6 +89,7 @@ export default {
 
           console.log(error.response);
         });
+      this.btnDisabled = false;
     }
   },
   mounted() {

@@ -148,7 +148,6 @@ export default {
         })
         .then(handleStatus)
         .then(res => {
-          this.btnDisabled = false;
           this.ok = true;
           this.password = "";
           this.confirm = "";
@@ -170,9 +169,9 @@ export default {
           );
         })
         .catch(error => {
-          this.btnDisabled = false;
           console.log(error.response);
         });
+      this.btnDisabled = false;
     },
     submitForm() {
       if (!this.isPasswordValid()) {

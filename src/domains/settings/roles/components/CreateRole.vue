@@ -1,11 +1,5 @@
 <template>
   <span>
-    <!-- <ModalButton
-      btnClass="btn btn-inline"
-      iconClass="glyphicon glyphicon-plus"
-      btnTitle="Criar"
-      data-item="dataPrivilegies"
-    />-->
     <ModalButton
       btnClass="btn btn-inline"
       iconClass="glyphicon glyphicon-plus"
@@ -50,7 +44,7 @@
         <div class="row">
           <div
             class="checkbox-toggle"
-            v-for="(privilege, index) in dataPrivilegies"
+            v-for="(privilege, index) in dataPrivileges"
             :key="index"
             style="margin-left:20px"
           >
@@ -58,18 +52,22 @@
             <input
               type="checkbox"
               v-model="role.privileges"
-              :id="'check-toggle-'+ index"
+              :id="`check-toggle-${index}`"
               :value="privilege"
             >
-            <label :for="'check-toggle-'+ index">{{ privilege.description }}</label>
+            <label :for="`check-toggle-${index}`">{{ privilege.description }}</label>
           </div>
         </div>
       </form>
 
       <span slot="btn">
-        <button form="add-role" type="submit" class="btn btn-rounded btn-primary">
-          <i class="glyphicon glyphicon-ok"></i> Salvar Dados
-        </button>
+        <ButtonSubmitModal
+          form="add-role"
+          bntTitle="Salvar Dados"
+          :ok="ok"
+          :btnDisabled="btnDisabled"
+          bntClass="btn btn-rounded btn-primary"
+        />
       </span>
     </ModalLarge>
   </span>
@@ -78,6 +76,7 @@
 import Table from "@/components/layouts/Table";
 import ModalLarge from "@/components/modals/ModalLarge";
 import ModalButton from "@/components/modals/ModalButton";
+import ButtonSubmitModal from "@/components/modals/ButtonSubmitModal";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
 import { optionsTrueOrFalse } from "@/utils/array-helpers";
@@ -89,9 +88,10 @@ export default {
     Table,
     ModalLarge,
     ModalButton,
+    ButtonSubmitModal,
     AlertDivs
   },
-  props: ["dataPrivilegies"],
+  props: ["dataPrivileges"],
   data() {
     return {
       role: {
@@ -107,7 +107,9 @@ export default {
       error: false,
       passwordInvalid: false,
       showModal: false,
-      timestamp: 8000
+      timestamp: 8000,
+      ok: false,
+      btnDisabled: false
     };
   },
   computed: {
@@ -116,6 +118,7 @@ export default {
   methods: {
     submitForm() {
       this.status = "Enviando...";
+      this.btnDisabled = true;
 
       service
         .post(`/admin/roles`, {
@@ -129,27 +132,40 @@ export default {
           this.roles = res.data;
           this.total = res.data.total;
           this.status = "Função criada com sucesso!";
-
+          this.role.name = "";
+          this.role.description = "";
+          this.ok = true;
           setTimeout(() => {
-            this.role = [];
+            this.ok = false;
             this.status = false;
           }, this.timestamp);
         })
         .catch(error => {
           this.error = JSON.parse(error.response.data.error);
-
+          this.status = false;
           setTimeout(() => {
-            this.status = false;
+            this.showModal = false;
             this.error = false;
           }, this.timestamp);
         });
+      this.btnDisabled = false;
     }
   },
   mounted() {
-    this.$eventHub.$on("showModal", obj => (this.showModal = obj));
+    this.$eventHub.$on("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
   },
   beforeDestroy() {
-    this.$eventHub.$off("showModal", obj => (this.showModal = obj));
+    this.$eventHub.$off("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
   }
 };
 </script>

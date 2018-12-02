@@ -53,7 +53,7 @@
         <div class="row">
           <div
             class="checkbox-toggle"
-            v-for="(privilege, index) in dataPrivilegies"
+            v-for="(privilege, index) in dataPrivileges"
             :key="index"
             style="margin-left:20px"
           >
@@ -70,9 +70,13 @@
       </form>
 
       <span slot="btn">
-        <button :form="`edit-${randId}`" type="submit" class="btn btn-rounded btn-primary">
-          <i class="glyphicon glyphicon-ok"></i> Salvar Alterações
-        </button>
+        <ButtonSubmitModal
+          :form="`edit-${randId}`"
+          bntTitle="Salvar Alterações"
+          :ok="ok"
+          :btnDisabled="btnDisabled"
+          bntClass="btn btn-rounded btn-primary"
+        />
       </span>
     </ModalLarge>
   </span>
@@ -81,6 +85,7 @@
 import Table from "@/components/layouts/Table";
 import ModalLarge from "@/components/modals/ModalLarge";
 import ModalButton from "@/components/modals/ModalButton";
+import ButtonSubmitModal from "@/components/modals/ButtonSubmitModal";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
 import AlertDivs from "./AlertDivs";
@@ -91,9 +96,10 @@ export default {
     Table,
     ModalLarge,
     ModalButton,
+    ButtonSubmitModal,
     AlertDivs
   },
-  props: ["dataPrivilegies", "dataItem"],
+  props: ["dataPrivileges", "dataItem"],
   data() {
     return {
       role: {
@@ -110,7 +116,9 @@ export default {
       error: false,
       passwordInvalid: false,
       showModal: false,
-      timestamp: 8000
+      timestamp: 8000,
+      ok: false,
+      btnDisabled: false
     };
   },
   computed: {
@@ -138,6 +146,7 @@ export default {
       let data = this.$store.getters.getItem;
 
       this.status = "Enviando...";
+      this.btnDisabled = true;
 
       service
         .put(`/admin/roles/${data._id}`, {
@@ -151,26 +160,39 @@ export default {
           this.roles = res.data;
           this.total = res.data.total;
           this.status = "Função editada com sucesso!";
+          this.ok = true;
 
           setTimeout(() => {
+            this.ok = false;
             this.status = false;
           }, this.timestamp);
         })
         .catch(error => {
           this.error = JSON.parse(error.response.data.error);
 
+          this.status = false;
           setTimeout(() => {
-            this.status = false;
             this.error = false;
           }, this.timestamp);
         });
+      this.btnDisabled = false;
     }
   },
   mounted() {
-    this.$eventHub.$on("showModal", obj => (this.showModal = obj));
+    this.$eventHub.$on("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
   },
   beforeDestroy() {
-    this.$eventHub.$off("showModal", obj => (this.showModal = obj));
+    this.$eventHub.$off("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
   }
 };
 </script>

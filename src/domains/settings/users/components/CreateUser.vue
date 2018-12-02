@@ -80,9 +80,13 @@
       </form>
 
       <span slot="btn">
-        <button form="add-user" type="submit" class="btn btn-rounded btn-primary">
-          <i class="glyphicon glyphicon-ok"></i> Salvar Dados
-        </button>
+        <ButtonSubmitModal
+          form="add-user"
+          bntTitle="Salvar Dados"
+          :ok="ok"
+          :btnDisabled="btnDisabled"
+          bntClass="btn btn-rounded btn-primary"
+        />
       </span>
     </ModalLarge>
   </span>
@@ -91,6 +95,7 @@
 import Table from "@/components/layouts/Table";
 import ModalButton from "@/components/modals/ModalButton";
 import ModalLarge from "@/components/modals/ModalLarge";
+import ButtonSubmitModal from "@/components/modals/ButtonSubmitModal";
 import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
@@ -102,6 +107,7 @@ export default {
     Table,
     ModalButton,
     ModalLarge,
+    ButtonSubmitModal,
     Alert,
     AlertDivs
   },
@@ -123,7 +129,9 @@ export default {
       error: false,
       passwordInvalid: false,
       showModal: false,
-      timestamp: 8000
+      timestamp: 8000,
+      ok: false,
+      btnDisabled: false
     };
   },
   computed: {
@@ -147,6 +155,7 @@ export default {
       }
 
       this.status = "Enviando...";
+      this.btnDisabled = true;
 
       service
         .post("/admin/users", {
@@ -162,29 +171,43 @@ export default {
           this.users = res.data;
           this.total = res.data.total;
           this.status = "Dados cadastrados com sucesso.";
-
-          setTimeout(() => {
-            this.user = [];
-            this.status = false;
-          }, this.timestamp);
+          this.ok = true;
+          (this.user.name = ""),
+            (this.user.email = ""),
+            (this.user.password = ""),
+            (this.user.active = ""),
+            setTimeout(() => {
+              this.ok = false;
+              this.status = false;
+            }, this.timestamp);
         })
         .catch(error => {
           this.error = JSON.parse(error.response.data.error);
-
+          this.status = false;
           setTimeout(() => {
-            this.status = false;
             this.error = false;
           }, this.timestamp);
 
           console.log(error.response);
         });
+      this.btnDisabled = false;
     }
   },
   mounted() {
-    this.$eventHub.$on("showModal", obj => (this.showModal = obj));
+    this.$eventHub.$on("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
   },
   beforeDestroy() {
-    this.$eventHub.$off("showModal", obj => (this.showModal = obj));
+    this.$eventHub.$off("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
   }
 };
 </script>
