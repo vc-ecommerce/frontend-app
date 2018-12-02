@@ -31,19 +31,6 @@ export default {
     }
   },
   methods: {
-    send(user) {
-      return new Promise((resolve, reject) => {
-        service
-          .delete(`/admin/users/${user._id}`)
-          .then(res => {
-            if (Boolean(res.data) === true) {
-              resolve(true);
-            }
-            reject(false);
-          })
-          .catch(console.log);
-      });
-    },
     remove(user) {
       const vm = this;
       swal(
@@ -94,6 +81,20 @@ export default {
           }
         }
       );
+    },
+
+    send(user) {
+      return new Promise((resolve, reject) => {
+        service
+          .delete(`/admin/users/${user._id}`)
+          .then(res => {
+            if (Boolean(res.data) === true) {
+              resolve(true);
+            }
+            reject(false);
+          })
+          .catch(console.log);
+      });
     }
   }
 };

@@ -9,7 +9,7 @@
       :dataItem="dataItem"
     />
 
-    <ModalLarge v-if="showModal" modalTitle="Editar dados" :targetClass="`edit-modal-lg-${randId}`">
+    <ModalLarge v-if="showModal" modalTitle="Editar dados de usuário" :targetClass="`edit-modal-lg-${randId}`">
       <AlertDivs :status="status" :error="error" :passwordInvalid="passwordInvalid"/>
 
       <form :id="`edit-${randId}`" @submit.prevent="submitForm">
@@ -84,8 +84,8 @@
             style="margin:20px"
           >
             <span :class="index = index + random"></span>
-            <input type="checkbox" v-model="roleUser" :id="'check-toggle-'+ index" :value="role">
-            <label :for="'check-toggle-'+ index">{{role.description}}</label>
+            <input type="checkbox" v-model="roleUser" :id="`check-toggle-${index}`" :value="role">
+            <label :for="`check-toggle-${index}`">{{role.description}}</label>
           </div>
         </div>
       </form>
@@ -199,7 +199,6 @@ export default {
 
           setTimeout(() => {
             this.status = false;
-            this.showModal
           }, this.timestamp);
         })
         .catch(error => {

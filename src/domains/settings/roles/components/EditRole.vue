@@ -1,44 +1,47 @@
 <template>
   <span>
+    <span :class="randId = random"></span>
 
     <ModalButton
-    btnClass="tabledit-edit-button btn btn-sm btn-default"
-    iconClass="glyphicon glyphicon-pencil"
-    :dataItem="dataItem" />
+      btnClass="tabledit-edit-button btn btn-sm btn-default"
+      iconClass="glyphicon glyphicon-pencil"
+      :targetClass="`.edit-modal-lg-${randId}`"
+      :dataItem="dataItem"
+    />
 
-    <ModalLarge :idModal="$store.getters.getItem ? $store.getters.getItem._id : ''"
-      titleModal="Editar função"
-      sizeModal="lg">
+    <ModalLarge
+      v-if="showModal"
+      modalTitle="Editar dados de função"
+      :targetClass="`edit-modal-lg-${randId}`"
+    >
+      <AlertDivs :status="status" :error="error"/>
 
-      <div v-if="status && error === false" class="row">
-        <Alert className="alert alert-success alert-fill alert-close alert-dismissible fade show">
-          {{ status }}
-        </Alert>
-      </div>
-
-      <div v-if="error && status === false" class="row">
-        <Alert className="alert alert-danger alert-fill alert-close alert-dismissible fade show">
-          <dl>
-            <dt v-for="err in error" :key="err.id">
-              {{ cleanData( err ) }}
-            </dt>
-          </dl>
-        </Alert>
-      </div>
-
-      <form id="edit-role" @submit.prevent="submitForm">
-
+      <form :id="`edit-${randId}`" @submit.prevent="submitForm">
         <div class="row">
           <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label semibold" for="role">Role Description</label>
-              <input v-if="$store.getters.getItem" type="text" required class="form-control" v-model="$store.getters.getItem.description" placeholder="Description">
+              <input
+                v-if="$store.getters.getItem"
+                type="text"
+                required
+                class="form-control"
+                v-model="$store.getters.getItem.description"
+                placeholder="Description"
+              >
             </fieldset>
           </div>
-           <div class="col-lg-6">
+          <div class="col-lg-6">
             <fieldset class="form-group">
               <label class="form-label semibold" for="name">Name</label>
-              <input v-if="$store.getters.getItem" type="text" required class="form-control" v-model="$store.getters.getItem.name" placeholder="Example: STAFF_COMMERCIAL">
+              <input
+                v-if="$store.getters.getItem"
+                type="text"
+                required
+                class="form-control"
+                v-model="$store.getters.getItem.name"
+                placeholder="Example: STAFF_COMMERCIAL"
+              >
             </fieldset>
           </div>
         </div>
@@ -48,19 +51,29 @@
         </div>
 
         <div class="row">
-          <div class="checkbox-toggle" v-for="(privilege, index) in dataPrivilegies" :key="index" style="margin-left:20px">
+          <div
+            class="checkbox-toggle"
+            v-for="(privilege, index) in dataPrivilegies"
+            :key="index"
+            style="margin-left:20px"
+          >
             <span :class="index = index + random"></span>
-            <input type="checkbox" v-model="privilegeRole" :id="'check-toggle-'+ index" :value="privilege">
-            <label :for="'check-toggle-'+ index">{{ privilege.description }}</label>
+            <input
+              type="checkbox"
+              v-model="privilegeRole"
+              :id="`check-toggle-${index}`"
+              :value="privilege"
+            >
+            <label :for="`check-toggle-${index}`">{{ privilege.description }}</label>
           </div>
         </div>
-
       </form>
 
       <span slot="btn">
-        <button form="edit-role" type="submit" class="btn btn-rounded btn-primary"><i class="glyphicon glyphicon-ok"></i> Salvar Alterações</button>
+        <button :form="`edit-${randId}`" type="submit" class="btn btn-rounded btn-primary">
+          <i class="glyphicon glyphicon-ok"></i> Salvar Alterações
+        </button>
       </span>
-
     </ModalLarge>
   </span>
 </template>
@@ -68,10 +81,9 @@
 import Table from "@/components/layouts/Table";
 import ModalLarge from "@/components/modals/ModalLarge";
 import ModalButton from "@/components/modals/ModalButton";
-import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
-import { optionsTrueOrFalse } from '@/utils/array-helpers';
+import AlertDivs from "./AlertDivs";
 
 export default {
   name: "EditRole",
@@ -79,23 +91,29 @@ export default {
     Table,
     ModalLarge,
     ModalButton,
-    Alert
+    AlertDivs
   },
   props: ["dataPrivilegies", "dataItem"],
   data() {
     return {
-      status: false,
-      error: false,
       role: {
         name: "",
         description: "",
         privileges: []
       },
-      options: optionsTrueOrFalse
+      options: [
+        { text: "Ativo", value: true },
+        { text: "Desativado", value: false }
+      ],
+      randId: "",
+      status: false,
+      error: false,
+      passwordInvalid: false,
+      showModal: false,
+      timestamp: 8000
     };
   },
   computed: {
-
     random: () => tool.strRandom(),
 
     privilegeRole: {
@@ -112,9 +130,6 @@ export default {
     }
   },
   methods: {
-    cleanData(data) {
-      return tool.cleanDataApi(data);
-    },
     submitForm() {
       if (!this.$store.getters.getItem) {
         return;
@@ -124,40 +139,38 @@ export default {
 
       this.status = "Enviando...";
 
-      const api = `${this.$urlApi}/admin/roles/${data._id}`;
-      Vue.axios
-        .put(
-          api,
-          {
-            name: data.name.toUpperCase(),
-            description: data.description,
-            privileges: data.privileges,
-            default: false,
-            action: "edit-role"
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + this.$store.getters.getToken,
-              "User-ID": this.$store.getters.getUserId
-            }
-          }
-        )
+      service
+        .put(`/admin/roles/${data._id}`, {
+          name: data.name.toUpperCase(),
+          description: data.description,
+          privileges: data.privileges,
+          default: false,
+          action: "edit-role"
+        })
         .then(res => {
-          this.error = false;
           this.roles = res.data;
           this.total = res.data.total;
           this.status = "Função editada com sucesso!";
-          this.$emit("reload");
+
+          setTimeout(() => {
+            this.status = false;
+          }, this.timestamp);
         })
         .catch(error => {
-          this.status = false;
           this.error = JSON.parse(error.response.data.error);
 
           setTimeout(() => {
+            this.status = false;
             this.error = false;
-          }, 5000);
+          }, this.timestamp);
         });
     }
+  },
+  mounted() {
+    this.$eventHub.$on("showModal", obj => (this.showModal = obj));
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("showModal", obj => (this.showModal = obj));
   }
 };
 </script>

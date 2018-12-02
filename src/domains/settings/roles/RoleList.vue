@@ -19,7 +19,7 @@
             <h3 v-else>{{ total }} Funções</h3>
           </div>
           <div class="tbl-cell tbl-cell-action-bordered">
-            <CreateRole @reload="getRoles()" :dataPrivilegies="privileges"/>
+            <CreateRole :dataPrivilegies="privileges"/>
           </div>
         </div>
       </header>
