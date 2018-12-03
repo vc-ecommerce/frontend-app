@@ -1,17 +1,9 @@
 <template>
   <Panel title="Editando Página" classContent="panel-body">
-    <div v-if="status && error === false" class="row">
-      <Alert
-        class="alert alert-success alert-fill alert-close alert-dismissible fade show"
-      >{{ status }}</Alert>
-    </div>
-
-    <div v-if="error && status === false" class="row">
-      <Alert class="alert alert-danger alert-fill alert-close alert-dismissible fade show">
-        <dl>
-          <dt v-for="err in error" :key="err.id">{{ cleanData( err ) }}</dt>
-        </dl>
-      </Alert>
+    <div class="row">
+      <div class="col-sm-12">
+        <AlertDivs :status="status" :error="error"/>
+      </div>
     </div>
 
     <form @submit.prevent="submitForm">
@@ -122,6 +114,8 @@ import WidgetAccordionContent from "@/components/widgets/WidgetAccordionContent"
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import HtmlEditor from "@/components/summernote/HtmlEditor";
 import { HttpServices as service } from "@/services/http-services";
+import AlertDivs from "./components/AlertDivs";
+import { isAclToPage } from "@/utils/authorizations-helpers";
 
 export default {
   name: "PageEdit",
@@ -130,7 +124,8 @@ export default {
     Alert,
     WidgetAccordion,
     WidgetAccordionContent,
-    HtmlEditor
+    HtmlEditor,
+    AlertDivs
   },
   props: [],
   data() {
@@ -141,6 +136,9 @@ export default {
       btnDisabled: false,
       options: [{ text: "Sim", value: true }, { text: "Não", value: false }]
     };
+  },
+  beforeCreate() {
+    isAclToPage("ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR");
   },
   computed: {
     applySlug() {

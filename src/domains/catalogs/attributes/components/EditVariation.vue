@@ -1,28 +1,20 @@
 <template>
   <span>
-    <ModalLink
-      :idModalLink="$store.getters.getItem ? $store.getters.getItem._id : ''"
-      showTypeClassName="tabledit-edit-button btn btn-sm btn-default"
-      classIcon="glyphicon glyphicon-pencil"
+    <span :class="randId = random"></span>
+
+    <ModalButton
+      btnClass="tabledit-edit-button btn btn-sm btn-default"
+      iconClass="glyphicon glyphicon-pencil"
+      :targetClass="`.edit-modal-lg-${randId}`"
       :dataItem="dataItem"
     />
 
-    <Modal
-      :idModal="$store.getters.getItem ? $store.getters.getItem._id : ''"
-      titleModal="Editar variação de atributo"
-      sizeModal="lg"
+    <ModalLarge
+      v-if="showModal"
+      modalTitle="Editar variação de atributo"
+      :targetClass="`edit-modal-lg-${randId}`"
     >
-      <div v-if="status && error === false" class="row">
-        <Alert
-          class="alert alert-success alert-fill alert-close alert-dismissible fade show"
-        >{{ status }}</Alert>
-      </div>
-
-      <div v-if="error" class="row">
-        <Alert
-          class="alert alert-danger alert-fill alert-close alert-dismissible fade show"
-        >{{ error }}</Alert>
-      </div>
+      <AlertDivs :status="status" :error="error"/>
 
       <form id="edit-variation" @submit.prevent="submitForm">
         <div class="row">
@@ -43,43 +35,57 @@
       </form>
 
       <span slot="btn">
-        <button form="edit-variation" type="submit" class="btn btn-rounded btn-primary">
-          <i class="glyphicon glyphicon-ok"></i> Salvar Alterações
-        </button>
+        <ButtonSubmitModal
+          :form="`edit-variation-${randId}`"
+          bntTitle="Salvar Alterações"
+          :ok="ok"
+          :btnDisabled="btnDisabled"
+          bntClass="btn btn-rounded btn-primary"
+        />
       </span>
-    </Modal>
+
+    </ModalLarge>
   </span>
 </template>
 <script>
 import Table from "@/components/layouts/Table";
-import Modal from "@/components/modals/Modal";
-import ModalLink from "@/components/modals/ModalLink";
 import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
+import AlertDivs from "./AlertDivs";
+import ModalButton from "@/components/modals/ModalButton";
+import ModalLarge from "@/components/modals/ModalLarge";
+import ButtonSubmitModal from "@/components/modals/ButtonSubmitModal";
 
 export default {
   name: "EditRole",
   components: {
     Table,
-    Modal,
-    ModalLink,
-    Alert
+    ModalButton,
+    ModalLarge,
+    ButtonSubmitModal,
+    Alert,
+    AlertDivs
   },
   props: ["dataVariations", "dataItem"],
   data() {
     return {
-      status: false,
-      error: false,
       variation: {
         name: ""
-      }
+      },
+      randId: "",
+      status: false,
+      error: false,
+      showModal: false,
+      timestamp: 8000,
+      ok: false,
+      btnDisabled: false
     };
   },
+  computed: {
+    random: () => tool.strRandom()
+  },
   methods: {
-    cleanData(data) {
-      return tool.cleanDataApi(data);
-    },
     submitForm() {
       if (!this.$store.getters.getItem) {
         return;
@@ -88,6 +94,7 @@ export default {
       let data = this.$store.getters.getItem;
 
       this.status = "Enviando...";
+      this.btnDisabled = true;
 
       const uri = `/admin/attributes/${this.$route.params.id}/variations/${
         data._id
@@ -103,15 +110,25 @@ export default {
           this.variations = res.data;
           this.total = res.data.total;
           this.status = "Variação editada com sucesso!";
-          this.$emit("reload");
+          this.ok = true;
+
+          setTimeout(() => {
+            this.ok = false;
+            this.status = false;
+          }, this.timestamp);
         })
         .catch(error => {
-          if ((error.response.data === "attribute_variation_is_exists")) {
+          if (error.response.data === "attribute_variation_is_exists") {
             this.error = `Variação ${data.name} já existe.`;
           }
+          this.status = false;
+          setTimeout(() => {
+            this.error = false;
+          }, this.timestamp);
           console.log(error.response);
-
         });
+
+      this.btnDisabled = false;
 
       setTimeout(() => {
         this.error = false;

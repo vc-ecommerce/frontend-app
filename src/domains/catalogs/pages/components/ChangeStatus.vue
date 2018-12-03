@@ -16,26 +16,23 @@ export default {
   name: "ChangeStatus",
   components: {},
   props: ["dataItem"],
-  data() {
-    return {};
-  },
   methods: {
     send(page) {
       let status = !Boolean(page.active);
-      let result = false;
-
-      service
-        .put(`/admin/pages/${page._id}`, {
-          active: status,
-          action: "edit-status"
-        })
-        .then(res => {
-          if (Boolean(res.data) === true) {
-            resolve(true);
-          }
-          reject(false);
-        })
-        .catch(console.log);
+      return new Promise((resolve, reject) => {
+        service
+          .put(`/admin/pages/${page._id}`, {
+            active: status,
+            action: "edit-status"
+          })
+          .then(res => {
+            if (Boolean(res.data) === true) {
+              resolve(true);
+            }
+            reject(false);
+          })
+          .catch(console.log);
+      });
     },
     update(page) {
       let status, titleQuestion, titleResp, textResp;

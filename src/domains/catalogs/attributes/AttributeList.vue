@@ -87,6 +87,7 @@ import Table from "@/components/layouts/Table";
 import Pagination from "@/components/paginations/Pagination";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
+import { isAclToPage } from "@/utils/authorizations-helpers";
 
 export default {
   name: "AttributeList",
@@ -110,6 +111,9 @@ export default {
       offset: 4,
       roles: []
     };
+  },
+  beforeCreate() {
+    isAclToPage("ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR");
   },
   methods: {
     clickEdit(id) {
