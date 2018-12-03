@@ -172,14 +172,14 @@ export default {
           this.total = res.data.total;
           this.status = "Dados cadastrados com sucesso.";
           this.ok = true;
-          (this.user.name = ""),
-            (this.user.email = ""),
-            (this.user.password = ""),
-            (this.user.active = ""),
-            setTimeout(() => {
-              this.ok = false;
-              this.status = false;
-            }, this.timestamp);
+          this.user.name = "";
+          this.user.email = "";
+          this.user.password = "";
+          this.user.active = "";
+          setTimeout(() => {
+            this.ok = false;
+            this.status = false;
+          }, this.timestamp);
         })
         .catch(error => {
           this.error = JSON.parse(error.response.data.error);
