@@ -1,5 +1,16 @@
 <template>
   <div>
+    <section>
+      <Breadcrumb title="Páginas de Informações">
+        <li>
+          <a href="javascript::void(0)">Catálogos</a>
+        </li>
+        <li>
+          <router-link :to="{ name: 'catalogs.pages.list'}">Páginas de Informações</router-link>
+        </li>
+        <li class="active">Listar</li>
+      </Breadcrumb>
+    </section>
     <section class="box-typical">
       <header class="box-typical-header">
         <div class="tbl-row">
@@ -8,15 +19,15 @@
             <h3 v-else>{{ total }} Páginas</h3>
           </div>
           <div class="tbl-cell tbl-cell-action-bordered">
-
-            <router-link :to="{ name: 'PageCreate' }" class="btn btn-inline"><i class="glyphicon glyphicon-plus"></i> Criar Página</router-link>
-
+            <router-link :to="{ name: 'catalogs.pages.create' }" class="btn btn-inline">
+              <i class="glyphicon glyphicon-plus"></i> Criar Página
+            </router-link>
           </div>
         </div>
       </header>
       <div class="box-typical-body">
         <div class="table-responsive">
-          <Table elementId="table-edit" className="table table-hover">
+          <Table elementId="table-edit" class="table table-hover">
             <template slot="thead">
               <tr>
                 <th>Páginas</th>
@@ -25,17 +36,19 @@
             </template>
             <template slot="tbody">
               <tr v-for="(page, index) in pages.data" :key="index">
-                <td class="tabledit-view-mode">
-                  {{ page.name }}
-                </td>
+                <td class="tabledit-view-mode">{{ page.name }}</td>
                 <td style="white-space: nowrap; width: 1%;">
                   <div class="tabledit-toolbar btn-toolbar" style="text-align: left;">
-
                     <div class="btn-group btn-group-sm" style="float: none  !important;">
-
                       <ChangeStatus :dataItem="page"/>
 
-                      <button v-if="!page.default" @click.prevent="clickEdit(page._id)" type="button" class="tabledit-edit-button btn btn-sm btn-default" style="float: none;">
+                      <button
+                        v-if="!page.default"
+                        @click.prevent="clickEdit(page._id)"
+                        type="button"
+                        class="tabledit-edit-button btn btn-sm btn-default"
+                        style="float: none;"
+                      >
                         <span class="glyphicon glyphicon-pencil"></span>
                       </button>
 
@@ -50,15 +63,14 @@
       </div>
     </section>
     <section>
-      <Pagination v-if="total>15" :pagination="pages"
-        @paginate="getPages()"
-        :offset="4" />
+      <Pagination v-if="total>15" :pagination="pages" @paginate="getPages()" :offset="4"/>
     </section>
   </div>
 </template>
 <script>
+import Breadcrumb from "@/components/layouts/Breadcrumb";
 import RemovePage from "./components/RemovePage";
-import ChangeStatus from './components/ChangeStatus'
+import ChangeStatus from "./components/ChangeStatus";
 import Table from "@/components/layouts/Table";
 import Pagination from "@/components/paginations/Pagination";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
@@ -71,6 +83,7 @@ export default {
     ChangeStatus,
     Table,
     Pagination,
+    Breadcrumb
   },
   props: [],
   data() {
@@ -87,46 +100,41 @@ export default {
       roles: []
     };
   },
-  created() {
-    this.$eventHub.$emit("eventBreadcrumbs", 'Listar páginas');
-  },
-  mounted() {
-    this.getPages();
-    const vm = this;
-    this.$eventHub.$on("totalPage", function(t) {
-      vm.total = t;
-    });
-
-  },
   methods: {
     clickEdit(id) {
-      this.$router.push({ name: 'PageEdit', params: { id }})
+      this.$router.push({ name: "catalogs.pages.edit", params: { id } });
     },
+
     getPages() {
-      const api = `${this.$urlApi}/admin/pages?page=${this.pages.current_page}`;
-      Vue.axios
-        .get(api, {
-          headers: {
-            Authorization: "Bearer " + this.$store.getters.getToken,
-            "User-ID": this.$store.getters.getUserId
-          }
-        })
+      service
+        .get(`/admin/pages?page=${this.pages.current_page}`)
         .then(res => {
           this.pages = res.data;
           this.total = res.data.total;
         })
-        .catch(error => {
+        .catch(console.log);
+    },
 
-        });
+    handler() {
+      this.getPages();
     }
+  },
+  mounted() {
+    this.handler();
+    this.$eventHub.$on("reloadHandler", obj => this.handler());
+    this.$eventHub.$on("totalPages", value => (this.total = value));
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("reloadHandler", obj => this.handler());
+    this.$eventHub.$off("totalPages", value => (this.total = value));
   }
 };
 </script>
 
 <style scoped>
 small {
-    font-size: 11px;
-    color: #999;
-    font-weight: normal;
+  font-size: 11px;
+  color: #999;
+  font-weight: normal;
 }
 </style>

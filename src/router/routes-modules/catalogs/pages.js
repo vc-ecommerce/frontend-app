@@ -1,6 +1,6 @@
-import PageList from '@/domains/catalogs/pages-info/PageList'
-import PageCreate from '@/domains/catalogs/pages-info/PageCreate'
-import PageEdit from '@/domains/catalogs/pages-info/PageEdit'
+import PageList from '@/domains/catalogs/pages/PageList'
+import PageCreate from '@/domains/catalogs/pages/PageCreate'
+import PageEdit from '@/domains/catalogs/pages/PageEdit'
 
 export const pages = [
   {
