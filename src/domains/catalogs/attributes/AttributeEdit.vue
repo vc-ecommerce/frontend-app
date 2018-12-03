@@ -1,7 +1,10 @@
 <template>
   <Panel title="Editando Atributo" classContent="panel-body">
-
-    <AlertDivs :status="status" :error="error"/>
+    <div class="row">
+      <div class="col-sm-12">
+        <AlertDivs :status="status" :error="error"/>
+      </div>
+    </div>
 
     <form @submit.prevent="submitForm">
       <div class="row">
@@ -30,6 +33,7 @@ import Panel from "@/components/layouts/Panel";
 import Alert from "@/components/layouts/Alert";
 import AlertDivs from "./components/AlertDivs";
 import AttributeVariation from "./components/AttributeVariation";
+import { HttpServices as service } from "@/services/http-services";
 
 export default {
   name: "AttributeEdit",
@@ -50,7 +54,6 @@ export default {
   },
 
   methods: {
-
     getAttribute() {
       service
         .get(`/admin/attributes/${this.$route.params.id}`)

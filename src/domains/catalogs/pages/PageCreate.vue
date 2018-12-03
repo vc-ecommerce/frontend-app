@@ -1,7 +1,10 @@
 <template>
   <Panel title="Editando Página" classContent="panel-body">
-    <AlertDivs :status="status" :error="error"/>
-
+    <div class="row">
+      <div class="col-sm-12">
+        <AlertDivs :status="status" :error="error"/>
+      </div>
+    </div>
     <form @submit.prevent="submitForm">
       <div class="row">
         <div class="col-sm-2">Página ativa?</div>

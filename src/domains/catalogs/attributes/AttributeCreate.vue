@@ -1,6 +1,10 @@
 <template>
   <Panel title="Criando Atributo" classContent="panel-body">
-    <AlertDivs :status="status" :error="error"/>
+     <div class="row">
+      <div class="col-sm-12">
+        <AlertDivs :status="status" :error="error"/>
+      </div>
+    </div>
 
     <form id="add-user" @submit.prevent="submitForm">
       <div class="row">

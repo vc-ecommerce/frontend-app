@@ -83,9 +83,8 @@ export default {
   },
   methods: {
     getVariations() {
-      const uri = `/admin/attributes/${this.attributeId}/variations`;
       service
-        .get(uri)
+        .get(`/admin/attributes/${this.attributeId}/variations`)
         .then(res => {
           this.variations = res;
           this.total = res.data.total;
@@ -131,7 +130,7 @@ export default {
             });
           }
 
-          console.log(error.response)
+          console.log(error.response);
         });
 
       this.btnDisabled = false;
