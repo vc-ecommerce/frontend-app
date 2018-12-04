@@ -1,12 +1,12 @@
 <template>
-  <Panel title="Criando Atributo" classContent="panel-body">
-     <div class="row">
+  <Panel title="Editando Atributo" classContent="panel-body">
+    <div class="row">
       <div class="col-sm-12">
         <AlertDivs :status="status" :error="error"/>
       </div>
     </div>
 
-    <form id="add-user" @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm">
       <div class="row">
         <div class="col-sm-2">Nome do atributo</div>
         <div class="col-sm-10">
@@ -17,34 +17,30 @@
 
       <div class="row col-btn">
         <div class="col-sm-2"></div>
-        <div class="col-sm-10">
+        <div class="col-sm-10 text-right">
           <button :disabled="btnDisabled" class="btn btn-inline" type="submit">
-            <i class="glyphicon glyphicon-ok"></i> Criar atributo
+            <i class="glyphicon glyphicon-ok"></i> Alterar nome
           </button>
-          <router-link
-            :to="{ name: 'catalogs.attributes.list' }"
-            class="btn btn-inline btn-sm btn-default"
-          >
-            <i class="glyphicon glyphicon-remove"></i> Cancelar
-          </router-link>
         </div>
       </div>
     </form>
+
+    <AttributeVariation class="variation"/>
   </Panel>
 </template>
 <script>
 import Panel from "@/components/layouts/Panel";
 import Alert from "@/components/layouts/Alert";
-import { toolHelpers as tool } from "@/utils/tool-helpers";
-import { HttpServices as service } from "@/services/http-services";
 import AlertDivs from "./components/AlertDivs";
-import { isAclToPage } from "@/utils/authorizations-helpers";
+import AttributeVariation from "./components/AttributeVariation";
+import { HttpServices as service } from "@/services/http-services";
 
 export default {
-  name: "AttributeCreate",
+  name: "AttributeEdit",
   components: {
     Panel,
     Alert,
+    AttributeVariation,
     AlertDivs
   },
   props: [],
@@ -56,45 +52,52 @@ export default {
       btnDisabled: false
     };
   },
-  beforeCreate() {
-    isAclToPage("ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR");
-  },
+
   methods: {
+    getAttribute() {
+      service
+        .get(`/admin/attributes/${this.$route.params.id}`)
+        .then(response => {
+          this.name = response.data.name;
+        })
+        .catch(error => {
+          this.error = JSON.parse(error.response.data.error);
+        });
+    },
+
     submitForm() {
       this.status = "Enviando...";
-
       this.btnDisabled = true;
-
       service
-        .post("/admin/attributes", {
+        .put(`/admin/attributes/${this.$route.params.id}`, {
           name: this.name,
           default: false
         })
-        .then(res => {
+        .then(response => {
           this.error = false;
-          let data = res.data;
-          if (data._id) {
-            sessionStorage.setItem(
-              "attributeCreated",
-              "Atributo criado com sucesso!"
-            );
-            this.$router.push({
-              name: "catalogs.attributes.edit",
-              params: { id: data._id }
-            });
-          }
-
-          this.name = "";
+          this.status = "Atributo alterado com sucesso.";
         })
         .catch(error => {
           this.status = false;
           this.error = JSON.parse(error.response.data.error);
-          setTimeout(() => {
-            this.error = false;
-          }, 5000);
         });
-
       this.btnDisabled = false;
+
+      setTimeout(() => {
+        this.status = false;
+        this.error = false;
+      }, 8000);
+    }
+  },
+  mounted() {
+    this.getAttribute();
+    if (sessionStorage.getItem("attributeCreated")) {
+      this.status = sessionStorage.getItem("attributeCreated");
+      sessionStorage.removeItem("attributeCreated");
+
+      setTimeout(() => {
+        this.status = false;
+      }, 8000);
     }
   }
 };
@@ -103,11 +106,15 @@ export default {
 .row {
   padding: 20px;
 }
-.col-btn {
-  margin-top: -20px;
-}
 span {
   font-size: 12px;
   color: #999;
+}
+.col-btn {
+  margin-top: -20px;
+}
+
+.variation {
+  border-top: 1px solid #ece9e9;
 }
 </style>

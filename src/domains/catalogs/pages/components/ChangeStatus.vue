@@ -1,5 +1,10 @@
 <template>
-  <button type="button" @click.prevent="update(dataItem)" class="tabledit-delete-button btn btn-sm" style="float: none;">
+  <button
+    type="button"
+    @click.prevent="update(dataItem)"
+    class="tabledit-delete-button btn btn-sm"
+    style="float: none;"
+  >
     <span v-if="dataItem.active" class="glyphicon glyphicon-eye-open"></span>
     <span v-else class="glyphicon glyphicon-eye-close"></span>
   </button>
@@ -11,41 +16,24 @@ export default {
   name: "ChangeStatus",
   components: {},
   props: ["dataItem"],
-  data() {
-    return {};
-  },
   methods: {
     send(page) {
       let status = !Boolean(page.active);
-      let result = false;
-
-      const api = `${this.$urlApi}/admin/pages/${page._id}`;
-
-      return Vue.axios
-        .put(
-          api,
-          {
+      return new Promise((resolve, reject) => {
+        service
+          .put(`/admin/pages/${page._id}`, {
             active: status,
-            action: 'edit-status'
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + this.$store.getters.getToken,
-              "User-ID": this.$store.getters.getUserId
+            action: "edit-status"
+          })
+          .then(res => {
+            if (Boolean(res.data) === true) {
+              resolve(true);
             }
-          }
-        )
-        .then(res => {
-          if (Boolean(res.data) === true) {
-            return true;
-          }
-          return false;
-        })
-        .catch(error => {
-          return false;
-        });
+            reject(false);
+          })
+          .catch(console.log);
+      });
     },
-
     update(page) {
       let status, titleQuestion, titleResp, textResp;
       const vm = this;
@@ -72,16 +60,10 @@ export default {
         },
         function(isConfirm) {
           if (isConfirm) {
-            let result = vm.send(page);
-            result.then(function(value) {
-              page.active = !page.active;
-              // Faça algo com o valor aqui dentro.
-              // Se precisar dele em outro lugar, chame uma função
-              // e passe adiante. Não tente atribuir seu valor a uma
-              // variável de fora e acessar lá embaixo, não vai funcionar.
-              // (exceto em certos casos com frameworks reativos)
+            vm.send(page)
+              .then(function(value) {
+                page.active = !page.active;
 
-              if (value == true) {
                 if (status === true) {
                   titleResp = "Ativado";
                   textResp = "ativado";
@@ -96,15 +78,17 @@ export default {
                   type: "success",
                   confirmButtonClass: "btn-success"
                 });
-              } else {
+              })
+              .catch(error => {
                 swal({
                   title: "Erro",
                   text: "Houve um erro na socilitação do pedido.",
                   type: "error",
                   confirmButtonClass: "btn-danger"
                 });
-              }
-            });
+
+                console.log(error.response);
+              });
           } else {
             swal({
               title: "Cancelado",

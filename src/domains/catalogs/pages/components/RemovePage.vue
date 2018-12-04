@@ -1,5 +1,9 @@
 <template>
-  <button type="button" @click.prevent="remove(dataItem)" class="tabledit-delete-button btn btn-sm btn-danger">
+  <button
+    type="button"
+    @click.prevent="remove(dataItem)"
+    class="tabledit-delete-button btn btn-sm btn-danger"
+  >
     <span class="glyphicon glyphicon-trash"></span>
   </button>
 </template>
@@ -18,26 +22,18 @@ export default {
   },
   methods: {
     send(page) {
-      const api = `${this.$urlApi}/admin/pages/${page._id}`;
-
-      return Vue.axios
-        .delete(api, {
-          headers: {
-            Authorization: "Bearer " + this.$store.getters.getToken,
-            "User-ID": this.$store.getters.getUserId
-          }
-        })
-        .then(res => {
-          if (Boolean(res.data) === true) {
-            return true;
-          }
-          return false;
-        })
-        .catch(error => {
-          return false;
-        });
+      return new Promise((resolve, reject) => {
+        service
+          .delete(`/admin/pages/${page._id}`)
+          .then(res => {
+            if (Boolean(res.data) === true) {
+              resolve(true);
+            }
+            reject(false);
+          })
+          .catch(console.log);
+      });
     },
-
     remove(page) {
       const vm = this;
       swal(
@@ -55,14 +51,13 @@ export default {
 
         function(isConfirm) {
           if (isConfirm) {
-            let result = vm.send(page);
-            result.then(function(value) {
-              if (value == true) {
+            vm.send(page)
+              .then(res => {
                 let index = vm.dataPages.data.indexOf(page);
                 vm.dataPages.data.splice(index, 1);
 
                 vm.dataPages.total = vm.dataPages.total - 1;
-                vm.$eventHub.$emit("totalPage", vm.dataPages.total);
+                vm.$eventHub.$emit("totalPages", vm.dataPages.total);
 
                 swal({
                   title: "Removido",
@@ -70,15 +65,17 @@ export default {
                   type: "success",
                   confirmButtonClass: "btn-success"
                 });
-              } else {
+              })
+              .catch(error => {
                 swal({
                   title: "Erro",
                   text: "Houve um erro na socilitação do pedido.",
                   type: "error",
                   confirmButtonClass: "btn-danger"
                 });
-              }
-            });
+
+                console.log(error.response);
+              });
           } else {
             swal({
               title: "Cancelado",

@@ -1,53 +1,58 @@
 <template>
   <form @submit.prevent="submitFormVariation">
-
     <div class="row">
       <div class="col-sm-12">
         <h3>Variações do atributo</h3>
       </div>
 
       <div class="col-sm-12">
-        <Table elementId="table-edit" className="table table-hover">
-
-            <template slot="tbody">
-              <tr v-for="(variation, index) in variations.data" :key="index">
-                <td class="tabledit-view-mode">
-                  {{ variation.name }}
-                </td>
-                <td style="white-space: nowrap; width: 1%;">
-                  <div class="tabledit-toolbar btn-toolbar" style="text-align: left;">
-                    <div class="btn-group btn-group-sm" style="float: none;">
-
-                      <EditVariation v-if="!variation.default" :dataVariations="variations" :dataItem="variation"  style="float: none;" />
-                      <RemoveVariation v-if="!variation.default" :dataVariations="variations" :dataItem="variation"  style="float: none; margin-left:-1px"/>
-
-                    </div>
+        <Table elementId="table-edit" class="table table-hover">
+          <template slot="tbody">
+            <tr v-for="(variation, index) in variations.data" :key="index">
+              <td class="tabledit-view-mode">{{ variation.name }}</td>
+              <td style="white-space: nowrap; width: 1%;">
+                <div class="tabledit-toolbar btn-toolbar" style="text-align: left;">
+                  <div class="btn-group btn-group-sm" style="float: none;">
+                    <EditVariation
+                      v-if="!variation.default"
+                      :dataVariations="variations"
+                      :dataItem="variation"
+                      style="float: none;"
+                    />
+                    <RemoveVariation
+                      v-if="!variation.default"
+                      :dataVariations="variations"
+                      :dataItem="variation"
+                      style="float: none; margin-left:-1px"
+                    />
                   </div>
-                </td>
-              </tr>
-              <tr v-if="total<=0">
-                <td>
-                  Não há opção da variação.
-                </td>
-              </tr>
-            </template>
-
-          </Table>
+                </div>
+              </td>
+            </tr>
+            <tr v-if="total<=0">
+              <td>Não há opção da variação.</td>
+            </tr>
+          </template>
+        </Table>
       </div>
     </div>
     <div class="row">
       <div class="col-sm-4">
-        <input type="text" required class="form-control" v-model="name" placeholder="Nome da variação do atributo">
+        <input
+          type="text"
+          required
+          class="form-control"
+          v-model="name"
+          placeholder="Nome da variação do atributo"
+        >
       </div>
       <div class="col-sm-4">
-         <button :disabled="btnDisabled" class="btn btn-inline" type="submit">
+        <button :disabled="btnDisabled" class="btn btn-inline" type="submit">
           <i class="glyphicon glyphicon-ok"></i> Criar variação
         </button>
       </div>
     </div>
-
   </form>
-
 </template>
 
 <script>
@@ -78,46 +83,27 @@ export default {
   },
   methods: {
     getVariations() {
-      const api = `${this.$urlApi}/admin/attributes/${
-        this.attributeId
-      }/variations`;
-      Vue.axios
-        .get(api, {
-          headers: {
-            Authorization: "Bearer " + this.$store.getters.getToken,
-            "User-ID": this.$store.getters.getUserId
-          }
-        })
+      service
+        .get(`/admin/attributes/${this.attributeId}/variations`)
         .then(res => {
           this.variations = res;
           this.total = res.data.total;
         })
-        .catch(error => {
-          //
-        });
+        .catch(console.log);
     },
 
     submitFormVariation() {
-      const api = `${this.$urlApi}/admin/attributes/${
+      const uri = `${this.$urluri}/admin/attributes/${
         this.attributeId
       }/variations`;
 
       this.btnDisabled = true;
 
-      Vue.axios
-        .post(
-          api,
-          {
-            name: this.name,
-            default: false
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + this.$store.getters.getToken,
-              "User-ID": this.$store.getters.getUserId
-            }
-          }
-        )
+      service
+        .post(uri, {
+          name: this.name,
+          default: false
+        })
         .then(res => {
           this.error = false;
           let data = res.data;
@@ -143,8 +129,11 @@ export default {
               text: `Variação ${this.name} já existe.`
             });
           }
-          this.btnDisabled = false;
+
+          console.log(error.response);
         });
+
+      this.btnDisabled = false;
     }
   }
 };
