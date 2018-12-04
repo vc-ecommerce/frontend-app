@@ -1,6 +1,7 @@
 <template>
   <button type="submit" :disabled="btnDisabled" :class="bntClass">
     <span v-if="!btnDisabled">
+      <span v-if="iconClass"><i :class="iconClass"></i> </span>
       <span v-if="ok">
         Concluído
       </span>
@@ -31,6 +32,9 @@ export default {
     },
     ok: {
       required: true,
+      default: false
+    },
+    iconClass: {
       default: false
     }
   }

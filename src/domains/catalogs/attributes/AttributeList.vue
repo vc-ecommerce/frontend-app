@@ -1,15 +1,7 @@
 <template>
   <div>
     <section>
-      <Breadcrumb title="Atributos de Produtos">
-        <li>
-          <a href="javascript::void(0)">Catálogos</a>
-        </li>
-        <li>
-          <router-link :to="{ name: 'catalogs.attributes.list'}">Atributos de Produtos</router-link>
-        </li>
-        <li class="active">Listar</li>
-      </Breadcrumb>
+      <LinkBreadcrumb title="Listar" />
     </section>
     <section class="box-typical">
       <header class="box-typical-header">
@@ -88,6 +80,7 @@ import Pagination from "@/components/paginations/Pagination";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
 import { isAclToPage } from "@/utils/authorizations-helpers";
+import LinkBreadcrumb from "./components/LinkBreadcrumb";
 
 export default {
   name: "AttributeList",
@@ -95,7 +88,7 @@ export default {
     RemoveAttribute,
     Table,
     Pagination,
-    Breadcrumb
+    LinkBreadcrumb,
   },
   props: [],
   data() {

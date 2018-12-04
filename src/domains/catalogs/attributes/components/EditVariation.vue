@@ -1,5 +1,6 @@
 <template>
   <span>
+
     <span :class="randId = random"></span>
 
     <ModalButton
@@ -14,9 +15,10 @@
       modalTitle="Editar variação de atributo"
       :targetClass="`edit-modal-lg-${randId}`"
     >
+
       <AlertDivs :status="status" :error="error"/>
 
-      <form id="edit-variation" @submit.prevent="submitForm">
+      <form :id="`edit-${randId}`" @submit.prevent="submitForm">
         <div class="row">
           <div class="col-lg-12">
             <fieldset class="form-group">
@@ -36,14 +38,13 @@
 
       <span slot="btn">
         <ButtonSubmitModal
-          :form="`edit-variation-${randId}`"
+          :form="`edit-${randId}`"
           bntTitle="Salvar Alterações"
           :ok="ok"
           :btnDisabled="btnDisabled"
           bntClass="btn btn-rounded btn-primary"
         />
       </span>
-
     </ModalLarge>
   </span>
 </template>
@@ -67,7 +68,7 @@ export default {
     Alert,
     AlertDivs
   },
-  props: ["dataVariations", "dataItem"],
+  props: ["dataItem"],
   data() {
     return {
       variation: {
@@ -135,6 +136,22 @@ export default {
         this.status = false;
       }, 5000);
     }
+  },
+  mounted() {
+    this.$eventHub.$on("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
   }
 };
 </script>

@@ -75,11 +75,14 @@ export default {
       total: 0,
       name: "",
       variations: [],
+      randId: "",
+      status: false,
+      error: false,
+      showModal: false,
+      timestamp: 8000,
+      ok: false,
       btnDisabled: false
     };
-  },
-  mounted() {
-    this.getVariations();
   },
   methods: {
     getVariations() {
@@ -93,14 +96,10 @@ export default {
     },
 
     submitFormVariation() {
-      const uri = `${this.$urluri}/admin/attributes/${
-        this.attributeId
-      }/variations`;
-
       this.btnDisabled = true;
 
       service
-        .post(uri, {
+        .post(`/admin/attributes/${this.attributeId}/variations`, {
           name: this.name,
           default: false
         })
@@ -135,6 +134,13 @@ export default {
 
       this.btnDisabled = false;
     }
+  },
+  mounted() {
+    this.getVariations();
+    this.$eventHub.$on("reloadHandler", obj => this.getVariations());
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("reloadHandler", obj => this.handler());
   }
 };
 </script>

@@ -1,15 +1,7 @@
 <template>
   <div>
     <section>
-      <Breadcrumb title="Páginas de Informações">
-        <li>
-          <a href="javascript::void(0)">Catálogos</a>
-        </li>
-        <li>
-          <router-link :to="{ name: 'catalogs.pages.list'}">Páginas de Informações</router-link>
-        </li>
-        <li class="active">Listar</li>
-      </Breadcrumb>
+      <LinkBreadcrumb title="Listar" />
     </section>
     <section class="box-typical">
       <header class="box-typical-header">
@@ -68,7 +60,6 @@
   </div>
 </template>
 <script>
-import Breadcrumb from "@/components/layouts/Breadcrumb";
 import RemovePage from "./components/RemovePage";
 import ChangeStatus from "./components/ChangeStatus";
 import Table from "@/components/layouts/Table";
@@ -76,6 +67,7 @@ import Pagination from "@/components/paginations/Pagination";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
 import { isAclToPage } from "@/utils/authorizations-helpers";
+import LinkBreadcrumb from "./components/LinkBreadcrumb";
 
 export default {
   name: "PageList",
@@ -84,7 +76,7 @@ export default {
     ChangeStatus,
     Table,
     Pagination,
-    Breadcrumb
+    LinkBreadcrumb
   },
   props: [],
   data() {
