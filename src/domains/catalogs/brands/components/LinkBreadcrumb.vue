@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      breadcrumbTitle: 'Páginas'
+      breadcrumbTitle: 'Marcas'
     }
   }
 };

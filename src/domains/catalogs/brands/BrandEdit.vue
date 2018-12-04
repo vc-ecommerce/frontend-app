@@ -13,7 +13,7 @@
 
       <form @submit.prevent="submitForm">
         <div class="row">
-          <div class="col-sm-2">Página ativa?</div>
+          <div class="col-sm-2">Marca ativa?</div>
           <div class="col-sm-4">
             <select class="form-control" required v-model="data.active">
               <option disabled value>Escolha um item</option>
@@ -36,7 +36,7 @@
               v-model="data.name"
               placeholder="Digite aqui o título da página"
             >
-            <span v-if="applySlug" class="control">{{ $urlSite +"/pg/"+ applySlug }}</span>
+            <span v-if="applySlug" class="control">{{ $urlSite +"/m/"+ applySlug }}</span>
           </div>
         </div>
 
@@ -122,7 +122,7 @@ import HtmlEditor from "@/components/summernote/HtmlEditor";
 import { HttpServices as service } from "@/services/http-services";
 import AlertDivs from "./components/AlertDivs";
 import { urlGoogleSeoExample } from "@/commons/configGoogle";
-import { isAclToBrand } from "@/utils/authorizations-helpers";
+import { isAclToPage } from "@/utils/authorizations-helpers";
 import LinkBreadcrumb from "./components/LinkBreadcrumb";
 
 export default {
@@ -139,7 +139,7 @@ export default {
   props: [],
   data() {
     return {
-      titleBrand: 'Editando Página',
+      titleBrand: 'Editando Marca',
       data: {},
       status: false,
       error: false,
@@ -148,7 +148,7 @@ export default {
     };
   },
   beforeCreate() {
-    isAclToBrand("ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR");
+    isAclToPage("ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR");
   },
   computed: {
     applySlug() {

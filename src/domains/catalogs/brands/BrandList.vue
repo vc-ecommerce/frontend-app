@@ -7,12 +7,12 @@
       <header class="box-typical-header">
         <div class="tbl-row">
           <div class="tbl-cell tbl-cell-title">
-            <h3 v-if="total == 1">{{ total }} Página</h3>
-            <h3 v-else>{{ total }} Páginas</h3>
+            <h3 v-if="total == 1">{{ total }} Marca</h3>
+            <h3 v-else>{{ total }} Marcas</h3>
           </div>
           <div class="tbl-cell tbl-cell-action-bordered">
             <router-link :to="{ name: 'catalogs.brands.create' }" class="btn btn-inline">
-              <i class="glyphicon glyphicon-plus"></i> Criar Página
+              <i class="glyphicon glyphicon-plus"></i> Criar Marca
             </router-link>
           </div>
         </div>
@@ -22,7 +22,7 @@
           <Table elementId="table-edit" class="table table-hover">
             <template slot="thead">
               <tr>
-                <th>Páginas</th>
+                <th>Marcas</th>
                 <th class="tabledit-toolbar-column">Editar</th>
               </tr>
             </template>
@@ -66,7 +66,7 @@ import Table from "@/components/layouts/Table";
 import Pagination from "@/components/paginations/Pagination";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
-import { isAclToBrand } from "@/utils/authorizations-helpers";
+import { isAclToPage } from "@/utils/authorizations-helpers";
 import LinkBreadcrumb from "./components/LinkBreadcrumb";
 
 export default {
@@ -94,7 +94,7 @@ export default {
     };
   },
   beforeCreate() {
-    isAclToBrand("ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR");
+    isAclToPage("ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR");
   },
   methods: {
     clickEdit(id) {

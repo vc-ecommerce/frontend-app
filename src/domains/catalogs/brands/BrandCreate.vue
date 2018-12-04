@@ -12,7 +12,7 @@
       </div>
       <form @submit.prevent="submitForm">
         <div class="row">
-          <div class="col-sm-2">Página ativa?</div>
+          <div class="col-sm-2">Marca ativa?</div>
           <div class="col-sm-4">
             <select class="form-control" required v-model="data.active">
               <option disabled value>Escolha um item</option>
@@ -98,7 +98,7 @@
               <i class="glyphicon glyphicon-remove"></i> Cancelar
             </router-link>
             <button :disabled="btnDisabled" class="btn btn-inline" type="submit">
-              <i class="glyphicon glyphicon-ok"></i> Cadastrar Página
+              <i class="glyphicon glyphicon-ok"></i> Cadastrar Marca
             </button>
           </div>
         </div>
@@ -115,7 +115,7 @@ import { toolHelpers as tool } from "@/utils/tool-helpers";
 import HtmlEditor from "@/components/summernote/HtmlEditor";
 import { HttpServices as service } from "@/services/http-services";
 import AlertDivs from "./components/AlertDivs";
-import { isAclToBrand } from "@/utils/authorizations-helpers";
+import { isAclToPage } from "@/utils/authorizations-helpers";
 import { urlGoogleSeoExample } from "@/commons/configGoogle";
 import LinkBreadcrumb from "./components/LinkBreadcrumb";
 
@@ -133,7 +133,7 @@ export default {
   props: [],
   data() {
     return {
-      title: 'Criando Página',
+      title: 'Criando Marca',
       data: {
         name: "",
         description: "",
@@ -149,7 +149,7 @@ export default {
     };
   },
   beforeCreate() {
-    isAclToBrand("ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR");
+    isAclToPage("ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR");
   },
   computed: {
     applySlug() {
@@ -183,7 +183,7 @@ export default {
           if (res.status === 201) {
             swal({
               title: "Dados cadastrados!",
-              text: "Página foi cadastrada com sucesso.",
+              text: "Marca foi cadastrada com sucesso.",
               type: "success",
               confirmButtonClass: "btn-success",
               confirmButtonText: "OK"

@@ -35,9 +35,9 @@
             </li>
             <!-- <li><a href="#"><span class="lbl">Opções</span></a></li> -->
             <li>
-              <a href="#">
+              <router-link :to="{ name: 'catalogs.brands.list'}">
                 <span class="lbl">Marcas</span>
-              </a>
+              </router-link>
             </li>
             <!-- <li><a href="#"><span class="lbl">Downloads</span></a></li> -->
             <li>

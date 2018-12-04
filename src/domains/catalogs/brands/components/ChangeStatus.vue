@@ -74,7 +74,7 @@ export default {
 
                 swal({
                   title: titleResp,
-                  text: `Página ${textResp} com sucesso.`,
+                  text: `Marca ${textResp} com sucesso.`,
                   type: "success",
                   confirmButtonClass: "btn-success"
                 });
