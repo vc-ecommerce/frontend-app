@@ -137,20 +137,10 @@ export default {
   },
   mounted() {
     this.getVariations();
-    this.$eventHub.$on("showModal", obj => {
-      this.status = false;
-      this.error = false;
-      this.showModal = obj;
-      this.ok = false;
-    });
+    this.$eventHub.$on("reloadHandler", obj => this.getVariations());
   },
   beforeDestroy() {
-    this.$eventHub.$off("showModal", obj => {
-      this.status = false;
-      this.error = false;
-      this.showModal = obj;
-      this.ok = false;
-    });
+    this.$eventHub.$off("reloadHandler", obj => this.handler());
   }
 };
 </script>
