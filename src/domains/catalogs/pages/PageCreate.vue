@@ -1,104 +1,110 @@
 <template>
-  <Panel title="Editando Página" classContent="panel-body">
-    <div class="row">
-      <div class="col-sm-12">
-        <AlertDivs :status="status" :error="error"/>
-      </div>
-    </div>
-    <form @submit.prevent="submitForm">
+  <div>
+    <section>
+      <LinkBreadcrumb :title="title"/>
+    </section>
+
+    <Panel :title="title" classContent="panel-body">
       <div class="row">
-        <div class="col-sm-2">Página ativa?</div>
-        <div class="col-sm-4">
-          <select class="form-control" required v-model="data.active">
-            <option disabled value>Escolha um item</option>
-            <option
-              v-for="option in options"
-              :key="option.id"
-              :value="option.value"
-            >{{ option.text }}</option>
-          </select>
+        <div class="col-sm-12">
+          <AlertDivs :status="status" :error="error"/>
         </div>
       </div>
-
-      <div class="row">
-        <div class="col-sm-2">Título da página</div>
-        <div class="col-sm-10">
-          <input
-            type="text"
-            required
-            class="form-control"
-            v-model="data.name"
-            placeholder="Digite aqui o título da página"
-          >
-          <span v-if="applySlug" class="control">{{ $urlSite +"/pg/"+ applySlug }}</span>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-sm-2">Conteúdo da página</div>
-        <div class="col-sm-10">
-          <div class="form-group">
-            <html-editor height="200" :dataDesc="data.description" :model.sync="data.description"></html-editor>
+      <form @submit.prevent="submitForm">
+        <div class="row">
+          <div class="col-sm-2">Página ativa?</div>
+          <div class="col-sm-4">
+            <select class="form-control" required v-model="data.active">
+              <option disabled value>Escolha um item</option>
+              <option
+                v-for="option in options"
+                :key="option.id"
+                :value="option.value"
+              >{{ option.text }}</option>
+            </select>
           </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-10">
-          <WidgetAccordion>
-            <WidgetAccordionContent title="Otimização para buscadores (SEO)">
-              <div class="row">
-                <div class="col-sm-2">Tag Title</div>
-                <div class="col-sm-9">
-                  <div class="form-group">
-                    <input class="form-control" v-model="data.meta_title">
-                  </div>
-                </div>
-                <div class="col-sm-1">
-                  <div class="form-group">
-                    <a
-                      :href="urlSeo"
-                      target="_blank"
-                      class="label label-default"
-                      data-toggle="tooltip"
-                      title
-                      data-original-title="Guia do Google para Iniciantes"
-                    >
-                      <i class="glyphicon glyphicon-question-sign"></i> Guia
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-sm-2">Meta Tag Description</div>
-                <div class="col-sm-10">
-                  <div class="form-group">
-                    <textarea class="form-control" v-model="data.meta_description"></textarea>
-                  </div>
-                </div>
-              </div>
-            </WidgetAccordionContent>
-          </WidgetAccordion>
+        <div class="row">
+          <div class="col-sm-2">Título da página</div>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              required
+              class="form-control"
+              v-model="data.name"
+              placeholder="Digite aqui o título da página"
+            >
+            <span v-if="applySlug" class="control">{{ $urlSite +"/pg/"+ applySlug }}</span>
+          </div>
         </div>
-      </div>
 
-      <div class="row col-btn">
-        <div class="col-sm-12 text-right">
-          <router-link
-            :to="{ name: 'catalogs.pages.list' }"
-            class="btn btn-inline btn-sm btn-default"
-          >
-            <i class="glyphicon glyphicon-remove"></i> Cancelar
-          </router-link>
-          <button :disabled="btnDisabled" class="btn btn-inline" type="submit">
-            <i class="glyphicon glyphicon-ok"></i> Cadastrar Página
-          </button>
+        <div class="row">
+          <div class="col-sm-2">Conteúdo da página</div>
+          <div class="col-sm-10">
+            <div class="form-group">
+              <html-editor height="200" :dataDesc="data.description" :model.sync="data.description"></html-editor>
+            </div>
+          </div>
         </div>
-      </div>
-    </form>
-  </Panel>
+
+        <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10">
+            <WidgetAccordion>
+              <WidgetAccordionContent title="Otimização para buscadores (SEO)">
+                <div class="row">
+                  <div class="col-sm-2">Tag Title</div>
+                  <div class="col-sm-9">
+                    <div class="form-group">
+                      <input class="form-control" v-model="data.meta_title">
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div class="form-group">
+                      <a
+                        :href="urlSeo"
+                        target="_blank"
+                        class="label label-default"
+                        data-toggle="tooltip"
+                        title
+                        data-original-title="Guia do Google para Iniciantes"
+                      >
+                        <i class="glyphicon glyphicon-question-sign"></i> Guia
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-2">Meta Tag Description</div>
+                  <div class="col-sm-10">
+                    <div class="form-group">
+                      <textarea class="form-control" v-model="data.meta_description"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </WidgetAccordionContent>
+            </WidgetAccordion>
+          </div>
+        </div>
+
+        <div class="row col-btn">
+          <div class="col-sm-12 text-right">
+            <router-link
+              :to="{ name: 'catalogs.pages.list' }"
+              class="btn btn-inline btn-sm btn-default"
+            >
+              <i class="glyphicon glyphicon-remove"></i> Cancelar
+            </router-link>
+            <button :disabled="btnDisabled" class="btn btn-inline" type="submit">
+              <i class="glyphicon glyphicon-ok"></i> Cadastrar Página
+            </button>
+          </div>
+        </div>
+      </form>
+    </Panel>
+  </div>
 </template>
 <script>
 import Panel from "@/components/layouts/Panel";
@@ -111,6 +117,7 @@ import { HttpServices as service } from "@/services/http-services";
 import AlertDivs from "./components/AlertDivs";
 import { isAclToPage } from "@/utils/authorizations-helpers";
 import { urlGoogleSeoExample } from "@/commons/configGoogle";
+import LinkBreadcrumb from "./components/LinkBreadcrumb";
 
 export default {
   name: "PageEdit",
@@ -120,11 +127,13 @@ export default {
     WidgetAccordion,
     WidgetAccordionContent,
     HtmlEditor,
-    AlertDivs
+    AlertDivs,
+    LinkBreadcrumb
   },
   props: [],
   data() {
     return {
+      title: 'Criando Página',
       data: {
         name: "",
         description: "",
