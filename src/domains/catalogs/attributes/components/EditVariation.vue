@@ -43,7 +43,6 @@
           bntClass="btn btn-rounded btn-primary"
         />
       </span>
-
     </ModalLarge>
   </span>
 </template>

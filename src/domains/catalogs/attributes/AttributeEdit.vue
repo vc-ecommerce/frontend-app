@@ -1,32 +1,43 @@
 <template>
-  <Panel title="Editando Atributo" classContent="panel-body">
-    <div class="row">
-      <div class="col-sm-12">
-        <AlertDivs :status="status" :error="error"/>
-      </div>
-    </div>
-
-    <form @submit.prevent="submitForm">
+  <div>
+    <section>
+      <LinkBreadcrumb :title="titlePage"/>
+    </section>
+    <Panel :title="titlePage" classContent="panel-body">
       <div class="row">
-        <div class="col-sm-2">Nome do atributo</div>
-        <div class="col-sm-10">
-          <input type="text" required class="form-control" v-model="name" placeholder="Digite aqui">
-          <span>Nome do atributo para controle interno</span>
+        <div class="col-sm-12">
+          <AlertDivs :status="status" :error="error"/>
         </div>
       </div>
 
-      <div class="row col-btn">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-10 text-right">
-          <button :disabled="btnDisabled" class="btn btn-inline" type="submit">
-            <i class="glyphicon glyphicon-ok"></i> Alterar nome
-          </button>
+      <form @submit.prevent="submitForm">
+        <div class="row">
+          <div class="col-sm-2">Nome do atributo</div>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              required
+              class="form-control"
+              v-model="name"
+              placeholder="Digite aqui"
+            >
+            <span>Nome do atributo para controle interno</span>
+          </div>
         </div>
-      </div>
-    </form>
 
-    <AttributeVariation class="variation"/>
-  </Panel>
+        <div class="row col-btn">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 text-right">
+            <button :disabled="btnDisabled" class="btn btn-inline" type="submit">
+              <i class="glyphicon glyphicon-ok"></i> Alterar nome
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <AttributeVariation class="variation"/>
+    </Panel>
+  </div>
 </template>
 <script>
 import Panel from "@/components/layouts/Panel";
@@ -34,6 +45,7 @@ import Alert from "@/components/layouts/Alert";
 import AlertDivs from "./components/AlertDivs";
 import AttributeVariation from "./components/AttributeVariation";
 import { HttpServices as service } from "@/services/http-services";
+import LinkBreadcrumb from "./components/LinkBreadcrumb";
 
 export default {
   name: "AttributeEdit",
@@ -41,7 +53,8 @@ export default {
     Panel,
     Alert,
     AttributeVariation,
-    AlertDivs
+    AlertDivs,
+    LinkBreadcrumb
   },
   props: [],
   data() {
@@ -49,7 +62,8 @@ export default {
       name: "",
       status: false,
       error: false,
-      btnDisabled: false
+      btnDisabled: false,
+      titlePage: 'Editando Atributo',
     };
   },
 

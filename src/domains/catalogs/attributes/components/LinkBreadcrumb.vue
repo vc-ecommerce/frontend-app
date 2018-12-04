@@ -4,7 +4,7 @@
       <a href="javascript::void(0)">Catálogos</a>
     </li>
     <li>
-      <router-link :to="{ name: 'catalogs.pages.list'}">{{ breadcrumbTitle }}</router-link>
+      <router-link :to="{ name: 'catalogs.attributes.list'}">{{ breadcrumbTitle }}</router-link>
     </li>
     <li class="active">{{ title }}</li>
   </Breadcrumb>
@@ -24,8 +24,8 @@ export default {
   },
   data() {
     return {
-      breadcrumbTitle: 'Páginas'
-    }
+      breadcrumbTitle: "Atributos"
+    };
   }
 };
 </script>

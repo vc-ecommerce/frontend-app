@@ -1,36 +1,47 @@
 <template>
-  <Panel title="Criando Atributo" classContent="panel-body">
-     <div class="row">
-      <div class="col-sm-12">
-        <AlertDivs :status="status" :error="error"/>
-      </div>
-    </div>
-
-    <form id="add-user" @submit.prevent="submitForm">
+  <div>
+    <section>
+      <LinkBreadcrumb :title="titlePage"/>
+    </section>
+    <Panel :title="titlePage" classContent="panel-body">
       <div class="row">
-        <div class="col-sm-2">Nome do atributo</div>
-        <div class="col-sm-10">
-          <input type="text" required class="form-control" v-model="name" placeholder="Digite aqui">
-          <span>Nome do atributo para controle interno</span>
+        <div class="col-sm-12">
+          <AlertDivs :status="status" :error="error"/>
         </div>
       </div>
 
-      <div class="row col-btn">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-10">
-          <button :disabled="btnDisabled" class="btn btn-inline" type="submit">
-            <i class="glyphicon glyphicon-ok"></i> Criar atributo
-          </button>
-          <router-link
-            :to="{ name: 'catalogs.attributes.list' }"
-            class="btn btn-inline btn-sm btn-default"
-          >
-            <i class="glyphicon glyphicon-remove"></i> Cancelar
-          </router-link>
+      <form id="add-user" @submit.prevent="submitForm">
+        <div class="row">
+          <div class="col-sm-2">Nome do atributo</div>
+          <div class="col-sm-10">
+            <input
+              type="text"
+              required
+              class="form-control"
+              v-model="name"
+              placeholder="Digite aqui"
+            >
+            <span>Nome do atributo para controle interno</span>
+          </div>
         </div>
-      </div>
-    </form>
-  </Panel>
+
+        <div class="row col-btn">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10">
+            <button :disabled="btnDisabled" class="btn btn-inline" type="submit">
+              <i class="glyphicon glyphicon-ok"></i> Criar atributo
+            </button>
+            <router-link
+              :to="{ name: 'catalogs.attributes.list' }"
+              class="btn btn-inline btn-sm btn-default"
+            >
+              <i class="glyphicon glyphicon-remove"></i> Cancelar
+            </router-link>
+          </div>
+        </div>
+      </form>
+    </Panel>
+  </div>
 </template>
 <script>
 import Panel from "@/components/layouts/Panel";
@@ -39,17 +50,20 @@ import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
 import AlertDivs from "./components/AlertDivs";
 import { isAclToPage } from "@/utils/authorizations-helpers";
+import LinkBreadcrumb from "./components/LinkBreadcrumb";
 
 export default {
   name: "AttributeCreate",
   components: {
     Panel,
     Alert,
-    AlertDivs
+    AlertDivs,
+    LinkBreadcrumb
   },
   props: [],
   data() {
     return {
+      titlePage: 'Criando Atributo',
       name: "",
       status: false,
       error: false,
