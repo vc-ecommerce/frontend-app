@@ -28,9 +28,16 @@
         <div class="row col-btn">
           <div class="col-sm-2"></div>
           <div class="col-sm-10 text-right">
-            <button :disabled="btnDisabled" class="btn btn-inline" type="submit">
-              <i class="glyphicon glyphicon-ok"></i> Alterar nome
-            </button>
+            <ButtonSubmit v-if="!ok"
+              bntTitle="Alterar nome"
+              :ok="ok"
+              :btnDisabled="btnDisabled"
+              bntClass="btn btn-inline"
+              iconClass="glyphicon glyphicon-ok"
+            />
+            <router-link v-else class="btn btn-inline" :to="{name: 'catalogs.attributes.list'}">
+              <i class="glyphicon glyphicon-ok"></i> Concluído
+            </router-link>
           </div>
         </div>
       </form>
@@ -46,6 +53,7 @@ import AlertDivs from "./components/AlertDivs";
 import AttributeVariation from "./components/AttributeVariation";
 import { HttpServices as service } from "@/services/http-services";
 import LinkBreadcrumb from "./components/LinkBreadcrumb";
+import ButtonSubmit from "@/components/layouts/ButtonSubmit";
 
 export default {
   name: "AttributeEdit",
@@ -54,7 +62,8 @@ export default {
     Alert,
     AttributeVariation,
     AlertDivs,
-    LinkBreadcrumb
+    LinkBreadcrumb,
+    ButtonSubmit
   },
   props: [],
   data() {
@@ -63,7 +72,8 @@ export default {
       status: false,
       error: false,
       btnDisabled: false,
-      titlePage: 'Editando Atributo',
+      titlePage: "Editando Atributo",
+      ok: false
     };
   },
 
@@ -82,12 +92,14 @@ export default {
     submitForm() {
       this.status = "Enviando...";
       this.btnDisabled = true;
+      this.ok = false;
       service
         .put(`/admin/attributes/${this.$route.params.id}`, {
           name: this.name,
           default: false
         })
-        .then(response => {
+        .then(res => {
+          this.ok = true;
           this.error = false;
           this.status = "Atributo alterado com sucesso.";
         })
