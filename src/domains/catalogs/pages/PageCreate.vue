@@ -58,7 +58,7 @@
                 <div class="col-sm-1">
                   <div class="form-group">
                     <a
-                      href="https://static.googleusercontent.com/media/www.google.com/pt-BR//intl/pt-BR/webmasters/docs/guia-otimizacao-para-mecanismos-de-pesquisa-pt-br.pdf"
+                      :href="urlSeo"
                       target="_blank"
                       class="label label-default"
                       data-toggle="tooltip"
@@ -110,6 +110,7 @@ import HtmlEditor from "@/components/summernote/HtmlEditor";
 import { HttpServices as service } from "@/services/http-services";
 import AlertDivs from "./components/AlertDivs";
 import { isAclToPage } from "@/utils/authorizations-helpers";
+import { urlGoogleSeoExample } from "@/commons/configGoogle";
 
 export default {
   name: "PageEdit",
@@ -144,6 +145,9 @@ export default {
   computed: {
     applySlug() {
       return this.data.name ? tool.strSlug(this.data.name) : "";
+    },
+    urlSeo() {
+      return urlGoogleSeoExample;
     }
   },
   methods: {
