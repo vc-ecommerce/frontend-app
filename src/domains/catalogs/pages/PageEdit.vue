@@ -36,7 +36,7 @@
               v-model="data.name"
               placeholder="Digite aqui o título da página"
             >
-            <span v-if="applySlug" class="control">{{ $urlSite +"/pg/"+ applySlug }}</span>
+            <Slug :slug="applySlug" directory="pg" />
           </div>
         </div>
 
@@ -124,6 +124,7 @@ import AlertDivs from "./components/AlertDivs";
 import { urlGoogleSeoExample } from "@/commons/configGoogle";
 import { isAclToPage } from "@/utils/authorizations-helpers";
 import LinkBreadcrumb from "./components/LinkBreadcrumb";
+import Slug from "@/components/utils/Slug";
 
 export default {
   name: "PageEdit",
@@ -134,7 +135,8 @@ export default {
     WidgetAccordionContent,
     HtmlEditor,
     AlertDivs,
-    LinkBreadcrumb
+    LinkBreadcrumb,
+    Slug,
   },
   props: [],
   data() {

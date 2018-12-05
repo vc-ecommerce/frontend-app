@@ -13,8 +13,8 @@
       <form @submit.prevent="submitForm">
         <div class="row">
           <div class="col-sm-2">Marca ativa?</div>
-          <div class="col-sm-4">
-            <select class="form-control" required v-model="data.active">
+          <div class="col-sm-10">
+            <select class="form-control col-sm-3" required v-model="data.active">
               <option disabled value>Escolha um item</option>
               <option
                 v-for="option in options"
@@ -25,22 +25,47 @@
           </div>
         </div>
 
+         <div class="row">
+          <div class="col-sm-2">Marca em destaque?</div>
+          <div class="col-sm-10">
+
+              <small>Marcas com destaques aparecem no carrosel de marcas na página home da loja.</small>
+
+              <select class="form-control col-sm-3" required v-model="data.active">
+                <option disabled value>Escolha um item</option>
+                <option
+                  v-for="option in options"
+                  :key="option.id"
+                  :value="option.value"
+                >{{ option.text }}</option>
+              </select>
+
+          </div>
+        </div>
+
         <div class="row">
-          <div class="col-sm-2">Título da página</div>
+          <div class="col-sm-2">Nome da marca</div>
           <div class="col-sm-10">
             <input
               type="text"
               required
               class="form-control"
               v-model="data.name"
-              placeholder="Digite aqui o título da página"
+              placeholder="Digite aqui o nome da marca"
             >
-            <span v-if="applySlug" class="control">{{ $urlSite +"/pg/"+ applySlug }}</span>
+            <Slug :slug="applySlug" directory="marca" />
           </div>
         </div>
 
         <div class="row">
-          <div class="col-sm-2">Conteúdo da página</div>
+          <div class="col-sm-2">Logo</div>
+          <div class="col-sm-10">
+            <input  type="file" class="form-control">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-2">Descrição:</div>
           <div class="col-sm-10">
             <div class="form-group">
               <html-editor height="200" :dataDesc="data.description" :model.sync="data.description"></html-editor>
@@ -109,6 +134,7 @@
 <script>
 import Panel from "@/components/layouts/Panel";
 import Alert from "@/components/layouts/Alert";
+import Slug from "@/components/utils/Slug";
 import WidgetAccordion from "@/components/widgets/WidgetAccordion";
 import WidgetAccordionContent from "@/components/widgets/WidgetAccordionContent";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
@@ -124,6 +150,7 @@ export default {
   components: {
     Panel,
     Alert,
+    Slug,
     WidgetAccordion,
     WidgetAccordionContent,
     HtmlEditor,

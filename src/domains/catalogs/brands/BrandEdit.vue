@@ -36,7 +36,7 @@
               v-model="data.name"
               placeholder="Digite aqui o título da página"
             >
-            <span v-if="applySlug" class="control">{{ $urlSite +"/m/"+ applySlug }}</span>
+            <Slug :slug="applySlug" directory="marca" />
           </div>
         </div>
 
@@ -115,6 +115,7 @@
 <script>
 import Panel from "@/components/layouts/Panel";
 import Alert from "@/components/layouts/Alert";
+import Slug from "@/components/utils/Slug";
 import WidgetAccordion from "@/components/widgets/WidgetAccordion";
 import WidgetAccordionContent from "@/components/widgets/WidgetAccordionContent";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
@@ -130,6 +131,7 @@ export default {
   components: {
     Panel,
     Alert,
+    Slug,
     WidgetAccordion,
     WidgetAccordionContent,
     HtmlEditor,

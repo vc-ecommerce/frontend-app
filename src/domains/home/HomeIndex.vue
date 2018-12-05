@@ -16,6 +16,12 @@
 
     <div class="row">
       <Grid :col=12>
+        <Birthdays />
+      </Grid><!--.col-->
+    </div><!--.row-->
+
+    <div class="row">
+      <Grid :col=12>
         <OrderRecent />
       </Grid><!--.col-->
       <Grid :col=12>
@@ -41,6 +47,7 @@ import OrderPending from './components/OrderPending'
 import OrderRecent from './components/OrderRecent'
 import RecentComments from './components/RecentComments'
 import RecentContacts from './components/RecentContacts'
+import Birthdays from './components/Birthdays'
 
 export default {
   name: "HomeIndex",
@@ -55,6 +62,7 @@ export default {
     OrderRecent,
     RecentComments,
     RecentContacts,
+    Birthdays,
   },
   data() {
     return {
