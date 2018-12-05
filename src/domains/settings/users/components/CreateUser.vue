@@ -119,7 +119,7 @@ export default {
         name: "",
         email: "",
         password: "",
-        active: "",
+        active: true,
         roles: []
       },
       options: optionsSelectTrueOrFalse(),

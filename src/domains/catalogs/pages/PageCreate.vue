@@ -140,7 +140,7 @@ export default {
       data: {
         name: "",
         description: "",
-        active: "",
+        active: true,
         slug: "",
         meta_description: "",
         meta_title: ""
