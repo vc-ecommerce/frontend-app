@@ -100,6 +100,7 @@ import Alert from "@/components/layouts/Alert";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
 import AlertDivs from "./AlertDivs";
+import { optionsSelectTrueOrFalse } from "@/utils/array-helpers";
 
 export default {
   name: "CreateUser",
@@ -121,10 +122,7 @@ export default {
         active: "",
         roles: []
       },
-      options: [
-        { text: "Ativo", value: true },
-        { text: "Desativado", value: false }
-      ],
+      options: optionsSelectTrueOrFalse(),
       status: false,
       error: false,
       passwordInvalid: false,

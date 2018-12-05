@@ -79,7 +79,7 @@ import ModalButton from "@/components/modals/ModalButton";
 import ButtonSubmitModal from "@/components/modals/ButtonSubmitModal";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
-import { optionsTrueOrFalse } from "@/utils/array-helpers";
+import { optionsSelectTrueOrFalse } from "@/utils/array-helpers";
 import AlertDivs from "./AlertDivs";
 
 export default {
@@ -99,10 +99,7 @@ export default {
         description: "",
         privileges: []
       },
-      options: [
-        { text: "Ativo", value: true },
-        { text: "Desativado", value: false }
-      ],
+      options: optionsSelectTrueOrFalse(),
       status: false,
       error: false,
       passwordInvalid: false,

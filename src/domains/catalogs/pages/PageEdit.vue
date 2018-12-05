@@ -125,6 +125,7 @@ import { urlGoogleSeoExample } from "@/commons/configGoogle";
 import { isAclToPage } from "@/utils/authorizations-helpers";
 import LinkBreadcrumb from "./components/LinkBreadcrumb";
 import Slug from "@/components/utils/Slug";
+import { optionsSelectTrueOrFalse } from "@/utils/array-helpers";
 
 export default {
   name: "PageEdit",
@@ -146,7 +147,7 @@ export default {
       status: false,
       error: false,
       btnDisabled: false,
-      options: [{ text: "Sim", value: true }, { text: "Não", value: false }],
+      options: optionsSelectTrueOrFalse(),
     };
   },
   beforeCreate() {

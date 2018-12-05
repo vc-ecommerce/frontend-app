@@ -25,21 +25,19 @@
           </div>
         </div>
 
-         <div class="row">
+        <div class="row">
           <div class="col-sm-2">Marca em destaque?</div>
           <div class="col-sm-10">
+            <small>Marcas com destaques aparecem no carrosel de marcas na página home da loja.</small>
 
-              <small>Marcas com destaques aparecem no carrosel de marcas na página home da loja.</small>
-
-              <select class="form-control col-sm-3" required v-model="data.active">
-                <option disabled value>Escolha um item</option>
-                <option
-                  v-for="option in options"
-                  :key="option.id"
-                  :value="option.value"
-                >{{ option.text }}</option>
-              </select>
-
+            <select class="form-control col-sm-3" required v-model="data.spotlight">
+              <option disabled value>Escolha um item</option>
+              <option
+                v-for="option in options"
+                :key="option.id"
+                :value="option.value"
+              >{{ option.text }}</option>
+            </select>
           </div>
         </div>
 
@@ -53,14 +51,19 @@
               v-model="data.name"
               placeholder="Digite aqui o nome da marca"
             >
-            <Slug :slug="applySlug" directory="marca" />
+            <Slug :slug="applySlug" directory="marca"/>
           </div>
         </div>
 
         <div class="row">
           <div class="col-sm-2">Logo</div>
           <div class="col-sm-10">
-            <input  type="file" class="form-control">
+            <div v-if="data.image">
+              <small>Preview</small>
+              <br>
+              <img :src="data.image" style="margin: 0 0 10px 0; max-height:80px">
+            </div>
+            <input type="file" @change="saveImage" class="form-control">
           </div>
         </div>
 
@@ -142,6 +145,8 @@ import HtmlEditor from "@/components/summernote/HtmlEditor";
 import { HttpServices as service } from "@/services/http-services";
 import AlertDivs from "./components/AlertDivs";
 import { isAclToPage } from "@/utils/authorizations-helpers";
+import { transformImageToBase64 } from "@/utils/image-helpers";
+import { optionsSelectTrueOrFalse } from "@/utils/array-helpers";
 import { urlGoogleSeoExample } from "@/commons/configGoogle";
 import LinkBreadcrumb from "./components/LinkBreadcrumb";
 
@@ -160,19 +165,22 @@ export default {
   props: [],
   data() {
     return {
-      title: 'Criando Marca',
+      title: "Criando Marca",
       data: {
         name: "",
         description: "",
-        active: "",
+        active: true,
+        spotlight: false,
+        image: "",
         slug: "",
         meta_description: "",
         meta_title: ""
       },
+
       status: false,
       error: false,
       btnDisabled: false,
-      options: [{ text: "Sim", value: true }, { text: "Não", value: false }]
+      options: optionsSelectTrueOrFalse()
     };
   },
   beforeCreate() {
@@ -187,10 +195,19 @@ export default {
     }
   },
   methods: {
-    cleanData(data) {
-      return tool.cleanDataApi(data);
+    saveImage(e) {
+
+      transformImageToBase64(e)
+      .then(res => {
+         this.data.image = res;
+      })
+      .catch(console.log);
+
     },
+
     submitForm() {
+      console.log(this.data.image);
+
       this.status = "Enviando...";
       this.btnDisabled = true;
 
@@ -198,8 +215,10 @@ export default {
         .post("/admin/brands", {
           name: this.data.name,
           description: this.data.description,
-          active: this.data.active,
           slug: tool.strSlug(this.data.name),
+          active: this.data.active,
+          spotlight: this.data.spotlight,
+          image: this.data.image,
           meta_description: this.data.meta_description,
           meta_title: this.data.meta_title
         })

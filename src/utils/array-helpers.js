@@ -8,8 +8,9 @@ export const errorWithNotify = (errors) => {
     });
 }
 
-export const optionsTrueOrFalse = () => {
-  [
+export const optionsSelectTrueOrFalse = function() {
+
+  return [
     { text: "Ativo", value: true },
     { text: "Desativado", value: false }
   ];

@@ -114,6 +114,7 @@ import ButtonSubmitModal from "@/components/modals/ButtonSubmitModal";
 import AlertDivs from "./AlertDivs";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
+import { optionsSelectTrueOrFalse } from "@/utils/array-helpers";
 
 export default {
   name: "EditUser",
@@ -128,10 +129,7 @@ export default {
   data() {
     return {
       password: "",
-      options: [
-        { text: "Ativo", value: true },
-        { text: "Desativado", value: false }
-      ],
+      options: optionsSelectTrueOrFalse(),
       randId: "",
       status: false,
       error: false,

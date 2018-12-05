@@ -125,6 +125,7 @@ import AlertDivs from "./components/AlertDivs";
 import { urlGoogleSeoExample } from "@/commons/configGoogle";
 import { isAclToPage } from "@/utils/authorizations-helpers";
 import LinkBreadcrumb from "./components/LinkBreadcrumb";
+import { optionsSelectTrueOrFalse } from "@/utils/array-helpers";
 
 export default {
   name: "BrandEdit",
@@ -146,7 +147,7 @@ export default {
       status: false,
       error: false,
       btnDisabled: false,
-      options: [{ text: "Sim", value: true }, { text: "Não", value: false }],
+      options: optionsSelectTrueOrFalse(),
     };
   },
   beforeCreate() {

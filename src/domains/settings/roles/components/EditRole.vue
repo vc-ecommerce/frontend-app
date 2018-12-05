@@ -89,6 +89,7 @@ import ButtonSubmitModal from "@/components/modals/ButtonSubmitModal";
 import { toolHelpers as tool } from "@/utils/tool-helpers";
 import { HttpServices as service } from "@/services/http-services";
 import AlertDivs from "./AlertDivs";
+import { optionsSelectTrueOrFalse } from "@/utils/array-helpers";
 
 export default {
   name: "EditRole",
@@ -107,10 +108,7 @@ export default {
         description: "",
         privileges: []
       },
-      options: [
-        { text: "Ativo", value: true },
-        { text: "Desativado", value: false }
-      ],
+      options: optionsSelectTrueOrFalse(),
       randId: "",
       status: false,
       error: false,
