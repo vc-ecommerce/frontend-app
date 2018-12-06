@@ -36,7 +36,7 @@
               v-model="data.name"
               placeholder="Digite aqui o título da página"
             >
-            <Slug :slug="applySlug" directory="marca" />
+            <Slug :slug="applySlug" directory="marca"/>
           </div>
         </div>
 
@@ -142,12 +142,12 @@ export default {
   props: [],
   data() {
     return {
-      titleBrand: 'Editando Marca',
+      titleBrand: "Editando Marca",
       data: {},
       status: false,
       error: false,
       btnDisabled: false,
-      options: optionsSelectTrueOrFalse(),
+      options: optionsSelectTrueOrFalse()
     };
   },
   beforeCreate() {
@@ -165,9 +165,6 @@ export default {
     this.getBrand();
   },
   methods: {
-    cleanData(data) {
-      return tool.cleanDataApi(data);
-    },
     getBrand() {
       service
         .get(`/admin/brands/${this.$route.params.id}`)

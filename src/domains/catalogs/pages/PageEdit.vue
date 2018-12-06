@@ -165,9 +165,7 @@ export default {
     this.getPage();
   },
   methods: {
-    cleanData(data) {
-      return tool.cleanDataApi(data);
-    },
+
     getPage() {
       service
         .get(`/admin/pages/${this.$route.params.id}`)

@@ -28,7 +28,8 @@
         <div class="row col-btn">
           <div class="col-sm-2"></div>
           <div class="col-sm-10 text-right">
-            <ButtonSubmit v-if="!ok"
+            <ButtonSubmit
+              v-if="!ok"
               bntTitle="Alterar nome"
               :ok="ok"
               :btnDisabled="btnDisabled"
@@ -77,6 +78,17 @@ export default {
     };
   },
 
+  created() {
+
+    if (sessionStorage.getItem("attributeCreated")) {
+      this.status = sessionStorage.getItem("attributeCreated");
+      sessionStorage.removeItem("attributeCreated");
+
+      setTimeout(() => {
+        this.status = false;
+      }, 8000);
+    }
+  },
   methods: {
     getAttribute() {
       service
@@ -112,17 +124,6 @@ export default {
       setTimeout(() => {
         this.status = false;
         this.error = false;
-      }, 8000);
-    }
-  },
-  mounted() {
-    this.getAttribute();
-    if (sessionStorage.getItem("attributeCreated")) {
-      this.status = sessionStorage.getItem("attributeCreated");
-      sessionStorage.removeItem("attributeCreated");
-
-      setTimeout(() => {
-        this.status = false;
       }, 8000);
     }
   }

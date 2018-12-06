@@ -163,9 +163,7 @@ export default {
     }
   },
   methods: {
-    cleanData(data) {
-      return tool.cleanDataApi(data);
-    },
+
     submitForm() {
       this.status = "Enviando...";
       this.btnDisabled = true;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <section>
-      <LinkBreadcrumb title="Listar" />
+      <LinkBreadcrumb title="Listar"/>
     </section>
     <section class="box-typical">
       <header class="box-typical-header">
@@ -96,6 +96,17 @@ export default {
   beforeCreate() {
     isAclToPage("ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR");
   },
+  created() {
+    this.handler();
+  },
+  mounted() {
+    this.$eventHub.$on("reloadHandler", obj => this.handler());
+    this.$eventHub.$on("totalPages", value => (this.total = value));
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("reloadHandler", obj => this.handler());
+    this.$eventHub.$off("totalPages", value => (this.total = value));
+  },
   methods: {
     clickEdit(id) {
       this.$router.push({ name: "catalogs.pages.edit", params: { id } });
@@ -114,15 +125,6 @@ export default {
     handler() {
       this.getPages();
     }
-  },
-  mounted() {
-    this.handler();
-    this.$eventHub.$on("reloadHandler", obj => this.handler());
-    this.$eventHub.$on("totalPages", value => (this.total = value));
-  },
-  beforeDestroy() {
-    this.$eventHub.$off("reloadHandler", obj => this.handler());
-    this.$eventHub.$off("totalPages", value => (this.total = value));
   }
 };
 </script>

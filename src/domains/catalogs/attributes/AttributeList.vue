@@ -1,7 +1,7 @@
 <template>
   <div>
     <section>
-      <LinkBreadcrumb title="Listar" />
+      <LinkBreadcrumb title="Listar"/>
     </section>
     <section class="box-typical">
       <header class="box-typical-header">
@@ -88,7 +88,7 @@ export default {
     RemoveAttribute,
     Table,
     Pagination,
-    LinkBreadcrumb,
+    LinkBreadcrumb
   },
   props: [],
   data() {
@@ -108,6 +108,12 @@ export default {
   beforeCreate() {
     isAclToPage("ADMIN", "STAFF_EDITOR", "STAFF_AUDITOR");
   },
+  created() {
+    this.getAttributes();
+  },
+  mounted() {
+    this.$eventHub.$on("totalAttributes", total => (this.total = total));
+  },
   methods: {
     clickEdit(id) {
       this.$router.push({ name: "catalogs.attributes.edit", params: { id } });
@@ -121,10 +127,6 @@ export default {
         })
         .catch(console.log);
     }
-  },
-  mounted() {
-    this.getAttributes();
-    this.$eventHub.$on("totalAttributes", total => (this.total = total));
   }
 };
 </script>
