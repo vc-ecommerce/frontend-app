@@ -110,6 +110,17 @@ export default {
   beforeCreate() {
     isAclToPage("ADMIN");
   },
+  created() {
+    this.handler();
+  },
+  mounted() {
+    this.$eventHub.$on("reloadHandler", obj => this.handler());
+    this.$eventHub.$on("totalUsers", value => (this.total = value));
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("reloadHandler", obj => this.handler());
+    this.$eventHub.$off("totalUsers", value => (this.total = value));
+  },
   methods: {
     getRoles() {
       service
@@ -134,15 +145,6 @@ export default {
       this.getRoles();
       this.getUsers();
     }
-  },
-  mounted() {
-    this.handler();
-    this.$eventHub.$on("reloadHandler", obj => this.handler());
-    this.$eventHub.$on("totalUsers", value => (this.total = value));
-  },
-  beforeDestroy() {
-    this.$eventHub.$off("reloadHandler", obj => this.handler());
-    this.$eventHub.$off("totalUsers", value => (this.total = value));
   }
 };
 </script>

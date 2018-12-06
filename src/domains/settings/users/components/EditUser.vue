@@ -169,6 +169,22 @@ export default {
       }
     }
   },
+  mounted() {
+    this.$eventHub.$on("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
+  },
   methods: {
     submitForm() {
       if (!this.$store.getters.getItem) {
@@ -223,22 +239,6 @@ export default {
         });
       this.btnDisabled = false;
     }
-  },
-  mounted() {
-    this.$eventHub.$on("showModal", obj => {
-      this.status = false;
-      this.error = false;
-      this.showModal = obj;
-      this.ok = false;
-    });
-  },
-  beforeDestroy() {
-    this.$eventHub.$off("showModal", obj => {
-      this.status = false;
-      this.error = false;
-      this.showModal = obj;
-      this.ok = false;
-    });
   }
 };
 </script>

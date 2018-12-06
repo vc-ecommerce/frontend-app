@@ -76,6 +76,17 @@ export default {
       redirectPathForIndex: ["password", "login", "static"]
     };
   },
+  created() {
+    if (sessionStorage.getItem("desconected")) {
+      // Remove all saved data from sessionStorage
+      sessionStorage.clear();
+      this.email = "";
+      this.password = "";
+      notify.success("Sucesso!", "Você foi desconectado com segurança.");
+    }
+    htmlPageCenter();
+    dom.createTitle("Fazer Login");
+  },
   methods: {
     submitForm() {
       if (!validate.isEmail(this.email)) {
@@ -137,19 +148,6 @@ export default {
         });
       this.btnDisabled = false;
     }
-  },
-  mounted() {
-    dom.createTitle("Fazer Login");
-
-    if (sessionStorage.getItem("desconected")) {
-      // Remove all saved data from sessionStorage
-      sessionStorage.clear();
-      this.email = "";
-      this.password = "";
-      notify.success("Sucesso!", "Você foi desconectado com segurança.");
-    }
-
-    htmlPageCenter();
   }
 };
 </script>

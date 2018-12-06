@@ -85,6 +85,8 @@ export default {
   },
   created() {
     this.checkToken();
+    htmlPageCenter();
+    dom.createTitle("Redefinir Senha");
   },
   methods: {
     checkAlert() {
@@ -187,10 +189,6 @@ export default {
         this.sendData();
       }
     }
-  },
-  mounted() {
-    dom.createTitle("Redefinir Senha");
-    htmlPageCenter();
   }
 };
 </script>

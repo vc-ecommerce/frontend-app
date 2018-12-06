@@ -135,6 +135,22 @@ export default {
   computed: {
     random: () => tool.strRandom()
   },
+  mounted() {
+    this.$eventHub.$on("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("showModal", obj => {
+      this.status = false;
+      this.error = false;
+      this.showModal = obj;
+      this.ok = false;
+    });
+  },
   methods: {
     cleanData(data) {
       return tool.cleanDataApi(data);
@@ -190,22 +206,6 @@ export default {
         });
       this.btnDisabled = false;
     }
-  },
-  mounted() {
-    this.$eventHub.$on("showModal", obj => {
-      this.status = false;
-      this.error = false;
-      this.showModal = obj;
-      this.ok = false;
-    });
-  },
-  beforeDestroy() {
-    this.$eventHub.$off("showModal", obj => {
-      this.status = false;
-      this.error = false;
-      this.showModal = obj;
-      this.ok = false;
-    });
   }
 };
 </script>

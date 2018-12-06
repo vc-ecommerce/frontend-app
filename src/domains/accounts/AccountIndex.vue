@@ -101,7 +101,6 @@ export default {
     };
   },
   methods: {
-    cleanData: data => tool.cleanDataApi(data),
 
     submitForm() {
       if (this.password) {

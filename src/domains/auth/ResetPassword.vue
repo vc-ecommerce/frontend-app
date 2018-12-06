@@ -48,10 +48,12 @@ export default {
       btnDisabled: false
     };
   },
+  created() {
+    dom.createTitle("Redefinição de Senha");
+    htmlPageCenter();
+  },
   methods: {
-    cleanData(data) {
-      return tool.cleanDataApi(data);
-    },
+
     submitForm() {
       if (!validate.isEmail(this.email)) {
         notify.info("Atenção!", "Informe um email válido.");
@@ -91,10 +93,6 @@ export default {
         });
       this.btnDisabled = false;
     }
-  },
-  mounted() {
-    dom.createTitle("Redefinição de Senha");
-    htmlPageCenter();
   }
 };
 </script>

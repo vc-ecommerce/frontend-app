@@ -71,7 +71,7 @@ export default {
   beforeCreate() {
     isAclToPage("ADMIN");
   },
-  mounted() {
+  created() {
     this.getPrivileges();
   },
   methods: {
@@ -84,9 +84,6 @@ export default {
         })
         .catch(console.log);
     }
-  },
-  mounted() {
-    this.getPrivileges();
   }
 };
 </script>
