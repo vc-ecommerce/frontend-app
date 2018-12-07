@@ -69,9 +69,14 @@ export default {
 
     }
   },
-  mounted() {
+  created() {
     customHome();
-    console.log("mounted home");
+  },
+  mounted() {
+    $(() => {
+      console.log("mounted jquery home");
+    })
+
   }
 };
 </script>

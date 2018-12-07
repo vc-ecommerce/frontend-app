@@ -70,6 +70,10 @@ export const validateHelpers = {
 	         typeof arg === 'undefined';
   },
 
+  isUndefined: (arg) => {
+	  return typeof arg === 'undefined';
+	},
+
   isSymbol: (arg) => {
 	  return typeof arg === 'symbol';
 	},

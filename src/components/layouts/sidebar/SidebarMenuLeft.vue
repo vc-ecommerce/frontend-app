@@ -172,7 +172,7 @@
           </ul>
         </li>
 
-        <li v-if="isRoleAdmin" class="purple with-sub">
+        <li v-if="isRoleAdmin || isRoleAuditor" class="purple with-sub">
           <span>
             <i class="fa fa-cog"></i>
             <span class="lbl">Configurações</span>
@@ -180,7 +180,7 @@
           <ul>
             <li>
               <a href="#">
-                <span class="lbl">Gerenciar Lojas</span>
+                <span class="lbl">Gerenciar Loja</span>
               </a>
             </li>
 
@@ -189,12 +189,12 @@
                 <span class="lbl">Gerenciar usuários</span>
               </span>
               <ul>
-                <li>
+                <li v-if="isRoleAdmin">
                   <router-link :to="{ name: 'settings.users.list'}">
                     <span class="lbl">Gerenciar usuários</span>
                   </router-link>
                 </li>
-                <li>
+                <li v-if="isRoleAdmin">
                   <a href="#">
                     <span class="lbl">Grupos de usuários</span>
                   </a>
@@ -203,7 +203,7 @@
               </ul>
             </li>
 
-            <li class="purple with-sub">
+            <li v-if="isRoleAdmin" class="purple with-sub">
               <span>
                 <span class="lbl">Gerenciar Permissões</span>
               </span>
@@ -274,7 +274,7 @@
               </ul>
             </li>
 
-            <li class="purple with-sub">
+            <li v-if="isRoleAdmin" class="purple with-sub">
               <span>
                 <span class="lbl">Manutenção</span>
               </span>

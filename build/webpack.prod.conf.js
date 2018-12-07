@@ -41,10 +41,6 @@ const webpackConfig = merge(baseWebpackConfig, {
       sourceMap: config.build.productionSourceMap,
       parallel: true
     }),
-    new webpack.ProvidePlugin({
-      $: 'jquery/dist/jquery.js',
-      jQuery: 'jquery/dist/jquery.js'
-    }),
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css'),

@@ -8,22 +8,22 @@ const countTotalRoles = (rolesAuthorized) => {
   if (!rolesAuthorized)
     throw new Error('Informe o parâmetro rolesAuthorized, não pode ser vazio.')
 
-  if (validate.isArray(rolesAuthorized)) {
-    rolesAuthorized = rolesAuthorized.reduce(item => item);
-  }
-
-  let total = aclUser.filter(role => {
-    if (role.name === rolesAuthorized) {
+  let exists = aclUser.map(role => {
+    if(rolesAuthorized.includes(role.name)) {
       return true
     }
-    return false;
-  });
+  }).reduce(role => role);
 
-  return total.length > 0 ? true : false;
+  if (validate.isUndefined(exists)) {
+    return false;
+  }
+
+  return exists ? true : false;
 
 }
 
 export const isAclDashboardAdmin = (...rolesAuthorized) => {
+
   if (!countTotalRoles(rolesAuthorized)) {
     sessionStorage.clear();
     return window.location.replace("/login");

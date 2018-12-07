@@ -202,11 +202,9 @@ export default {
          this.data.image = res;
       })
       .catch(console.log);
-
     },
 
     submitForm() {
-      console.log(this.data.image);
 
       this.status = "Enviando...";
       this.btnDisabled = true;
